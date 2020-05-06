@@ -10,18 +10,16 @@ namespace MarkdownToHtml
         MarkdownElementType Type
         { get; set; }
 
-        LinkedList<IHtmlable> Content
-        { get; private set; }
+        LinkedList<IHtmlable> content;
 
-        Dictionary<String, String> Attributes
-        { get; private set; }
+        Dictionary<String, String> attributes;
 
         MarkdownElement(
             MarkdownElementType type
         ) {
             Type = type;
-            Content = new LinkedList<Htmlable>();
-            Attributes = new Dictionary<String, String>();
+            content = new LinkedList<Htmlable>();
+            attributes = new Dictionary<String, String>();
         }
 
     }
