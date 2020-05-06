@@ -1,5 +1,6 @@
 
 using System.Collections.Generic.Dictionary;
+using System.Collections.Generic.LinkedList;
 
 namespace MarkdownToHtml
 {
@@ -9,11 +10,19 @@ namespace MarkdownToHtml
         MarkdownElementType Type
         { get; set; }
 
-        IHtmlable[] Content
+        LinkedList<IHtmlable> Content
         { get; private set; }
 
-        Dictionary Attributes
+        Dictionary<String, String> Attributes
         { get; private set; }
+
+        MarkdownElement(
+            MarkdownElementType type
+        ) {
+            Type = type;
+            Content = new LinkedList<Htmlable>();
+            Attributes = new Dictionary<String, String>();
+        }
 
     }
 }
