@@ -4,10 +4,10 @@ namespace MarkdownToHtml
     class MarkdownParser
     {
         
-        bool Success
+        public bool Success
         { get; private set; }
 
-        IHtmlable[] Content
+        public IHtmlable[] Content
         { get; private set; }
 
         public MarkdownParser(

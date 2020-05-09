@@ -4,12 +4,12 @@ namespace MarkdownToHtml
     class MarkdownDocument
     {
 
-        string Source
+        public string Source
         { get; private set; }
 
         IHtmlable[] content;
 
-        bool Success
+        public bool Success
         { get; private set; }
 
         public MarkdownDocument(
