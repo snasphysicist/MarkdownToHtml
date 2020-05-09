@@ -4,11 +4,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace MarkdownToHtml 
 {
     [TestClass]
-    public class MarkdownTextTests
+    public class MarkdownParagraphTests
     {
         [DataTestMethod]
         [DataRow("Test1")]
-        public void ShouldParseCorrectlyFormattedTextSuccess(
+        public void ShouldParseCorrectlyFormattedPlainTextLineSuccess(
             string markdown
         ) {
             MarkdownParser parser = new MarkdownParser(
