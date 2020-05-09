@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MarkdownToHtml.csproj" />
+    <ProjectReference Include="..\MarkdownToHtml\MarkdownToHtml.csproj" />
   </ItemGroup>
 
 </Project>
