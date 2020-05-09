@@ -105,5 +105,21 @@ namespace MarkdownToHtml
                 html
             );
         }
+
+        [DataTestMethod]
+        [DataRow("*test1")]
+        [DataRow("_test1")]
+        public void ShouldNotParseIncorrectlyDelimitedEmphasisFail(
+            string markdown
+        ) {
+            MarkdownParser parser = new MarkdownParser(
+                new string[] {
+                    markdown
+                }
+            );
+            Assert.IsFalse(
+                parser.Success
+            );
+        }
     }
 }
