@@ -23,6 +23,7 @@ namespace MarkdownToHtml
                 MarkdownParagraph paragraph = new MarkdownParagraph(
                     ParseSingleLine(lines[i])
                 );
+                content.AddLast(paragraph);
             }
             Success = true;
             Content = new IHtmlable[content.Count];
