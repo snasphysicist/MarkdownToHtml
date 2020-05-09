@@ -20,12 +20,9 @@ namespace MarkdownToHtml
             for (int i = 0; i < lines.Length; i++) 
             {
                 // Plain text case
-                foreach (IHtmlable htmlable in ParseSingleLine(lines[i]))
-                {
-                    content.AddLast(
-                        htmlable
-                    );
-                } 
+                MarkdownParagraph paragraph = new MarkdownParagraph(
+                    ParseSingleLine(lines[i])
+                );
             }
             Success = true;
             Content = new IHtmlable[content.Count];
