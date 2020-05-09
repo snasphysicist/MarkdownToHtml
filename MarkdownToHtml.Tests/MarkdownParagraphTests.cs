@@ -40,7 +40,7 @@ namespace MarkdownToHtml
         [DataTestMethod]
         [DataRow("*test1*", "<p><emph>test1</emph></p>")]
         [DataRow("test1*test2*test3", "<p>test1<emph>test2</emph>test3</p>")]
-        public void ShouldParseCorrectlyFormattedEmphasisLineSuccess(
+        public void ShouldParseCorrectlyFormattedStarEmphasisLineSuccess(
             string markdown,
             string targetHtml
         ) {
@@ -55,8 +55,31 @@ namespace MarkdownToHtml
             string html = parser.Content[0].ToHtml();
             // Check that the correct HTML is produced
             Assert.AreEqual(
-                html,
-                targetHtml
+                targetHtml,
+                html
+            );
+        }
+
+        [DataTestMethod]
+        [DataRow("_test1_", "<p><emph>test1</emph></p>")]
+        [DataRow("test1_test2_test3", "<p>test1<emph>test2</emph>test3</p>")]
+        public void ShouldParseCorrectlyFormattedUnderscoreEmphasisLineSuccess(
+            string markdown,
+            string targetHtml
+        ) {
+            MarkdownParser parser = new MarkdownParser(
+                new string[] {
+                    markdown
+                }
+            );
+            Assert.IsTrue(
+                parser.Success
+            );
+            string html = parser.Content[0].ToHtml();
+            // Check that the correct HTML is produced
+            Assert.AreEqual(
+                targetHtml,
+                html
             );
         }
     }
