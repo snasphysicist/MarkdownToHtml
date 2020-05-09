@@ -59,6 +59,11 @@ namespace MarkdownToHtml
                         line,
                         content
                     );
+                } else if (line.StartsWith("~~")) {
+                    line = ParseStrikethroughSection(
+                        line,
+                        content
+                    );
                 } else if (line.StartsWith("*"))
                 {
                     line = ParseStarEmphasisSection(
@@ -273,6 +278,40 @@ namespace MarkdownToHtml
                 )
             );
             // Add the new emphasis element to the content
+            content.AddLast(
+                element
+            );
+            // Return the line string minus the content we parsed
+            return line.Substring(j + 1);
+        }
+
+        private string ParseStrikethroughSection(
+            string line,
+            LinkedList<IHtmlable> content
+        ) {
+            int j = 2;
+            // Find closing tildes
+            while (
+                (j < line.Length)
+                && !(
+                    (line.Substring(j-1, 2) == "~~")
+                    && (line[j-2] != '\\')
+                )
+            ) {
+                j++;
+            }
+            if (j >= line.Length)
+            {
+                // If we cannot, then return line as is
+                return line;
+            }
+            // Parse everything inside the stars
+            MarkdownStrikethrough element = new MarkdownStrikethrough(
+                ParseSingleLine(
+                    line.Substring(2, j - 3)
+                )
+            );
+            // Add the new element to the content
             content.AddLast(
                 element
             );
