@@ -36,5 +36,28 @@ namespace MarkdownToHtml
                 html.Contains("</p>")
             );
         }
+
+        [DataTestMethod]
+        [DataRow("*test1*", "<p><emph>test1</emph></p>")]
+        [DataRow("test1*test2*test3", "<p>test1<emph>test2</emph>test3</p>")]
+        public void ShouldParseCorrectlyFormattedEmphasisLineSuccess(
+            string markdown,
+            string targetHtml
+        ) {
+            MarkdownParser parser = new MarkdownParser(
+                new string[] {
+                    markdown
+                }
+            );
+            Assert.IsTrue(
+                parser.Success
+            );
+            string html = parser.Content[0].ToHtml();
+            // Check that the correct HTML is produced
+            Assert.AreEqual(
+                html,
+                targetHtml
+            );
+        }
     }
 }

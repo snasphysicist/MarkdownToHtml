@@ -15,6 +15,8 @@ namespace MarkdownToHtml
         public MarkdownParser(
             string[] lines
         ) {
+            // Assume success
+            Success = true;
             // Store parsed content as we go
             LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
             for (int i = 0; i < lines.Length; i++) 
@@ -25,14 +27,16 @@ namespace MarkdownToHtml
                 );
                 content.AddLast(paragraph);
             }
-            Success = true;
             Content = new IHtmlable[content.Count];
             content.CopyTo(Content, 0);
         }
 
+        // Given a single line of text, parse this, including special (emph, etc...) sections
         IHtmlable[] ParseSingleLine(
             string line
         ) {
+            // Store parsed content as we go
+            LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
             // Remove spaces from the start of the line
             while (
                 (line.Length > 0)
@@ -40,10 +44,126 @@ namespace MarkdownToHtml
             ) {
                 line = line.Substring(1);
             }
+            // Until the whole string has been consumed
+            while (line.Length > 0)
+            {
+                string initialLine = line;
+                if (line.StartsWith("*"))
+                {
+                    line = ParseStarEmphasisSection(
+                        line,
+                        content
+                    );
+                } else {
+                    line = ParsePlainTextSection(
+                        line,
+                        content
+                    );
+                }
+                /*
+                 * If there is content left but it cannot be parsed
+                 * then fail
+                 */
+                if (
+                    (line.Length > 0)
+                    && (initialLine == line)
+                ) {
+                    Success = false;
+                    return new IHtmlable[]{};
+                }
+            }
             // Plain text case, not yet dealing with strong/emph/etc
-            return new IHtmlable[]{
-                new MarkdownText(line)
-            };
+            IHtmlable[] contentArray = new IHtmlable[content.Count];
+            content.CopyTo(
+                contentArray, 
+                0
+            );
+            return contentArray;
+        }
+
+        // Given a line, parse a plain text section from its start
+        private string ParsePlainTextSection(
+            string line,
+            LinkedList<IHtmlable> content
+        ) {
+            int indexEmphasisSectionStart = findUnescapedStar(
+                line
+            );
+            // If there is an emphasis section
+            if (indexEmphasisSectionStart != line.Length)
+            {
+                // Add as plain text only the content up to where it starts
+                content.AddLast(
+                    new MarkdownText(
+                        line.Substring(0, indexEmphasisSectionStart)
+                    )
+                );
+                // Return everything after where it starts
+                return line.Substring(indexEmphasisSectionStart);
+            } else {
+                // If there are no special sections, everything is plain text
+                content.AddLast(
+                    new MarkdownText(
+                        line
+                    )
+                );
+                return "";
+            }
+        }
+
+        /* 
+         * Finds the index of the first unescaped star in the provided string
+         * Returns the string string length if none can be found
+         */
+        private int findUnescapedStar(
+            string line
+        ) {
+            int j = 0;
+            while (
+                (j < line.Length)
+                && !(
+                    (line[j] == '*')
+                    && (line[j-1] != '\\')
+                )
+            ) {
+                j++;
+            }
+            return j;
+        }
+
+        // Given a text snippet starting with a star, parse the emphasis section at its start
+        private string ParseStarEmphasisSection(
+            string line,
+            LinkedList<IHtmlable> content
+        ) {
+            int j = 1;
+            // Find closing star
+            while (
+                (j < line.Length)
+                && !(
+                    (line[j] == '*')
+                    && (line[j-1] != '\\')
+                )
+            ) {
+                j++;
+            }
+            if (j >= line.Length)
+            {
+                // If we cannot, then return line as is
+                return line;
+            }
+            // Parse everything inside the stars
+            MarkdownEmphasis element = new MarkdownEmphasis(
+                ParseSingleLine(
+                    line.Substring(1, j - 1)
+                )
+            );
+            // Add the new emphasis element to the content
+            content.AddLast(
+                element
+            );
+            // Return the line string minus the content we parsed
+            return line.Substring(j + 1);
         }
 
     }
