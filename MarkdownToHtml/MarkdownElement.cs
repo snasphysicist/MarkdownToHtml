@@ -17,7 +17,7 @@ namespace MarkdownToHtml
             MarkdownElementType type
         ) {
             Type = type;
-            content = new LinkedList<Htmlable>();
+            content = new LinkedList<IHtmlable>();
             attributes = new Dictionary<string, string>();
         }
 
