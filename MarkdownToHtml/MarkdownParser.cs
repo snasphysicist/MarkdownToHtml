@@ -1,7 +1,7 @@
 
 namespace MarkdownToHtml
 {
-    class MarkdownParser
+    public class MarkdownParser
     {
         
         public bool Success
