@@ -82,5 +82,28 @@ namespace MarkdownToHtml
                 html
             );
         }
+
+        [DataTestMethod]
+        [DataRow("*te\\*st1*", "<p><emph>te*st1</emph></p>")]
+        [DataRow("_te\\_st1_", "<p><emph>te_st1</emph></p>")]
+        public void ShouldParseCorrectlyEscapedEmphasisCharactersSuccess(
+            string markdown,
+            string targetHtml
+        ) {
+            MarkdownParser parser = new MarkdownParser(
+                new string[] {
+                    markdown
+                }
+            );
+            Assert.IsTrue(
+                parser.Success
+            );
+            string html = parser.Content[0].ToHtml();
+            // Check that the correct HTML is produced
+            Assert.AreEqual(
+                targetHtml,
+                html
+            );
+        }
     }
 }
