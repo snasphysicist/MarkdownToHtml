@@ -6,7 +6,7 @@ namespace MarkdownToHtml
 {
     public class MarkdownParser
     {
-        
+
         public bool Success
         { get; private set; }
 
