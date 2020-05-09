@@ -22,6 +22,7 @@ namespace MarkdownToHtml
         CodeBlock,
         Quote,
         HorizontalRule,
+        Paragraph,
         Text
     }
 }
