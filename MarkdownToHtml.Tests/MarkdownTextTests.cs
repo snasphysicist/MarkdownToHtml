@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace MarkdownToHtml 
 {
     [TestClass]
-    class MarkdownTextTests
+    public class MarkdownTextTests
     {
         [DataTestMethod]
         [DataRow("Test1")]
