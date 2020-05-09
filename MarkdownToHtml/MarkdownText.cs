@@ -11,6 +11,7 @@ namespace MarkdownToHtml
         public MarkdownText(
             string content
         ) {
+            Type = MarkdownElementType.Text;
             this.content = content;
         }
 
