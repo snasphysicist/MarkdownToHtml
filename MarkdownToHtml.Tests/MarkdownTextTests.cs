@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MarkdownToHtml 
 {
-    [Test Class]
+    [TestClass]
     class MarkdownTextTests
     {
         [DataTestMethod]
@@ -21,20 +21,20 @@ namespace MarkdownToHtml
             );
             // Should produce exactly one piece of content
             Assert.IsTrue(
-                parser.Content.length == 1;
-            )
+                parser.Content.length == 1
+            );
             string html = parser.Content[0].ToHtml();
             // HTML should contain the provided text
             Assert.IsTrue(
-                html.Contains(markdown);
-            )
+                html.Contains(markdown)
+            );
             // HTML should contain open/close paragraph tags
             Assert.IsTrue(
-                html.Contains("<p>");
-            )
+                html.Contains("<p>")
+            );
             Assert.IsTrue(
-                html.Contains("</p>");
-            )
+                html.Contains("</p>")
+            );
         }
     }
 }
