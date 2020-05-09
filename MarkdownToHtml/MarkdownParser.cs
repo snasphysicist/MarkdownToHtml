@@ -49,7 +49,17 @@ namespace MarkdownToHtml
             while (line.Length > 0)
             {
                 string initialLine = line;
-                if (line.StartsWith("*"))
+                if (line.StartsWith("**")) {
+                    line = ParseStarStrongSection(
+                        line, 
+                        content
+                    );
+                } else if (line.StartsWith("__")) {
+                    line = ParseUnderscoreStrongSection(
+                        line,
+                        content
+                    );
+                } else if (line.StartsWith("*"))
                 {
                     line = ParseStarEmphasisSection(
                         line,
