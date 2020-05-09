@@ -21,6 +21,7 @@ namespace MarkdownToHtml
         CodeInline,
         CodeBlock,
         Quote,
-        HorizontalRule
+        HorizontalRule,
+        Text
     }
 }
