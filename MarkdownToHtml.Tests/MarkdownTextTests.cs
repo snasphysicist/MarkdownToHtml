@@ -21,7 +21,7 @@ namespace MarkdownToHtml
             );
             // Should produce exactly one piece of content
             Assert.IsTrue(
-                parser.Content.length == 1
+                parser.Content.Length == 1
             );
             string html = parser.Content[0].ToHtml();
             // HTML should contain the provided text
