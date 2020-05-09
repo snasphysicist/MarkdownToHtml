@@ -204,6 +204,71 @@ namespace MarkdownToHtml
             return line.Substring(j + 1);
         }
 
+        /* 
+         * Given a text snippet starting with two stars
+         * parse the emphasis section at its start
+         */
+        private string ParseStarStrongSection(
+            string line,
+            LinkedList<IHtmlable> content
+        ) {
+            return ParseStrongSection(
+                line,
+                "**",
+                content
+            );
+        }
+
+        /* 
+         * Given a text snippet starting with two underscores
+         * parse the emphasis section at its start
+         */
+        private string ParseUnderscoreStrongSection(
+            string line,
+            LinkedList<IHtmlable> content
+        ) {
+            return ParseStrongSection(
+                line,
+                "__",
+                content
+            );
+        }
+
+        // Shared code for parsing strong sections
+        private string ParseStrongSection(
+            string line,
+            string delimiter,
+            LinkedList<IHtmlable> content
+        ) {
+            int j = 2;
+            // Find closing star
+            while (
+                (j < line.Length)
+                && !(
+                    (line.Substring(j-1, 2) == delimiter)
+                    && (line[j-2] != '\\')
+                )
+            ) {
+                j++;
+            }
+            if (j >= line.Length)
+            {
+                // If we cannot, then return line as is
+                return line;
+            }
+            // Parse everything inside the stars
+            MarkdownEmphasis element = new MarkdownEmphasis(
+                ParseSingleLine(
+                    line.Substring(2, j - 2)
+                )
+            );
+            // Add the new emphasis element to the content
+            content.AddLast(
+                element
+            );
+            // Return the line string minus the content we parsed
+            return line.Substring(j + 1);
+        }
 
         // Check whether a value is in an array
         private bool isInArray<T>(
