@@ -1,12 +1,12 @@
 
-using System.Collections.Generic.LinkedList;
+using System.Collections.Generic;
 
 namespace MarkdownToHtml
 {
     public class HtmlProperties
     {
 
-        LinkedList<String> requiredAttributes;
+        LinkedList<string> requiredAttributes;
 
         string Tag
         { get; set; }
@@ -15,7 +15,7 @@ namespace MarkdownToHtml
             string tag
         ) {
             Tag = tag;
-            requiredAttributes = new LinkedList<String>();
+            requiredAttributes = new LinkedList<string>();
         }
 
     }

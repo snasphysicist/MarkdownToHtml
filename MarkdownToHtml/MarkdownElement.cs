@@ -1,6 +1,5 @@
 
-using System.Collections.Generic.Dictionary;
-using System.Collections.Generic.LinkedList;
+using System.Collections.Generic;
 
 namespace MarkdownToHtml
 {
