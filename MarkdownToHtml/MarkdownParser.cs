@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 
 namespace MarkdownToHtml
@@ -54,6 +55,11 @@ namespace MarkdownToHtml
                         line,
                         content
                     );
+                } else if (line.StartsWith("_")) {
+                    line = ParseUnderscoreEmphasisSection(
+                        line,
+                        content
+                    );
                 } else {
                     line = ParsePlainTextSection(
                         line,
@@ -86,7 +92,7 @@ namespace MarkdownToHtml
             string line,
             LinkedList<IHtmlable> content
         ) {
-            int indexEmphasisSectionStart = findUnescapedStar(
+            int indexEmphasisSectionStart = FindUnescapedSpecial(
                 line
             );
             // If there is an emphasis section
@@ -115,14 +121,21 @@ namespace MarkdownToHtml
          * Finds the index of the first unescaped star in the provided string
          * Returns the string string length if none can be found
          */
-        private int findUnescapedStar(
+        private int FindUnescapedSpecial(
             string line
         ) {
+            Char[] specialCharacters = new Char[] {
+                '*',
+                '_'
+            };
             int j = 0;
             while (
                 (j < line.Length)
                 && !(
-                    (line[j] == '*')
+                    isInArray(
+                        line[j],
+                        specialCharacters
+                    )
                     && (line[j-1] != '\\')
                 )
             ) {
@@ -144,7 +157,7 @@ namespace MarkdownToHtml
         }
 
         // Given a text snippet starting with a star, parse the emphasis section at its start
-        private string ParseUnderlineEmphasisSection(
+        private string ParseUnderscoreEmphasisSection(
             string line,
             LinkedList<IHtmlable> content
         ) {
@@ -191,5 +204,16 @@ namespace MarkdownToHtml
             return line.Substring(j + 1);
         }
 
+
+        // Check whether a value is in an array
+        private bool isInArray<T>(
+            T value,
+            T[] array
+        ) {
+            return Array.Exists(
+                array,
+                element => element.Equals(value)
+            );
+        }
     }
 }
