@@ -13,7 +13,8 @@ namespace MarkdownToHtml
         public MarkdownParser(
             string[] lines
         ) {
-            
+            Success = false;
+            Content = new IHtmlable[]{};
         }
 
     }

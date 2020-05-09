@@ -12,14 +12,14 @@ namespace MarkdownToHtml
 
         LinkedList<IHtmlable> content;
 
-        Dictionary<String, String> attributes;
+        Dictionary<string, string> attributes;
 
         MarkdownElement(
             MarkdownElementType type
         ) {
             Type = type;
             content = new LinkedList<Htmlable>();
-            attributes = new Dictionary<String, String>();
+            attributes = new Dictionary<string, string>();
         }
 
     }
