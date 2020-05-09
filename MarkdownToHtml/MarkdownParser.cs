@@ -136,12 +136,37 @@ namespace MarkdownToHtml
             string line,
             LinkedList<IHtmlable> content
         ) {
+            return ParseEmphasisSection(
+                line,
+                '*',
+                content
+            );
+        }
+
+        // Given a text snippet starting with a star, parse the emphasis section at its start
+        private string ParseUnderlineEmphasisSection(
+            string line,
+            LinkedList<IHtmlable> content
+        ) {
+            return ParseEmphasisSection(
+                line,
+                '_',
+                content
+            );
+        }
+
+        // Shared code for parsing emphasis sections
+        private string ParseEmphasisSection(
+            string line,
+            char delimiter,
+            LinkedList<IHtmlable> content
+        ) {
             int j = 1;
             // Find closing star
             while (
                 (j < line.Length)
                 && !(
-                    (line[j] == '*')
+                    (line[j] == delimiter)
                     && (line[j-1] != '\\')
                 )
             ) {
