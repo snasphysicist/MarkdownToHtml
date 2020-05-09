@@ -267,9 +267,9 @@ namespace MarkdownToHtml
                 return line;
             }
             // Parse everything inside the stars
-            MarkdownEmphasis element = new MarkdownEmphasis(
+            MarkdownStrong element = new MarkdownStrong(
                 ParseSingleLine(
-                    line.Substring(2, j - 2)
+                    line.Substring(2, j - 3)
                 )
             );
             // Add the new emphasis element to the content
