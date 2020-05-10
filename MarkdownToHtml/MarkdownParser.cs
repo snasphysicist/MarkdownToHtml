@@ -446,8 +446,9 @@ namespace MarkdownToHtml
             LinkedList<IHtmlable> content
         ) {
             LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
-            foreach (string line in lines)
+            for (int i = 0; i < lines.Count; i++)
             {
+                string line = lines[i];
                 if (endsWithAtLeastTwoSpaces(line))
                 {
                     string shortened = stripTrailingWhitespace(line);
@@ -462,6 +463,20 @@ namespace MarkdownToHtml
                     foreach (IHtmlable entry in ParseInnerText(line))
                     {
                         innerContent.AddLast(entry);
+                    }
+                    /*
+                     * If this is not the last line,
+                     * it doesn't end in a manual linebreak
+                     * and the user hasn't added a space themselves
+                     * we need to add a space at the end
+                     */
+                    if (
+                        (i != (lines.Count - 1))
+                        && (line[^1] != ' ')
+                    ) {
+                        innerContent.AddLast(
+                            new MarkdownText(" ")
+                        );
                     }
                 }
             }
