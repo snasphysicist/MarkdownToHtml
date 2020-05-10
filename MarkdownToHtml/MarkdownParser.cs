@@ -22,9 +22,18 @@ namespace MarkdownToHtml
             LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
             for (int i = 0; i < lines.Length; i++) 
             {
+                bool success;
+                // Line is a single line heading
+                if (lines[i].StartsWith("#"))
+                {
+                    success = ParseSingleLineHeading(
+                        lines[i],
+                        content
+                    );
+                }
                 // Plain text case
                 MarkdownParagraph paragraph = new MarkdownParagraph(
-                    ParseSingleLine(lines[i])
+                    ParseInnerText(lines[i])
                 );
                 content.AddLast(paragraph);
             }
@@ -33,7 +42,7 @@ namespace MarkdownToHtml
         }
 
         // Given a single line of text, parse this, including special (emph, etc...) sections
-        IHtmlable[] ParseSingleLine(
+        IHtmlable[] ParseInnerText(
             string line
         ) {
             // Store parsed content as we go
@@ -108,7 +117,7 @@ namespace MarkdownToHtml
             return contentArray;
         }
 
-        // Given a line, parse a plain text section from its start
+        // Given a text snippet, parse a plain text section from its start
         private string ParsePlainTextSection(
             string line,
             LinkedList<IHtmlable> content
@@ -215,7 +224,7 @@ namespace MarkdownToHtml
             }
             // Parse everything inside the stars
             MarkdownEmphasis element = new MarkdownEmphasis(
-                ParseSingleLine(
+                ParseInnerText(
                     line.Substring(1, j - 1)
                 )
             );
@@ -281,7 +290,7 @@ namespace MarkdownToHtml
             }
             // Parse everything inside the stars
             MarkdownStrong element = new MarkdownStrong(
-                ParseSingleLine(
+                ParseInnerText(
                     line.Substring(2, j - 3)
                 )
             );
@@ -315,7 +324,7 @@ namespace MarkdownToHtml
             }
             // Parse everything inside the stars
             MarkdownStrikethrough element = new MarkdownStrikethrough(
-                ParseSingleLine(
+                ParseInnerText(
                     line.Substring(2, j - 3)
                 )
             );
@@ -350,7 +359,7 @@ namespace MarkdownToHtml
             }
             // Parse everything inside the stars
             MarkdownCodeInline element = new MarkdownCodeInline(
-                ParseSingleLine(
+                ParseInnerText(
                     line.Substring(1, j - 1)
                 )
             );
@@ -360,6 +369,50 @@ namespace MarkdownToHtml
             );
             // Return the line string minus the content we parsed
             return line.Substring(j + 1);
+        }
+
+        // Parse a single line heading
+        private bool ParseSingleLineHeading(
+            string line,
+            LinkedList<IHtmlable> content
+        ) {
+            // Work out heading level
+            int level = 0;
+            while(
+                level < (line.Length)
+                && (line[level] == '#')
+            ) {
+                level++;
+            }
+            /* 
+             * If heading level allowed (1-6)
+             * and there is at least one more character except hashes
+             * and hashes followed by space
+             * then line can be parsed as heading
+             */
+            if (
+                (level > 0) 
+                && (level < 7)
+                && (line.Length > level)
+                && (line[level] == ' ')
+            ) {
+                // Parse as heading
+                content.AddLast(
+                    new MarkdownHeading(
+                        level,
+                        ParseInnerText(
+                            line.Substring(level + 1)
+                        )
+                    )
+                );
+                return true;
+            } else {
+                // Invalid heading syntax, assume it's just a paragraph
+                return ParseParagraph(
+                    line,
+                    content
+                );
+            }
         }
 
         // Check whether a value is in an array
