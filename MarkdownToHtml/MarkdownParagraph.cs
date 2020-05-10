@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+
 namespace MarkdownToHtml
 {
     public class MarkdownParagraph : IHtmlable
@@ -11,9 +13,13 @@ namespace MarkdownToHtml
         public const MarkdownElementType Type = MarkdownElementType.Paragraph;
 
         public MarkdownParagraph(
-            IHtmlable[] content
+            LinkedList<IHtmlable> innerContent
         ) {
-            this.content = content;
+            this.content = new IHtmlable[innerContent.Count];
+            innerContent.CopyTo(
+                this.content, 
+                0
+            );
         }
 
         public string ToHtml() 
