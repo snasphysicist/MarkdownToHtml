@@ -37,8 +37,7 @@ namespace MarkdownToHtml
         [DataRow("---*")]
         [DataRow("*** test")]
         public void ShouldNotParseIncorrectlyFormattedHorizontalRuleFail(
-            string markdown,
-            string targetHtml
+            string markdown
         ) {
             MarkdownParser parser = new MarkdownParser(
                 new string[] {
