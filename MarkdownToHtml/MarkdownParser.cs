@@ -1,11 +1,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
     public class MarkdownParser
     {
+
+        // Regex matches
+        Regex regexHorizontalLine = new Regex(@"\*\*\*|---|___");
 
         public bool Success
         { get; private set; }
@@ -30,6 +34,16 @@ namespace MarkdownToHtml
                         lines[i],
                         content
                     );
+                } else if(
+                    (lines[i].Length > 2)
+                    && regexHorizontalLine.IsMatch(
+                        lines[i].Substring(0, 3)
+                    )
+                ) {
+                    success = ParseHorizontalRule(
+                        lines[i],
+                        content
+                    );
                 } else {
                     // Plain text case
                     success = ParseParagraph(
@@ -37,6 +51,7 @@ namespace MarkdownToHtml
                         content
                     );
                 }
+                Success = Success && success;
             }
             Content = new IHtmlable[content.Count];
             content.CopyTo(Content, 0);
@@ -421,6 +436,50 @@ namespace MarkdownToHtml
                     content
                 );
             }
+        }
+
+        // Parse a line thought to contain a horizontal rule
+        bool ParseHorizontalRule(
+            string line,
+            LinkedList<IHtmlable> content
+        ) {
+            // The first character must be present
+            if (line.Length == 0)
+            {
+                return false;
+            }
+            char used = line[0];
+            // The first character must be of the correct type
+            if (
+                (used != '-')
+                && (used != '_')
+                && (used != '*')
+            ) {
+                return false;
+            }
+            int index = 0;
+            while (
+                (index < line.Length)
+                && (
+                    line[index] == used
+                )
+            ) {
+                index++;
+            }
+            /* 
+             * There must be at least three characters
+             * and they must be of the same type
+             */
+            if (
+                (index < 3)
+                || (index != line.Length)
+            ) {
+                return false;
+            }
+            content.AddLast(
+                new MarkdownHorizontalRule()
+            );
+            return true;
         }
 
         // Check whether a value is in an array
