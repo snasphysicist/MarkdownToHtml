@@ -7,7 +7,8 @@ namespace MarkdownToHtml
         private string[][] EscapeReplacements = new string[][]{
             new string[] {"\\*", "*"},
             new string[] {"\\_", "_"},
-            new string[] {"\\~", "~"}
+            new string[] {"\\~", "~"},
+            new string[] {"\\`", "`"}
         };
 
         string content;
