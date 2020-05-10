@@ -75,6 +75,12 @@ namespace MarkdownToHtml
                         line,
                         content
                     );
+                } else if (line.StartsWith("`")) 
+                {
+                    line = ParseInlineCodeSection(
+                        line,
+                        content
+                    );
                 } else {
                     line = ParsePlainTextSection(
                         line,
@@ -314,6 +320,41 @@ namespace MarkdownToHtml
                 )
             );
             // Add the new element to the content
+            content.AddLast(
+                element
+            );
+            // Return the line string minus the content we parsed
+            return line.Substring(j + 1);
+        }
+
+        // Shared code for parsing emphasis sections
+        private string ParseInlineCodeSection(
+            string line,
+            LinkedList<IHtmlable> content
+        ) {
+            int j = 1;
+            // Find closing star
+            while (
+                (j < line.Length)
+                && !(
+                    (line[j] == '`')
+                    && (line[j-1] != '\\')
+                )
+            ) {
+                j++;
+            }
+            if (j >= line.Length)
+            {
+                // If we cannot, then return line as is
+                return line;
+            }
+            // Parse everything inside the stars
+            MarkdownCodeInline element = new MarkdownCodeInline(
+                ParseSingleLine(
+                    line.Substring(1, j - 1)
+                )
+            );
+            // Add the new emphasis element to the content
             content.AddLast(
                 element
             );
