@@ -1,17 +1,32 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
     public class MarkdownParser
     {
 
+        // Regex matches
+        Regex regexHorizontalLine = new Regex(@"\*\*\*|---|___");
+
         public bool Success
         { get; private set; }
 
         public IHtmlable[] Content
         { get; private set; }
+
+        // TODO replace with MarkdownDocument object
+        public string ToHtml()
+        {
+            string html = "";
+            foreach (IHtmlable entry in Content)
+            {
+                html += entry.ToHtml();
+            }
+            return html;
+        }
 
         public MarkdownParser(
             string[] lines
@@ -20,31 +35,104 @@ namespace MarkdownToHtml
             Success = true;
             // Store parsed content as we go
             LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
-            for (int i = 0; i < lines.Length; i++) 
-            {
-                // Plain text case
-                MarkdownParagraph paragraph = new MarkdownParagraph(
-                    ParseSingleLine(lines[i])
+            int currentIndex = 0;
+            ArraySegment<string> lineGroup;
+            while (currentIndex < lines.Length) {
+                lineGroup = NextLineGroup(
+                    lines,
+                    currentIndex
                 );
-                content.AddLast(paragraph);
+                bool lineGroupSuccess = ParseLineGroup(
+                    lineGroup,
+                    content
+                );
+                Success = Success && lineGroupSuccess; 
+                currentIndex += lineGroup.Count + 1;
             }
             Content = new IHtmlable[content.Count];
             content.CopyTo(Content, 0);
         }
 
+        /* 
+         * Given a start index, return the
+         * line group that starts at that index
+         */ 
+        private ArraySegment<string> NextLineGroup(
+            string[] lines,
+            int startIndex
+        ) {
+            int endIndex = startIndex;
+            while (
+                (endIndex < lines.Length)
+                && (!containsOnlyWhitespace(
+                    lines[endIndex]
+                ))
+            ) {
+                endIndex++;
+            }
+            int elements = endIndex - startIndex;
+            return new ArraySegment<string>(
+                lines, 
+                startIndex, 
+                elements
+            );
+        }
+
+        // Check whether a line contains only whitespace (or is empty)
+        private bool containsOnlyWhitespace(
+            string line
+        ) {
+            return line.Replace(
+                " ",
+                ""
+            ).Length == 0;
+        }
+
+        private bool ParseLineGroup(
+            ArraySegment<string> lines,
+            LinkedList<IHtmlable> content
+        ) {
+            string firstLine = lines[0];
+            if (
+                firstLine.StartsWith("#")
+            ) {
+                // Single line heading
+                return ParseSingleLineHeading(
+                    lines[0],
+                    content
+                );
+            } else if (
+                (firstLine.Length > 2)
+                && regexHorizontalLine.IsMatch(
+                    firstLine.Substring(0, 3)
+                )
+            ) {
+                return ParseHorizontalRule(
+                    lines[0],
+                    content
+                );
+            } else if (
+                firstLine.StartsWith(">")
+            ) {
+                return ParseQuote(
+                    lines,
+                    content
+                );
+            }
+            else {
+                return ParseParagraph(
+                    lines,
+                    content
+                );
+            }
+        }
+
         // Given a single line of text, parse this, including special (emph, etc...) sections
-        IHtmlable[] ParseSingleLine(
+        IHtmlable[] ParseInnerText(
             string line
         ) {
             // Store parsed content as we go
             LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
-            // Remove spaces from the start of the line
-            while (
-                (line.Length > 0)
-                && (line.Substring(0, 1) == " ")
-            ) {
-                line = line.Substring(1);
-            }
             // Until the whole string has been consumed
             while (line.Length > 0)
             {
@@ -108,7 +196,7 @@ namespace MarkdownToHtml
             return contentArray;
         }
 
-        // Given a line, parse a plain text section from its start
+        // Given a text snippet, parse a plain text section from its start
         private string ParsePlainTextSection(
             string line,
             LinkedList<IHtmlable> content
@@ -155,7 +243,7 @@ namespace MarkdownToHtml
             while (
                 (j < line.Length)
                 && !(
-                    isInArray(
+                    IsInArray(
                         line[j],
                         specialCharacters
                     )
@@ -215,7 +303,7 @@ namespace MarkdownToHtml
             }
             // Parse everything inside the stars
             MarkdownEmphasis element = new MarkdownEmphasis(
-                ParseSingleLine(
+                ParseInnerText(
                     line.Substring(1, j - 1)
                 )
             );
@@ -281,7 +369,7 @@ namespace MarkdownToHtml
             }
             // Parse everything inside the stars
             MarkdownStrong element = new MarkdownStrong(
-                ParseSingleLine(
+                ParseInnerText(
                     line.Substring(2, j - 3)
                 )
             );
@@ -315,7 +403,7 @@ namespace MarkdownToHtml
             }
             // Parse everything inside the stars
             MarkdownStrikethrough element = new MarkdownStrikethrough(
-                ParseSingleLine(
+                ParseInnerText(
                     line.Substring(2, j - 3)
                 )
             );
@@ -350,7 +438,7 @@ namespace MarkdownToHtml
             }
             // Parse everything inside the stars
             MarkdownCodeInline element = new MarkdownCodeInline(
-                ParseSingleLine(
+                ParseInnerText(
                     line.Substring(1, j - 1)
                 )
             );
@@ -362,8 +450,227 @@ namespace MarkdownToHtml
             return line.Substring(j + 1);
         }
 
+        // Parse a plain paragraph
+        private bool ParseParagraph(
+            ArraySegment<string> lines,
+            LinkedList<IHtmlable> content
+        ) {
+            LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
+            for (int i = 0; i < lines.Count; i++)
+            {
+                string line = lines[i];
+                if (endsWithAtLeastTwoSpaces(line))
+                {
+                    string shortened = stripTrailingWhitespace(line);
+                    foreach (IHtmlable entry in ParseInnerText(shortened))
+                    {
+                        innerContent.AddLast(entry);
+                    }
+                    innerContent.AddLast(
+                        new MarkdownLinebreak()
+                    );
+                } else {
+                    foreach (IHtmlable entry in ParseInnerText(line))
+                    {
+                        innerContent.AddLast(entry);
+                    }
+                    /*
+                     * If this is not the last line,
+                     * it doesn't end in a manual linebreak
+                     * and the user hasn't added a space themselves
+                     * we need to add a space at the end
+                     */
+                    if (
+                        (i != (lines.Count - 1))
+                        && (line[^1] != ' ')
+                    ) {
+                        innerContent.AddLast(
+                            new MarkdownText(" ")
+                        );
+                    }
+                }
+            }
+            MarkdownParagraph paragraph = new MarkdownParagraph(innerContent);
+            content.AddLast(
+                paragraph
+            );
+            return true;
+        }
+
+        private bool endsWithAtLeastTwoSpaces (
+            string line
+        ) {
+            return line.Substring(
+                line.Length - 2,
+                2
+            ) == "  ";
+        }
+
+        private string stripTrailingWhitespace(
+            string line
+        ) {
+            while (
+                (line.Length > 0)
+                && (line[^1] == ' ')
+            ) {
+                line = line.Substring(
+                    0,
+                    line.Length - 1 
+                );
+            }
+            return line;
+        }
+
+        // Parse a single line heading
+        private bool ParseSingleLineHeading(
+            string line,
+            LinkedList<IHtmlable> content
+        ) {
+            // Work out heading level
+            int level = 0;
+            while(
+                level < (line.Length)
+                && (line[level] == '#')
+            ) {
+                level++;
+            }
+            /* 
+             * If heading level allowed (1-6)
+             * and there is at least one more character except hashes
+             * and hashes followed by space
+             * then line can be parsed as heading
+             */
+            if (
+                (level > 0) 
+                && (level < 7)
+                && (line.Length > level)
+                && (line[level] == ' ')
+            ) {
+                // Parse as heading
+                content.AddLast(
+                    new MarkdownHeading(
+                        level,
+                        ParseInnerText(
+                            line.Substring(level + 1)
+                        )
+                    )
+                );
+                return true;
+            } else {
+                // Invalid heading syntax, assume it's just a paragraph
+                return ParseParagraph(
+                    new ArraySegment<string>(
+                        new string[]
+                        {
+                            line
+                        }, 
+                        0, 
+                        1
+                    ),
+                    content
+                );
+            }
+        }
+
+        // Parse a line thought to contain a horizontal rule
+        bool ParseHorizontalRule(
+            string line,
+            LinkedList<IHtmlable> content
+        ) {
+            // The first character must be present
+            if (line.Length == 0)
+            {
+                return false;
+            }
+            char used = line[0];
+            // The first character must be of the correct type
+            if (
+                (used != '-')
+                && (used != '_')
+                && (used != '*')
+            ) {
+                return false;
+            }
+            int index = 0;
+            while (
+                (index < line.Length)
+                && (
+                    line[index] == used
+                )
+            ) {
+                index++;
+            }
+            /* 
+             * There must be at least three characters
+             * and they must be of the same type
+             */
+            if (
+                (index < 3)
+                || (index != line.Length)
+            ) {
+                return false;
+            }
+            content.AddLast(
+                new MarkdownHorizontalRule()
+            );
+            return true;
+        }
+
+        // Parse a quote
+        private bool ParseQuote (
+            ArraySegment<string> lines,
+            LinkedList<IHtmlable> content
+        ) {
+            string[] truncatedLines = new string[lines.Count];
+            // Remove quote arrows and spaces, if needed
+            for (int i = 0; i < lines.Count; i++)
+            {
+                string truncated = lines[i];
+                if (lines[i].StartsWith(">"))
+                {
+                    truncated = truncated.Substring(1);
+                    int spaces = 0;
+                    // Count spaces
+                    while(
+                        (spaces < truncated.Length)
+                        && (truncated[spaces] == ' ')
+                    ) {
+                        spaces++;
+                    }
+                    // If there are fewer than 5 spaces, remove all
+                    if (spaces < 5)
+                    {
+                        truncatedLines[i] = truncated.Substring(spaces);
+                    } else {
+                        // More than five, just remove one space
+                        truncatedLines[i] = truncated.Substring(1);
+                    }
+                }
+            }
+            /* 
+             * The truncated lines should be parsed as any other line group
+             * and wrapped in a blockquote element
+             */
+            LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
+            bool lineGroupSuccess = ParseLineGroup(
+                new ArraySegment<string>(
+                    truncatedLines,
+                    0,
+                    truncatedLines.Length
+                ),
+                innerContent
+            );
+            MarkdownQuote quoteElement = new MarkdownQuote(
+                LinkedListToArray(innerContent)
+            );
+            content.AddLast(
+                quoteElement
+            );
+            return lineGroupSuccess;
+        }
+        
         // Check whether a value is in an array
-        private bool isInArray<T>(
+        private bool IsInArray<T>(
             T value,
             T[] array
         ) {
@@ -372,5 +679,14 @@ namespace MarkdownToHtml
                 element => element.Equals(value)
             );
         }
+
+        private T[] LinkedListToArray<T>(
+            LinkedList<T> linkedList
+        ) {
+            T[] array = new T[linkedList.Count];
+            linkedList.CopyTo(array, 0);
+            return array;
+        }
+
     }
 }

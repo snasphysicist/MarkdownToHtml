@@ -23,6 +23,7 @@ namespace MarkdownToHtml
         Quote,
         HorizontalRule,
         Paragraph,
-        Text
+        Text,
+        Linebreak
     }
 }
