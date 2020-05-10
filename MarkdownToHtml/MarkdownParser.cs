@@ -48,13 +48,6 @@ namespace MarkdownToHtml
         ) {
             // Store parsed content as we go
             LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
-            // Remove spaces from the start of the line
-            while (
-                (line.Length > 0)
-                && (line.Substring(0, 1) == " ")
-            ) {
-                line = line.Substring(1);
-            }
             // Until the whole string has been consumed
             while (line.Length > 0)
             {
