@@ -93,7 +93,9 @@ namespace MarkdownToHtml
             LinkedList<IHtmlable> content
         ) {
             string firstLine = lines[0];
-            if (firstLine.StartsWith("#")) {
+            if (
+                firstLine.StartsWith("#")
+            ) {
                 // Single line heading
                 return ParseSingleLineHeading(
                     lines[0],
@@ -109,7 +111,15 @@ namespace MarkdownToHtml
                     lines[0],
                     content
                 );
-            } else {
+            } else if (
+                firstLine.StartsWith(">")
+            ) {
+                return ParseQuote(
+                    lines,
+                    content
+                );
+            }
+            else {
                 return ParseParagraph(
                     lines,
                     content
@@ -233,7 +243,7 @@ namespace MarkdownToHtml
             while (
                 (j < line.Length)
                 && !(
-                    isInArray(
+                    IsInArray(
                         line[j],
                         specialCharacters
                     )
@@ -606,8 +616,61 @@ namespace MarkdownToHtml
             return true;
         }
 
+        // Parse a quote
+        private bool ParseQuote (
+            ArraySegment<string> lines,
+            LinkedList<IHtmlable> content
+        ) {
+            string[] truncatedLines = new string[lines.Count];
+            // Remove quote arrows and spaces, if needed
+            for (int i = 0; i < lines.Count; i++)
+            {
+                string truncated = lines[i];
+                if (lines[i].StartsWith(">"))
+                {
+                    truncated = truncated.Substring(1);
+                    int spaces = 0;
+                    // Count spaces
+                    while(
+                        (spaces < truncated.Length)
+                        && (truncated[spaces] == ' ')
+                    ) {
+                        spaces++;
+                    }
+                    // If there are fewer than 5 spaces, remove all
+                    if (spaces < 5)
+                    {
+                        truncatedLines[i] = truncated.Substring(spaces);
+                    } else {
+                        // More than five, just remove one space
+                        truncatedLines[i] = truncated.Substring(1);
+                    }
+                }
+            }
+            /* 
+             * The truncated lines should be parsed as any other line group
+             * and wrapped in a blockquote element
+             */
+            LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
+            bool lineGroupSuccess = ParseLineGroup(
+                new ArraySegment<string>(
+                    truncatedLines,
+                    0,
+                    truncatedLines.Length
+                ),
+                innerContent
+            );
+            MarkdownQuote quoteElement = new MarkdownQuote(
+                LinkedListToArray(innerContent)
+            );
+            content.AddLast(
+                quoteElement
+            );
+            return lineGroupSuccess;
+        }
+        
         // Check whether a value is in an array
-        private bool isInArray<T>(
+        private bool IsInArray<T>(
             T value,
             T[] array
         ) {
@@ -616,5 +679,14 @@ namespace MarkdownToHtml
                 element => element.Equals(value)
             );
         }
+
+        private T[] LinkedListToArray<T>(
+            LinkedList<T> linkedList
+        ) {
+            T[] array = new T[linkedList.Count];
+            linkedList.CopyTo(array, 0);
+            return array;
+        }
+
     }
 }
