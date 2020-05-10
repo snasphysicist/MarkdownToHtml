@@ -36,6 +36,7 @@ namespace MarkdownToHtml
         [DataTestMethod]
         [DataRow("#test", "<p>#test</p>")]
         [DataRow(" # test", "<p> # test</p>")]
+        [DataRow("####### test", "<p>####### test</p>")]
         public void ShouldParseIncorrectlyFormattedSingleLineHeadingAsTextSuccess(
             string markdown,
             string targetHtml
