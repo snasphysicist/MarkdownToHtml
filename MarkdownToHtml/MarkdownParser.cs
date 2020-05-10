@@ -142,7 +142,8 @@ namespace MarkdownToHtml
             Char[] specialCharacters = new Char[] {
                 '*',
                 '_',
-                '~'
+                '~',
+                '`'
             };
             int j = 0;
             while (
