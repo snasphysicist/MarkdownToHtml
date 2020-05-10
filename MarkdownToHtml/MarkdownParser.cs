@@ -47,7 +47,7 @@ namespace MarkdownToHtml
                     content
                 );
                 Success = Success && lineGroupSuccess; 
-                currentIndex += lineGroup.Count;
+                currentIndex += lineGroup.Count + 1;
             }
             Content = new IHtmlable[content.Count];
             content.CopyTo(Content, 0);
