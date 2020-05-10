@@ -11,7 +11,8 @@ namespace MarkdownToHtml
         [DataRow("> test", "<blockquote><p>test</p></blockquote>")]
         [DataRow(">  test", "<blockquote><p>test</p></blockquote>")]
         [DataRow(">   test", "<blockquote><p>test</p></blockquote>")]
-        public void ShouldParseBlockquoteZeroToThreeSpacesSuccessfully(
+        [DataRow(">    test", "<blockquote><p>test</p></blockquote>")]
+        public void ShouldParseBlockquoteZeroToFourSpacesSuccessfully(
             string markdown,
             string targetHtml
         ) {
