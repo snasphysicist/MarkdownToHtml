@@ -81,8 +81,13 @@ namespace MarkdownToHtml
             ArraySegment<string> lines,
             LinkedList<IHtmlable> content
         ) {
-            if (false) {
-                // Quote/list/etc... later
+            string firstLine = lines[0];
+            if (firstLine.StartsWith("#")) {
+                // Single line heading
+                return ParseSingleLineHeading(
+                    lines,
+                    content
+                );
             } else {
                 return ParseParagraph(
                     lines,
@@ -95,10 +100,7 @@ namespace MarkdownToHtml
             //     // Line is a single line heading
             //     if (lines[i].StartsWith("#"))
             //     {
-            //         success = ParseSingleLineHeading(
-            //             lines[i],
-            //             content
-            //         );
+            //         success = 
             //     } else if(
             //         (lines[i].Length > 2)
             //         && regexHorizontalLine.IsMatch(
@@ -502,9 +504,10 @@ namespace MarkdownToHtml
 
         // Parse a single line heading
         private bool ParseSingleLineHeading(
-            string line,
+            ArraySegment<string> lines,
             LinkedList<IHtmlable> content
         ) {
+            string line = lines[0];
             // Work out heading level
             int level = 0;
             while(
@@ -538,7 +541,7 @@ namespace MarkdownToHtml
             } else {
                 // Invalid heading syntax, assume it's just a paragraph
                 return ParseParagraph(
-                    line,
+                    lines,
                     content
                 );
             }
