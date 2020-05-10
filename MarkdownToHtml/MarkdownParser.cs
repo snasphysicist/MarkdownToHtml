@@ -104,29 +104,6 @@ namespace MarkdownToHtml
                     content
                 );
             }
-            // for (int i = 0; i < lines.Length; i++) 
-            // {
-            //     bool success;
-            //     } else if(
-            //         (lines[i].Length > 2)
-            //         && regexHorizontalLine.IsMatch(
-            //             lines[i].Substring(0, 3)
-            //         )
-            //     ) {
-            //         success = ParseHorizontalRule(
-            //             lines[i],
-            //             content
-            //         );
-            //     } else {
-            //         // Plain text case
-            //         success = ParseParagraph(
-            //             lines[i],
-            //             content
-            //         );
-            //     }
-            //     Success = Success && success;
-            // }
-
         }
 
         // Given a single line of text, parse this, including special (emph, etc...) sections
@@ -546,7 +523,14 @@ namespace MarkdownToHtml
             } else {
                 // Invalid heading syntax, assume it's just a paragraph
                 return ParseParagraph(
-                    lines,
+                    new ArraySegment<string>(
+                        new string[]
+                        {
+                            line
+                        }, 
+                        0, 
+                        1
+                    ),
                     content
                 );
             }
