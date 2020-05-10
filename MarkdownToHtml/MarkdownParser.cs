@@ -57,6 +57,36 @@ namespace MarkdownToHtml
             content.CopyTo(Content, 0);
         }
 
+        private ArraySegment<string> NextLineGroup(
+            string[] lines,
+            int startIndex
+        ) {
+            int endIndex = startIndex;
+            while (
+                (endIndex < lines.Length)
+                && (!containsOnlyWhitespace(
+                    lines[endIndex]
+                ))
+            ) {
+                endIndex++;
+            }
+            int elements = endIndex - startIndex + 1;
+            return new ArraySegment<string>(
+                lines, 
+                startIndex, 
+                elements
+            );
+        }
+
+        private bool containsOnlyWhitespace(
+            string line
+        ) {
+            return line.Replace(
+                " ",
+                ""
+            ).Length == 0;
+        }
+
         // Given a single line of text, parse this, including special (emph, etc...) sections
         IHtmlable[] ParseInnerText(
             string line
