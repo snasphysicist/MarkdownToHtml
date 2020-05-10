@@ -24,39 +24,28 @@ namespace MarkdownToHtml
             Success = true;
             // Store parsed content as we go
             LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
-            for (int i = 0; i < lines.Length; i++) 
-            {
-                bool success;
-                // Line is a single line heading
-                if (lines[i].StartsWith("#"))
-                {
-                    success = ParseSingleLineHeading(
-                        lines[i],
+            int currentIndex = 0;
+            ArraySegment<string> lineGroup;
+            while (currentIndex < lines.Length) {
+                lineGroup = NextLineGroup(
+                    lines,
+                    currentIndex
+                );
+                Success = Success 
+                    && ParseLineGroup(
+                        lineGroup,
                         content
                     );
-                } else if(
-                    (lines[i].Length > 2)
-                    && regexHorizontalLine.IsMatch(
-                        lines[i].Substring(0, 3)
-                    )
-                ) {
-                    success = ParseHorizontalRule(
-                        lines[i],
-                        content
-                    );
-                } else {
-                    // Plain text case
-                    success = ParseParagraph(
-                        lines[i],
-                        content
-                    );
-                }
-                Success = Success && success;
+                currentIndex += lineGroup.Count;
             }
             Content = new IHtmlable[content.Count];
             content.CopyTo(Content, 0);
         }
 
+        /* 
+         * Given a start index, return the
+         * line group that starts at that index
+         */ 
         private ArraySegment<string> NextLineGroup(
             string[] lines,
             int startIndex
@@ -78,6 +67,7 @@ namespace MarkdownToHtml
             );
         }
 
+        // Check whether a line contains only whitespace (or is empty)
         private bool containsOnlyWhitespace(
             string line
         ) {
@@ -85,6 +75,50 @@ namespace MarkdownToHtml
                 " ",
                 ""
             ).Length == 0;
+        }
+
+        private bool ParseLineGroup(
+            ArraySegment<string> lines,
+            LinkedList<IHtmlable> content
+        ) {
+            if (false) {
+                // Quote/list/etc... later
+            } else {
+                return ParseParagraph(
+                    lines,
+                    content
+                );
+            }
+            // for (int i = 0; i < lines.Length; i++) 
+            // {
+            //     bool success;
+            //     // Line is a single line heading
+            //     if (lines[i].StartsWith("#"))
+            //     {
+            //         success = ParseSingleLineHeading(
+            //             lines[i],
+            //             content
+            //         );
+            //     } else if(
+            //         (lines[i].Length > 2)
+            //         && regexHorizontalLine.IsMatch(
+            //             lines[i].Substring(0, 3)
+            //         )
+            //     ) {
+            //         success = ParseHorizontalRule(
+            //             lines[i],
+            //             content
+            //         );
+            //     } else {
+            //         // Plain text case
+            //         success = ParseParagraph(
+            //             lines[i],
+            //             content
+            //         );
+            //     }
+            //     Success = Success && success;
+            // }
+
         }
 
         // Given a single line of text, parse this, including special (emph, etc...) sections
@@ -412,16 +446,58 @@ namespace MarkdownToHtml
 
         // Parse a plain paragraph
         private bool ParseParagraph(
-            string line,
+            ArraySegment<string> lines,
             LinkedList<IHtmlable> content
         ) {
-            MarkdownParagraph paragraph = new MarkdownParagraph(
-                ParseInnerText(line)
-            );
+            LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
+            foreach (string line in lines)
+            {
+                if (endsWithAtLeastTwoSpaces(line))
+                {
+                    string shortened = stripTrailingWhitespace(line);
+                    foreach (IHtmlable entry in ParseInnerText(shortened))
+                    {
+                        innerContent.AddLast(entry);
+                    }
+                    innerContent.AddLast(
+                        new MarkdownLinebreak()
+                    );
+                } else {
+                    foreach (IHtmlable entry in ParseInnerText(line))
+                    {
+                        innerContent.AddLast(entry);
+                    }
+                }
+            }
+            MarkdownParagraph paragraph = new MarkdownParagraph(innerContent);
             content.AddLast(
                 paragraph
             );
             return true;
+        }
+
+        private bool endsWithAtLeastTwoSpaces (
+            string line
+        ) {
+            return line.Substring(
+                line.Length - 2,
+                2
+            ) == "  ";
+        }
+
+        private string stripTrailingWhitespace(
+            string line
+        ) {
+            while (
+                (line.Length > 0)
+                && (line[^1] == ' ')
+            ) {
+                line = line.Substring(
+                    0,
+                    line.Length - 1 
+                );
+            }
+            return line;
         }
 
         // Parse a single line heading
