@@ -30,12 +30,13 @@ namespace MarkdownToHtml
                         lines[i],
                         content
                     );
+                } else {
+                    // Plain text case
+                    success = ParseParagraph(
+                        lines[i],
+                        content
+                    );
                 }
-                // Plain text case
-                MarkdownParagraph paragraph = new MarkdownParagraph(
-                    ParseInnerText(lines[i])
-                );
-                content.AddLast(paragraph);
             }
             Content = new IHtmlable[content.Count];
             content.CopyTo(Content, 0);
@@ -369,6 +370,20 @@ namespace MarkdownToHtml
             );
             // Return the line string minus the content we parsed
             return line.Substring(j + 1);
+        }
+
+        // Parse a plain paragraph
+        private bool ParseParagraph(
+            string line,
+            LinkedList<IHtmlable> content
+        ) {
+            MarkdownParagraph paragraph = new MarkdownParagraph(
+                ParseInnerText(line)
+            );
+            content.AddLast(
+                paragraph
+            );
+            return true;
         }
 
         // Parse a single line heading
