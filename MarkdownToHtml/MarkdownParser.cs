@@ -17,6 +17,7 @@ namespace MarkdownToHtml
         public IHtmlable[] Content
         { get; private set; }
 
+        // TODO replace with MarkdownDocument object
         public string ToHtml()
         {
             string html = "";
@@ -41,11 +42,11 @@ namespace MarkdownToHtml
                     lines,
                     currentIndex
                 );
-                Success = Success 
-                    && ParseLineGroup(
-                        lineGroup,
-                        content
-                    );
+                bool lineGroupSuccess = ParseLineGroup(
+                    lineGroup,
+                    content
+                );
+                Success = Success && lineGroupSuccess; 
                 currentIndex += lineGroup.Count;
             }
             Content = new IHtmlable[content.Count];
@@ -69,7 +70,7 @@ namespace MarkdownToHtml
             ) {
                 endIndex++;
             }
-            int elements = endIndex - startIndex + 1;
+            int elements = endIndex - startIndex;
             return new ArraySegment<string>(
                 lines, 
                 startIndex, 
