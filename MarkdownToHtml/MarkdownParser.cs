@@ -17,6 +17,16 @@ namespace MarkdownToHtml
         public IHtmlable[] Content
         { get; private set; }
 
+        public string ToHtml()
+        {
+            string html = "";
+            foreach (IHtmlable entry in Content)
+            {
+                html += entry.ToHtml();
+            }
+            return html;
+        }
+
         public MarkdownParser(
             string[] lines
         ) {
