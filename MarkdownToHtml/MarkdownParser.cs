@@ -9,7 +9,18 @@ namespace MarkdownToHtml
     {
 
         // Regex matches
-        Regex regexHorizontalLine = new Regex(@"\*\*\*|---|___");
+        Regex regexHorizontalLine = new Regex(
+            @"^\*\*\*|^---|^___"
+        );
+        Regex regexOrderedListItem = new Regex(
+            @"^\s*\d+\."        // Format 1. (ordered list)
+        );
+
+        Regex regexUnorderedListItem = new Regex(
+            @"^\s*\+\s+|"       // Format +  (unordered list)
+            + @"^\s*\*\s+|"     // Format *  (unordered list)
+            + @"^\s*-\s+"       // Format -  (unordered list)
+        );
 
         public bool Success
         { get; private set; }
@@ -61,15 +72,10 @@ namespace MarkdownToHtml
             string[] lines,
             int startIndex
         ) {
-            int endIndex = startIndex;
-            while (
-                (endIndex < lines.Length)
-                && (!containsOnlyWhitespace(
-                    lines[endIndex]
-                ))
-            ) {
-                endIndex++;
-            }
+            int endIndex = FindNextNonMatchingLine(
+                lines,
+                startIndex
+            );
             int elements = endIndex - startIndex;
             return new ArraySegment<string>(
                 lines, 
@@ -78,14 +84,86 @@ namespace MarkdownToHtml
             );
         }
 
+        /*
+         * Given an array of lines of text and
+         * the index of the line at which to start
+         * find the first line after it which is
+         * either whitespace 
+         * or represents a different element type
+         */
+        private int FindNextNonMatchingLine(
+            string[] lines,
+            int startIndex
+        ) {
+            int nextIndex = startIndex + 1;
+            while (
+                (nextIndex < lines.Length)
+                && ContainsOnlyWhitespace(
+                    lines[nextIndex]
+                )
+            ) {
+                nextIndex++;
+            }
+            // Return if we reached the end of the array
+            if (nextIndex == lines.Length)
+            {
+                return nextIndex;
+            }
+            // Reached a non whitespace line - need to check line types
+            MarkdownElementType firstLineType = IdentifyLineType(
+                lines[startIndex]
+            );
+            MarkdownElementType lastLineType = IdentifyLineType(
+                lines[nextIndex]
+            );
+            /* 
+             * If this is the actual next line
+             * or if types are the same UNLESS both paragraphs
+             * then keep adding lines to this group
+             * else return
+             */
+            if (
+                (nextIndex != (startIndex + 1))
+                && (
+                    (firstLineType != lastLineType)
+                    || (firstLineType == MarkdownElementType.Paragraph)
+                )
+            ) {
+                return nextIndex - 1;
+            } else {
+                return FindNextNonMatchingLine(
+                    lines,
+                    nextIndex
+                );
+            }
+        }
+
         // Check whether a line contains only whitespace (or is empty)
-        private bool containsOnlyWhitespace(
+        private bool ContainsOnlyWhitespace(
             string line
         ) {
             return line.Replace(
                 " ",
                 ""
             ).Length == 0;
+        }
+
+        private MarkdownElementType IdentifyLineType(
+            string line
+        ) {
+            if (line.StartsWith(">"))
+            {
+                return MarkdownElementType.Quote;
+            } else if (regexOrderedListItem.Match(line).Success)
+            {
+                return MarkdownElementType.OrderedList;
+            } else if (regexUnorderedListItem.Match(line).Success)
+            {
+                return MarkdownElementType.UnorderedList;
+            } else 
+            {
+                return MarkdownElementType.Paragraph;
+            }
         }
 
         private bool ParseLineGroup(
@@ -101,12 +179,7 @@ namespace MarkdownToHtml
                     lines[0],
                     content
                 );
-            } else if (
-                (firstLine.Length > 2)
-                && regexHorizontalLine.IsMatch(
-                    firstLine.Substring(0, 3)
-                )
-            ) {
+            } else if (regexHorizontalLine.Match(firstLine).Success) {
                 return ParseHorizontalRule(
                     lines[0],
                     content
@@ -482,6 +555,7 @@ namespace MarkdownToHtml
                      */
                     if (
                         (i != (lines.Count - 1))
+                        && (line.Length > 0)
                         && (line[^1] != ' ')
                     ) {
                         innerContent.AddLast(
@@ -500,10 +574,16 @@ namespace MarkdownToHtml
         private bool endsWithAtLeastTwoSpaces (
             string line
         ) {
-            return line.Substring(
-                line.Length - 2,
-                2
-            ) == "  ";
+            if (line.Length > 1)
+            {
+                return line.Substring(
+                    line.Length - 2,
+                    2
+                ) == "  ";
+            } else
+            {
+                return false;
+            }
         }
 
         private string StripTrailingCharacter(
@@ -656,6 +736,8 @@ namespace MarkdownToHtml
                         // More than five, just remove one space
                         truncatedLines[i] = truncated.Substring(1);
                     }
+                } else {
+                    truncatedLines[i] = lines[i];
                 }
             }
             /* 
