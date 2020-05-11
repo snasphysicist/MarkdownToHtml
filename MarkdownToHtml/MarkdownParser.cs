@@ -461,7 +461,7 @@ namespace MarkdownToHtml
                 string line = lines[i];
                 if (endsWithAtLeastTwoSpaces(line))
                 {
-                    string shortened = stripTrailingWhitespace(line);
+                    string shortened = StripTrailingWhitespace(line);
                     foreach (IHtmlable entry in ParseInnerText(shortened))
                     {
                         innerContent.AddLast(entry);
@@ -506,17 +506,48 @@ namespace MarkdownToHtml
             ) == "  ";
         }
 
-        private string stripTrailingWhitespace(
-            string line
+        private string StripTrailingCharacter(
+            string line,
+            char character
         ) {
             while (
                 (line.Length > 0)
-                && (line[^1] == ' ')
+                && (line[^1] == character)
             ) {
                 line = line.Substring(
                     0,
                     line.Length - 1 
                 );
+            }
+            return line;
+        }
+
+        private string StripTrailingWhitespace(
+            string line
+        ) {
+            return StripTrailingCharacter(
+                line,
+                ' '
+            );
+        }
+
+        private string StripTrailingHashes(
+            string line
+        ) {
+            return StripTrailingCharacter(
+                line,
+                '#'
+            );
+        }
+
+        private string StripLeadingWhitespace(
+            string line
+        ) {
+            while (
+                (line.Length > 0)
+                && (line[0] == ' ')
+            ) {
+                line = line.Substring(1);
             }
             return line;
         }
@@ -534,42 +565,21 @@ namespace MarkdownToHtml
             ) {
                 level++;
             }
-            /* 
-             * If heading level allowed (1-6)
-             * and there is at least one more character except hashes
-             * and hashes followed by space
-             * then line can be parsed as heading
-             */
-            if (
-                (level > 0) 
-                && (level < 7)
-                && (line.Length > level)
-                && (line[level] == ' ')
-            ) {
-                // Parse as heading
-                content.AddLast(
-                    new MarkdownHeading(
-                        level,
-                        ParseInnerText(
-                            line.Substring(level + 1)
-                        )
-                    )
-                );
-                return true;
-            } else {
-                // Invalid heading syntax, assume it's just a paragraph
-                return ParseParagraph(
-                    new ArraySegment<string>(
-                        new string[]
-                        {
-                            line
-                        }, 
-                        0, 
-                        1
-                    ),
-                    content
-                );
-            }
+            // Remove the leading hashes (up to 6)
+            line = line.Substring(level);
+            // Remove any leading whitespace
+            line = StripLeadingWhitespace(line);
+            // Remove any trailing hashes
+            line = StripTrailingHashes(line);
+            // Remove any trailing whitespace
+            line = StripTrailingWhitespace(line);
+            content.AddLast(
+                new MarkdownHeading(
+                    level,
+                    ParseInnerText(line)
+                )
+            );
+            return true;
         }
 
         // Parse a line thought to contain a horizontal rule
