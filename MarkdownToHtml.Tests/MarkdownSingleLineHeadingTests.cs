@@ -77,8 +77,8 @@ namespace MarkdownToHtml
         }
 
         [DataTestMethod]
-        [DataRow("#######test", "<h1>#test</h1>")]
-        [DataRow("##########test", "<h1>####test</h1>")]
+        [DataRow("#######test", "<h6>#test</h6>")]
+        [DataRow("##########test", "<h6>####test</h6>")]
         public void ShouldParseTooManyLeadingHashesSingleLineHeadingSuccess(
             string markdown,
             string targetHtml
