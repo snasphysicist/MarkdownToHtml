@@ -557,11 +557,12 @@ namespace MarkdownToHtml
             string line,
             LinkedList<IHtmlable> content
         ) {
-            // Work out heading level
+            // Work out heading level (cannot exceed 6)
             int level = 0;
             while(
                 level < (line.Length)
                 && (line[level] == '#')
+                && (level < 6)
             ) {
                 level++;
             }
