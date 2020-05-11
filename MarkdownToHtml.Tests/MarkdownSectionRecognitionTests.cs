@@ -47,7 +47,7 @@ namespace MarkdownToHtml
          */
         [DataTestMethod]
         [DataRow(
-           ">test1\ntest2\n>test3", 
+           ">test1\n\ntest2\n\n>test3", 
             "<blockquote><p>test1</p></blockquote><p>test2</p>"
             + "<blockquote><p>test3</p></blockquote>"
         )]
