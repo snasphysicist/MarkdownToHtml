@@ -39,7 +39,7 @@ namespace MarkdownToHtml
             return regexParseable.Match(line).Success;
         }
 
-        public static ParseResult ParseStrikethroughSection(
+        public static ParseResult ParseFrom(
             string line
         ) {
             ParseResult result = new ParseResult();
