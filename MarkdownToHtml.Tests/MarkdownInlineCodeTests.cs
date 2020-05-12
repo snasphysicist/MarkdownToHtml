@@ -54,7 +54,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [DataRow("`test1")]
-        public void ShouldNotParseIncorrectlyDelimitedStrikethroughFail(
+        public void ShouldParseIncorrectlyDelimitedStrikethroughAsParagraphSuccess(
             string markdown
         ) {
             MarkdownParser parser = new MarkdownParser(
