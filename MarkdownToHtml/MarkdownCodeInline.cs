@@ -40,7 +40,7 @@ namespace MarkdownToHtml
         }
 
         // Shared code for parsing emphasis sections
-        public static ParseResult ParseInlineCodeSection(
+        public static ParseResult ParseFrom(
             string line
         ) {
             ParseResult result = new ParseResult();
