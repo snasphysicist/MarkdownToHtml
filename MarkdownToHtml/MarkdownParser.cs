@@ -90,7 +90,7 @@ namespace MarkdownToHtml
              * If the start line isn't a code block or end couldn't be found
              * then try to parse it as some other type
              */
-            if (endIndex == -1) {
+            if (endIndex <= 0) {
                 endIndex = FindNextNonMatchingLine(
                     lines,
                     startIndex
