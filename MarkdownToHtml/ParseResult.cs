@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MarkdownToHtml
 {
-    class ParseResult
+    public class ParseResult
     {
 
         private LinkedList<IHtmlable> content;
