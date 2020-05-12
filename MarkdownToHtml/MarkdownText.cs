@@ -52,7 +52,7 @@ namespace MarkdownToHtml
         }
 
         // Given a text snippet, parse a plain text section from its start
-        public static ParseResult ParsePlainTextSection(
+        public static ParseResult ParseFrom(
             string line,
             bool force
         ) {
@@ -67,9 +67,14 @@ namespace MarkdownToHtml
             ) {
                 indexFirstSpecialCharacter++;
             }
-            // If there is an emphasis section
-            if (indexFirstSpecialCharacter != line.Length)
+            // If an empty string is `parsed` then fail
+            if (indexFirstSpecialCharacter == 0)
             {
+                result.Line = line;
+                return result;
+            } else if (indexFirstSpecialCharacter != line.Length)
+            {
+                // There is some special character in the string
                 // Add as plain text only the content up to where it starts
                 MarkdownText element = new MarkdownText(
                     line.Substring(0, indexFirstSpecialCharacter)
