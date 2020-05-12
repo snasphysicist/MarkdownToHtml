@@ -13,13 +13,9 @@ namespace MarkdownToHtml
         public const MarkdownElementType Type = MarkdownElementType.Paragraph;
 
         public MarkdownParagraph(
-            LinkedList<IHtmlable> innerContent
+            IHtmlable[] innerContent
         ) {
-            this.content = new IHtmlable[innerContent.Count];
-            innerContent.CopyTo(
-                this.content, 
-                0
-            );
+            content = innerContent;
         }
 
         public string ToHtml() 
