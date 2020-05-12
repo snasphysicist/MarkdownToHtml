@@ -77,18 +77,25 @@ namespace MarkdownToHtml
         }
 
         [DataTestMethod]
-        [DataRow("**test1")]
-        [DataRow("__test1")]
-        public void ShouldNotParseIncorrectlyDelimitedStrongFail(
-            string markdown
+        [DataRow("**test1", "<p>**test1</p>")]
+        [DataRow("__test1", "<p>__test1</p>")]
+        public void ShouldParseIncorrectlyDelimitedStrongAsParagraphSuccess(
+            string markdown,
+            string targetHtml
         ) {
             MarkdownParser parser = new MarkdownParser(
                 new string[] {
                     markdown
                 }
             );
-            Assert.IsFalse(
+            Assert.IsTrue(
                 parser.Success
+            );
+            string html = parser.Content[0].ToHtml();
+            // Check that the correct HTML is produced
+            Assert.AreEqual(
+                targetHtml,
+                html
             );
         }
 

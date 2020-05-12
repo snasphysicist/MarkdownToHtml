@@ -77,18 +77,25 @@ namespace MarkdownToHtml
         }
 
         [DataTestMethod]
-        [DataRow("*test1")]
-        [DataRow("_test1")]
+        [DataRow("*test1", "<p>*test1</p>")]
+        [DataRow("_test1", "<p>_test1</p>")]
         public void ShouldNotParseIncorrectlyDelimitedEmphasisFail(
-            string markdown
+            string markdown,
+            string targetHtml
         ) {
             MarkdownParser parser = new MarkdownParser(
                 new string[] {
                     markdown
                 }
             );
-            Assert.IsFalse(
+            Assert.IsTrue(
                 parser.Success
+            );
+            string html = parser.Content[0].ToHtml();
+            // Check that the correct HTML is produced
+            Assert.AreEqual(
+                targetHtml,
+                html
             );
         }
     }
