@@ -263,7 +263,6 @@ namespace MarkdownToHtml
             // Until the whole string has been consumed
             while (line.Length > 0)
             {
-                string initialLine = line;
                 ParseResult result;
                 if (MarkdownStrong.CanParseFrom(line))
                 {
@@ -294,10 +293,13 @@ namespace MarkdownToHtml
                         true
                     );
                 }
+                // Extract parsed content
                 foreach (IHtmlable entry in result.GetContent())
                 {
                     content.AddLast(entry);
                 }
+                // Update text to be parsed
+                line = result.Line;
             }
             IHtmlable[] contentArray = new IHtmlable[content.Count];
             content.CopyTo(
