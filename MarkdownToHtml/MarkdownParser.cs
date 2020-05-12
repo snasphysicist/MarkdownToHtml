@@ -12,8 +12,13 @@ namespace MarkdownToHtml
         Regex regexHorizontalLine = new Regex(
             @"^\*\*\*|^---|^___"
         );
+        
         Regex regexOrderedListItem = new Regex(
             @"^\s*\d+\."        // Format 1. (ordered list)
+        );
+
+        Regex regexBacktickBlockCode = new Regex(
+            @"^```"
         );
 
         Regex regexUnorderedListItem = new Regex(
@@ -72,10 +77,25 @@ namespace MarkdownToHtml
             string[] lines,
             int startIndex
         ) {
-            int endIndex = FindNextNonMatchingLine(
-                lines,
-                startIndex
-            );
+            int endIndex = -1;
+            // Block code requires slightly different handling
+            if (regexBacktickBlockCode.Match(lines[startIndex]).Success)
+            {
+                endIndex = FindBacktickCodeSectionEnd(
+                    lines,
+                    startIndex + 1
+                ) + 1;
+            }
+            /* 
+             * If the start line isn't a code block or end couldn't be found
+             * then try to parse it as some other type
+             */
+            if (endIndex == -1) {
+                endIndex = FindNextNonMatchingLine(
+                    lines,
+                    startIndex
+                );
+            }
             int elements = endIndex - startIndex;
             return new ArraySegment<string>(
                 lines, 
@@ -138,6 +158,32 @@ namespace MarkdownToHtml
             }
         }
 
+        // Find the first line which starts with three backticks
+        private int FindBacktickCodeSectionEnd(
+            string[] lines,
+            int startIndex
+        ) {
+            int finalLine = startIndex;
+            while (
+                (finalLine < lines.Length)
+                && (
+                    !regexBacktickBlockCode.Match(
+                        lines[finalLine]
+                    ).Success
+                )
+            ) {
+                finalLine++;
+            }
+            if (finalLine < lines.Length)
+            {
+                // Found line with backticks successfully
+                return finalLine;
+            } else {
+                // Did not find line, return negative number
+                return -1;
+            }
+        }
+
         // Check whether a line contains only whitespace (or is empty)
         private bool ContainsOnlyWhitespace(
             string line
@@ -171,6 +217,7 @@ namespace MarkdownToHtml
             LinkedList<IHtmlable> content
         ) {
             string firstLine = lines[0];
+            string lastLine = lines[^1];
             if (
                 firstLine.StartsWith("#")
             ) {
@@ -191,8 +238,15 @@ namespace MarkdownToHtml
                     lines,
                     content
                 );
-            }
-            else {
+            } else if (
+                regexBacktickBlockCode.Match(firstLine).Success
+                && regexBacktickBlockCode.Match(lastLine).Success
+            ) {
+                return ParseCodeBlock(
+                    lines,
+                    content
+                );
+            } else {
                 return ParseParagraph(
                     lines,
                     content
@@ -564,7 +618,9 @@ namespace MarkdownToHtml
                     }
                 }
             }
-            MarkdownParagraph paragraph = new MarkdownParagraph(innerContent);
+            MarkdownParagraph paragraph = new MarkdownParagraph(
+                LinkedListToArray(innerContent)
+            );
             content.AddLast(
                 paragraph
             );
@@ -761,7 +817,34 @@ namespace MarkdownToHtml
             );
             return lineGroupSuccess;
         }
-        
+
+        // Parse a quote
+        private bool ParseCodeBlock (
+            ArraySegment<string> lines,
+            LinkedList<IHtmlable> content
+        ) {
+            LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
+            for (int i = 1; i < lines.Count - 1; i++)
+            {
+                innerContent.AddLast(
+                    new MarkdownText(
+                        lines[i]
+                    )
+                );
+            }
+            MarkdownParagraph blockCodeElement = new MarkdownParagraph(
+                new IHtmlable[] {
+                    new MarkdownCodeBlock(
+                        LinkedListToArray(innerContent)
+                    )
+                }
+            );
+            content.AddLast(
+                blockCodeElement
+            );
+            return true;
+        }
+
         // Check whether a value is in an array
         private bool IsInArray<T>(
             T value,
