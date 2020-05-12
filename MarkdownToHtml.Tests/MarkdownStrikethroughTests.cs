@@ -53,7 +53,7 @@ namespace MarkdownToHtml
         }
 
         [DataTestMethod]
-        [DataRow("~~test1", "<p>~~test</p>")]
+        [DataRow("~~test1", "<p>~~test1</p>")]
         public void ShouldParseIncorrectlyDelimitedStrikethroughAsParagraphSuccess(
             string markdown,
             string targetHtml
