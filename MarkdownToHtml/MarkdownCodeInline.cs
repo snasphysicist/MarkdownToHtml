@@ -33,14 +33,14 @@ namespace MarkdownToHtml
             return html;
         }
 
-        static bool CanParseFrom(
+        public static bool CanParseFrom(
             string line
         ) {
             return regexParseable.Match(line).Success;
         }
 
         // Shared code for parsing emphasis sections
-        static ParseResult ParseInlineCodeSection(
+        public static ParseResult ParseInlineCodeSection(
             string line
         ) {
             ParseResult result = new ParseResult();

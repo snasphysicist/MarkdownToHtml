@@ -34,13 +34,13 @@ namespace MarkdownToHtml
             return html;
         }
 
-        static bool CanParseFrom(
+        public static bool CanParseFrom(
             string line
         ) {
             return regexParseable.Match(line).Success;
         }
 
-        static ParseResult ParseFrom(
+        public static ParseResult ParseFrom(
             string line
         ) {
             if (!CanParseFrom(line))

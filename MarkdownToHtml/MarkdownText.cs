@@ -52,7 +52,7 @@ namespace MarkdownToHtml
         }
 
         // Given a text snippet, parse a plain text section from its start
-        static ParseResult ParsePlainTextSection(
+        public static ParseResult ParsePlainTextSection(
             string line,
             bool force
         ) {
