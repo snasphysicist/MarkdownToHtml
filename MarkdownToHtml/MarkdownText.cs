@@ -101,7 +101,16 @@ namespace MarkdownToHtml
         private static int FindUnescapedSpecial(
             string line
         ) {
-            int j = 0;
+            // First char is special case, cannot be escaped
+            if (
+                IsInArray(
+                        line[0],
+                        specialCharacters
+                    )
+            ) {
+                return 0;
+            }
+            int j = 1;
             while (
                 (j < line.Length)
                 && !(
