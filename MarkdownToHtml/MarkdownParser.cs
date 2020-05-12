@@ -264,57 +264,41 @@ namespace MarkdownToHtml
             while (line.Length > 0)
             {
                 string initialLine = line;
-                if (line.StartsWith("**")) {
-                    line = ParseStarStrongSection(
-                        line, 
-                        content
-                    );
-                } else if (line.StartsWith("__")) {
-                    line = ParseUnderscoreStrongSection(
-                        line,
-                        content
-                    );
-                } else if (line.StartsWith("~~")) {
-                    line = ParseStrikethroughSection(
-                        line,
-                        content
-                    );
-                } else if (line.StartsWith("*"))
+                ParseResult result;
+                if (MarkdownStrong.CanParseFrom(line))
                 {
-                    line = ParseStarEmphasisSection(
-                        line,
-                        content
-                    );
-                } else if (line.StartsWith("_")) {
-                    line = ParseUnderscoreEmphasisSection(
-                        line,
-                        content
-                    );
-                } else if (line.StartsWith("`")) 
+                    result = MarkdownStrong.ParseFrom(line);
+                } else if (MarkdownStrikethrough.CanParseFrom(line))
                 {
-                    line = ParseInlineCodeSection(
-                        line,
-                        content
-                    );
+                    result = MarkdownStrikethrough.ParseFrom(line);
+                } else if (MarkdownEmphasis.CanParseFrom(line))
+                {
+                    result = MarkdownEmphasis.ParseFrom(line);
+                } else if (MarkdownCodeInline.CanParseFrom(line))
+                {
+                    result = MarkdownCodeInline.ParseFrom(line);
                 } else {
-                    line = ParsePlainTextSection(
+                    result = MarkdownText.ParseFrom(
                         line,
-                        content
+                        false
                     );
                 }
                 /*
-                 * If there is content left but it cannot be parsed
-                 * then fail
+                 * If no parsing method suceeded
+                 * for once character to be parsed as text
                  */
-                if (
-                    (line.Length > 0)
-                    && (initialLine == line)
-                ) {
-                    Success = false;
-                    return new IHtmlable[]{};
+                if (!result.Success)
+                {
+                    result = MarkdownText.ParseFrom(
+                        line,
+                        true
+                    );
+                }
+                foreach (IHtmlable entry in result.GetContent())
+                {
+                    content.AddLast(entry);
                 }
             }
-            // Plain text case, not yet dealing with strong/emph/etc
             IHtmlable[] contentArray = new IHtmlable[content.Count];
             content.CopyTo(
                 contentArray, 
