@@ -8,7 +8,7 @@ namespace MarkdownToHtml
 
         private static Regex regexParseable = new Regex(
             @"^\*{2}.*\*{2}.*"
-            + @"|^*_{2}.*_{2}.*s"
+            + @"|^_{2}.*_{2}.*s"
         );
 
         IHtmlable[] content;
@@ -45,10 +45,12 @@ namespace MarkdownToHtml
         ) {
             if (!CanParseFrom(line))
             {
+                // Return a failed result if this cannot be parsed
                 ParseResult result = new ParseResult();
                 result.Line = line;
                 return result;
             }
+            // Otherwise, parse and return result
             if (line.StartsWith("**"))
             {
                 return ParseStrongSection(
