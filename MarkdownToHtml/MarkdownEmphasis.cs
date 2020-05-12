@@ -34,7 +34,7 @@ namespace MarkdownToHtml
             return html;
         }
 
-        static bool CanParseFrom(
+        public static bool CanParseFrom(
             string line
         ) {
             return regexParseable.Match(line).Success;
@@ -66,7 +66,7 @@ namespace MarkdownToHtml
         }
 
         // Shared code for parsing emphasis sections
-        public private static ParseResult ParseEmphasisSection(
+        private static ParseResult ParseEmphasisSection(
             string line,
             char delimiter
         ) {
