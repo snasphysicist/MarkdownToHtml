@@ -85,7 +85,7 @@ namespace MarkdownToHtml
             );
 
             MarkdownQuote quoteElement = new MarkdownQuote(
-                parser.Content
+                parser.ContentAsArray()
             );
             result.Success = true;
             result.AddContent(
