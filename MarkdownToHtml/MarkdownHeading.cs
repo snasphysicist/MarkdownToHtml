@@ -8,7 +8,7 @@ namespace MarkdownToHtml
     {
 
         private static Regex regexSingleLineHeading = new Regex(
-            @"^#{1,6}(.+)#*"
+            @"^#{1,6}(.+)?#*"
         );
 
         IHtmlable[] content;
@@ -91,7 +91,10 @@ namespace MarkdownToHtml
                 level++;
             }
             Match contentMatch = regexSingleLineHeading.Match(lines[0]);
-            string content = contentMatch.Groups[1].Value;
+            string content = StripTrailingCharacter(
+                contentMatch.Groups[1].Value,
+                '#'
+            );
             lines[0] = "";
             result.Success = true;
             result.AddContent(
@@ -103,6 +106,22 @@ namespace MarkdownToHtml
                 )
             );
             return result;
+        }
+
+        private static string StripTrailingCharacter(
+            string line,
+            char character
+        ) {
+            while (
+                (line.Length > 0)
+                && (line[^1] == character)
+            ) {
+                line = line.Substring(
+                    0,
+                    line.Length - 1 
+                );
+            }
+            return line;
         }
 
     }
