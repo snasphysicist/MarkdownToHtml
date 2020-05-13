@@ -102,6 +102,7 @@ namespace MarkdownToHtml
                     )
                 )
             );
+            return result;
         }
 
     }
