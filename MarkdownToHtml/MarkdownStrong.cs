@@ -7,8 +7,8 @@ namespace MarkdownToHtml
     {
 
         private static Regex regexParseable = new Regex(
-            @"^\*{2}.*\*{2}.*"
-            + @"|^_{2}.*_{2}.*s"
+            @"^\*{2}.+\*{2}.*"
+            + @"|^_{2}.+_{2}.*s"
         );
 
         IHtmlable[] content;
