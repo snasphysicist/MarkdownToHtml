@@ -57,7 +57,7 @@ namespace MarkdownToHtml
             return false;
         }
 
-        private ParseResult ParseCodeBlock (
+        private static ParseResult ParseCodeBlock (
             ArraySegment<string> lines
         ) {
             ParseResult result = new ParseResult();
@@ -65,8 +65,9 @@ namespace MarkdownToHtml
             {
                 return result;
             }
+            lines[0] = "";
             LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
-            int i = 0;
+            int i = 1;
             while (!regexBacktickSectionClose.Match(lines[i]).Success)
             {
                 innerContent.AddLast(
@@ -74,6 +75,7 @@ namespace MarkdownToHtml
                         lines[i]
                     )
                 );
+                lines[i] = "";
                 i++;
             }
             MarkdownParagraph blockCodeElement = new MarkdownParagraph(
@@ -88,7 +90,7 @@ namespace MarkdownToHtml
             return result;
         }
 
-        private T[] LinkedListToArray<T>(
+        private static T[] LinkedListToArray<T>(
             LinkedList<T> linkedList
         ) {
             T[] array = new T[linkedList.Count];
