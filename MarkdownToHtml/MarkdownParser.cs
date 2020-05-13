@@ -7,18 +7,9 @@ namespace MarkdownToHtml
 {
     public class MarkdownParser
     {
-
-        // Regex matches
-        Regex regexHorizontalLine = new Regex(
-            @"^\*\*\*|^---|^___"
-        );
         
         Regex regexOrderedListItem = new Regex(
             @"^\s*\d+\."        // Format 1. (ordered list)
-        );
-
-        Regex regexBacktickBlockCode = new Regex(
-            @"^```"
         );
 
         Regex regexUnorderedListItem = new Regex(
@@ -30,8 +21,18 @@ namespace MarkdownToHtml
         public bool Success
         { get; private set; }
 
-        public IHtmlable[] Content
+        public LinkedList<IHtmlable> Content
         { get; private set; }
+
+        public IHtmlable[] ContentAsArray()
+        {
+            IHtmlable[] contentArray = new IHtmlable[Content.Count];
+            Content.CopyTo(
+                contentArray,
+                0
+            );
+            return contentArray;
+        }
 
         // TODO replace with MarkdownDocument object
         public string ToHtml()
@@ -50,137 +51,24 @@ namespace MarkdownToHtml
             // Assume success
             Success = true;
             // Store parsed content as we go
-            LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
+            LinkedList<IHtmlable> Content = new LinkedList<IHtmlable>();
             int currentIndex = 0;
-            ArraySegment<string> lineGroup;
             while (currentIndex < lines.Length) {
-                lineGroup = NextLineGroup(
-                    lines,
-                    currentIndex
+                // Parse some lines
+                ParseLineGroup(
+                    new ArraySegment<string>(
+                        lines,
+                        currentIndex,
+                        lines.Length - currentIndex
+                    )
                 );
-                bool lineGroupSuccess = ParseLineGroup(
-                    lineGroup,
-                    content
-                );
-                Success = Success && lineGroupSuccess; 
-                currentIndex += lineGroup.Count + 1;
-            }
-            Content = new IHtmlable[content.Count];
-            content.CopyTo(Content, 0);
-        }
-
-        /* 
-         * Given a start index, return the
-         * line group that starts at that index
-         */ 
-        private ArraySegment<string> NextLineGroup(
-            string[] lines,
-            int startIndex
-        ) {
-            int endIndex = -1;
-            // Block code requires slightly different handling
-            if (regexBacktickBlockCode.Match(lines[startIndex]).Success)
-            {
-                endIndex = FindBacktickCodeSectionEnd(
-                    lines,
-                    startIndex + 1
-                ) + 1;
-            }
-            /* 
-             * If the start line isn't a code block or end couldn't be found
-             * then try to parse it as some other type
-             */
-            if (endIndex <= 0) {
-                endIndex = FindNextNonMatchingLine(
-                    lines,
-                    startIndex
-                );
-            }
-            int elements = endIndex - startIndex;
-            return new ArraySegment<string>(
-                lines, 
-                startIndex, 
-                elements
-            );
-        }
-
-        /*
-         * Given an array of lines of text and
-         * the index of the line at which to start
-         * find the first line after it which is
-         * either whitespace 
-         * or represents a different element type
-         */
-        private int FindNextNonMatchingLine(
-            string[] lines,
-            int startIndex
-        ) {
-            int nextIndex = startIndex + 1;
-            while (
-                (nextIndex < lines.Length)
-                && ContainsOnlyWhitespace(
-                    lines[nextIndex]
-                )
-            ) {
-                nextIndex++;
-            }
-            // Return if we reached the end of the array
-            if (nextIndex == lines.Length)
-            {
-                return nextIndex;
-            }
-            // Reached a non whitespace line - need to check line types
-            MarkdownElementType firstLineType = IdentifyLineType(
-                lines[startIndex]
-            );
-            MarkdownElementType lastLineType = IdentifyLineType(
-                lines[nextIndex]
-            );
-            /* 
-             * If this is the actual next line
-             * or if types are the same UNLESS both paragraphs
-             * then keep adding lines to this group
-             * else return
-             */
-            if (
-                (nextIndex != (startIndex + 1))
-                && (
-                    (firstLineType != lastLineType)
-                    || (firstLineType == MarkdownElementType.Paragraph)
-                )
-            ) {
-                return nextIndex - 1;
-            } else {
-                return FindNextNonMatchingLine(
-                    lines,
-                    nextIndex
-                );
-            }
-        }
-
-        // Find the first line which starts with three backticks
-        private int FindBacktickCodeSectionEnd(
-            string[] lines,
-            int startIndex
-        ) {
-            int finalLine = startIndex;
-            while (
-                (finalLine < lines.Length)
-                && (
-                    !regexBacktickBlockCode.Match(
-                        lines[finalLine]
-                    ).Success
-                )
-            ) {
-                finalLine++;
-            }
-            if (finalLine < lines.Length)
-            {
-                // Found line with backticks successfully
-                return finalLine;
-            } else {
-                // Did not find line, return negative number
-                return -1;
+                // Move to the next non-empty line
+                while (
+                    (currentIndex < lines.Length)
+                    && ContainsOnlyWhitespace(lines[currentIndex])
+                ) {
+                    currentIndex++;
+                }
             }
         }
 
@@ -194,63 +82,28 @@ namespace MarkdownToHtml
             ).Length == 0;
         }
 
-        private MarkdownElementType IdentifyLineType(
-            string line
+        private void ParseLineGroup(
+            ArraySegment<string> lines
         ) {
-            if (line.StartsWith(">"))
+            ParseResult result;
+            if (MarkdownHeading.CanParseFrom(lines))
             {
-                return MarkdownElementType.Quote;
-            } else if (regexOrderedListItem.Match(line).Success)
+                result = MarkdownHeading.ParseFrom(lines);
+            } else if (MarkdownHorizontalRule.CanParseFrom(lines))
             {
-                return MarkdownElementType.OrderedList;
-            } else if (regexUnorderedListItem.Match(line).Success)
+                result = MarkdownHeading.ParseFrom(lines);
+            } else if (MarkdownQuote.CanParseFrom(lines))
             {
-                return MarkdownElementType.UnorderedList;
-            } else 
+                result = MarkdownQuote.ParseFrom(lines);
+            } else if (MarkdownCodeBlock.CanParseFrom(lines))
             {
-                return MarkdownElementType.Paragraph;
-            }
-        }
-
-        private bool ParseLineGroup(
-            ArraySegment<string> lines,
-            LinkedList<IHtmlable> content
-        ) {
-            string firstLine = lines[0];
-            string lastLine = lines[^1];
-            if (
-                firstLine.StartsWith("#")
-            ) {
-                // Single line heading
-                return ParseSingleLineHeading(
-                    lines[0],
-                    content
-                );
-            } else if (regexHorizontalLine.Match(firstLine).Success) {
-                return ParseHorizontalRule(
-                    lines[0],
-                    content
-                );
-            } else if (
-                firstLine.StartsWith(">")
-            ) {
-                return ParseQuote(
-                    lines,
-                    content
-                );
-            } else if (
-                regexBacktickBlockCode.Match(firstLine).Success
-                && regexBacktickBlockCode.Match(lastLine).Success
-            ) {
-                return ParseCodeBlock(
-                    lines,
-                    content
-                );
+                result = MarkdownCodeBlock.ParseFrom(lines);
             } else {
-                return ParseParagraph(
-                    lines,
-                    content
-                );
+                result = MarkdownParagraph.ParseFrom(lines);
+            }
+            foreach (IHtmlable entry in result.GetContent())
+            {
+                Content.AddLast(entry);
             }
         }
 
