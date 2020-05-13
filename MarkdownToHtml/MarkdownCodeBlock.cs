@@ -57,7 +57,7 @@ namespace MarkdownToHtml
             return false;
         }
 
-        private static ParseResult ParseCodeBlock (
+        public static ParseResult ParseFrom(
             ArraySegment<string> lines
         ) {
             ParseResult result = new ParseResult();

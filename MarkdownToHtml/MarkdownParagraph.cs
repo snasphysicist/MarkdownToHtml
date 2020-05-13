@@ -31,7 +31,7 @@ namespace MarkdownToHtml
         }
 
         // Parse a plain paragraph
-        private static ParseResult ParseFrom(
+        public static ParseResult ParseFrom(
             ArraySegment<string> lines
         ) {
             ParseResult result = new ParseResult();
