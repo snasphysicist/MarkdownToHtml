@@ -11,10 +11,8 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow("---", "<hr>")]
         [DataRow("***", "<hr>")]
-        [DataRow("___", "<hr>")]
         [DataRow("----", "<hr>")]
         [DataRow("*****", "<hr>")]
-        [DataRow("__________", "<hr>")]
         public void ShouldParseCorrectlyFormattedHorizontalRuleSuccess(
             string markdown,
             string targetHtml
