@@ -7,8 +7,8 @@ namespace MarkdownToHtml
     {
 
         private static Regex regexParseable = new Regex(
-            @"^\*.+\*.*"
-            + @"|^_.+_.*"
+            @"^\*(.*?[^\\])\*"
+            + @"|^_(.*?[^\\])_"
         );
 
         IHtmlable[] content;
@@ -43,58 +43,32 @@ namespace MarkdownToHtml
         public static ParseResult ParseFrom(
             string line
         ) {
+            ParseResult result = new ParseResult();
             if (!CanParseFrom(line))
             {
                 // Return a failed result if cannot parse from this line
-                ParseResult result = new ParseResult();
                 result.Line = line;
                 return result;
             }
-            // Otherwise, attempt to parse and return result
-            if (line.StartsWith("*"))
+            // Otherwise parse and return result
+            Match contentMatch = regexParseable.Match(line);
+            string content;
+            if (contentMatch.Groups[1].Value.Length != 0)
             {
-                return ParseEmphasisSection(
-                    line,
-                    '*'
-                );
+                content = contentMatch.Groups[1].Value;
             } else {
-                return ParseEmphasisSection(
-                    line,
-                    '_'
-                );
-            }
-        }
-
-        // Shared code for parsing emphasis sections
-        private static ParseResult ParseEmphasisSection(
-            string line,
-            char delimiter
-        ) {
-            ParseResult result = new ParseResult();
-            int j = 1;
-            // Find closing star
-            while (
-                (j < line.Length)
-                && !(
-                    (line[j] == delimiter)
-                    && (line[j-1] != '\\')
-                )
-            ) {
-                j++;
-            }
-            if (j >= line.Length)
-            {
-                result.Line = line;
-                return result;
+                content = contentMatch.Groups[2].Value;
             }
             // Parse everything inside the stars
             MarkdownEmphasis element = new MarkdownEmphasis(
                 MarkdownParser.ParseInnerText(
-                    line.Substring(1, j - 1)
+                    content
                 )
             );
             result.AddContent(element);
-            result.Line = line.Substring(j + 1);
+            result.Line = line.Substring(
+                content.Length + 2
+            );
             result.Success = true;
             return result;
         }
