@@ -8,6 +8,7 @@ namespace MarkdownToHtml
     {
 
         [DataTestMethod]
+        [Timeout(500)]
         [DataRow("---", "<hr>")]
         [DataRow("***", "<hr>")]
         [DataRow("___", "<hr>")]
@@ -34,6 +35,7 @@ namespace MarkdownToHtml
         }
 
         [DataTestMethod]
+        [Timeout(500)]
         [DataRow("---*")]
         [DataRow("*** test")]
         public void ShouldNotParseIncorrectlyFormattedHorizontalRuleFail(

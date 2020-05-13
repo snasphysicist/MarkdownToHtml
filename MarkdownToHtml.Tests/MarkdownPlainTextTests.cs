@@ -7,6 +7,7 @@ namespace MarkdownToHtml
     public class MarkdownPlainTextTests
     {
         [DataTestMethod]
+        [Timeout(500)]
         [DataRow("Test1")]
         public void ShouldParseCorrectlyFormattedPlainTextLineSuccess(
             string markdown
