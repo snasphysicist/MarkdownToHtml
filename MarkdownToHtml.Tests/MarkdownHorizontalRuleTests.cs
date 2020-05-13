@@ -36,18 +36,24 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("---*")]
-        [DataRow("*** test")]
+        [DataRow("---*", "<p>---*</p>")]
+        [DataRow("*** test", "<p><em>*</em> test</p>")]
         public void ShouldNotParseIncorrectlyFormattedHorizontalRuleFail(
-            string markdown
+            string markdown,
+            string targetHtml
         ) {
             MarkdownParser parser = new MarkdownParser(
                 new string[] {
                     markdown
                 }
             );
-            Assert.IsFalse(
+            Assert.IsTrue(
                 parser.Success
+            );
+            string html = parser.ToHtml();
+            Assert.AreEqual(
+                targetHtml,
+                html
             );
         }
 
