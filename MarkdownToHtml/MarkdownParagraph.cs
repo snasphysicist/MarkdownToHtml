@@ -70,6 +70,8 @@ namespace MarkdownToHtml
                         );
                     }
                 }
+                // Clear the line just consumed
+                lines[i] = "";
             }
             MarkdownParagraph paragraph = new MarkdownParagraph(
                 LinkedListToArray(innerContent)
