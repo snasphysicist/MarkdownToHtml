@@ -22,7 +22,7 @@ namespace MarkdownToHtml
             Assert.IsTrue(
                 parser.Success
             );
-            string html = parser.Content[0].ToHtml();
+            string html = parser.ToHtml();
             // Check that the correct HTML is produced
             Assert.AreEqual(
                 targetHtml,
@@ -44,7 +44,7 @@ namespace MarkdownToHtml
             Assert.IsTrue(
                 parser.Success
             );
-            string html = parser.Content[0].ToHtml();
+            string html = parser.ToHtml();
             // Check that the correct HTML is produced
             Assert.AreEqual(
                 targetHtml,
@@ -66,7 +66,7 @@ namespace MarkdownToHtml
             Assert.IsTrue(
                 parser.Success
             );
-            string html = parser.Content[0].ToHtml();
+            string html = parser.ToHtml();
             // Check that the correct HTML is produced
             Assert.AreEqual(
                 targetHtml,
