@@ -91,9 +91,12 @@ namespace MarkdownToHtml
                 level++;
             }
             Match contentMatch = regexSingleLineHeading.Match(lines[0]);
-            string content = StripTrailingCharacter(
-                contentMatch.Groups[1].Value,
-                '#'
+            string content = StripLeadingCharacter(
+                StripTrailingCharacter(
+                    contentMatch.Groups[1].Value,
+                    '#'
+                ),
+                ' '
             );
             lines[0] = "";
             result.Success = true;
@@ -120,6 +123,19 @@ namespace MarkdownToHtml
                     0,
                     line.Length - 1 
                 );
+            }
+            return line;
+        }
+
+        private static string StripLeadingCharacter(
+            string line,
+            char character
+        ) {
+            while (
+                (line.Length > 0)
+                && (line[0] == character)
+            ) {
+                line = line.Substring(1);
             }
             return line;
         }
