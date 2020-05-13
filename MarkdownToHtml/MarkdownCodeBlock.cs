@@ -1,8 +1,20 @@
 
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
 namespace MarkdownToHtml
 {
     public class MarkdownCodeBlock : IHtmlable
     {
+
+        private static Regex regexBacktickSectionOpen = new Regex(
+            @"^`{3}.*"
+        );
+
+        private static Regex regexBacktickSectionClose = new Regex(
+            @"^`{3}"
+        );
 
         IHtmlable[] content;
 
@@ -25,6 +37,63 @@ namespace MarkdownToHtml
             }
             html += $"</{tag}>";
             return html;
+        }
+
+        public static bool CanParseFrom(
+            ArraySegment<string> lines
+        ) {
+            if (!regexBacktickSectionOpen.Match(lines[0]).Success)
+            {
+                return false;
+            } else {
+                for (int i = 1; i < lines.Count; i++)
+                {
+                    if (regexBacktickSectionClose.Match(lines[i]).Success)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private ParseResult ParseCodeBlock (
+            ArraySegment<string> lines
+        ) {
+            ParseResult result = new ParseResult();
+            if (!CanParseFrom(lines))
+            {
+                return result;
+            }
+            LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
+            int i = 0;
+            while (!regexBacktickSectionClose.Match(lines[i]).Success)
+            {
+                innerContent.AddLast(
+                    new MarkdownText(
+                        lines[i]
+                    )
+                );
+                i++;
+            }
+            MarkdownParagraph blockCodeElement = new MarkdownParagraph(
+                new IHtmlable[] {
+                    new MarkdownCodeBlock(
+                        LinkedListToArray(innerContent)
+                    )
+                }
+            );
+            result.Success = true;
+            result.AddContent(blockCodeElement);
+            return result;
+        }
+
+        private T[] LinkedListToArray<T>(
+            LinkedList<T> linkedList
+        ) {
+            T[] array = new T[linkedList.Count];
+            linkedList.CopyTo(array, 0);
+            return array;
         }
 
     }
