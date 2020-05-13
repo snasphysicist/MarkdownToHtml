@@ -51,7 +51,7 @@ namespace MarkdownToHtml
             // Assume success
             Success = true;
             // Store parsed content as we go
-            LinkedList<IHtmlable> Content = new LinkedList<IHtmlable>();
+            Content = new LinkedList<IHtmlable>();
             int currentIndex = 0;
             while (currentIndex < lines.Length) {
                 // Parse some lines
