@@ -8,8 +8,8 @@ namespace MarkdownToHtml
     {
 
         static Regex regexHorizontalRule = new Regex(
-            @"^[\s|\*]{3,}"
-            + @"|^[\s|-]{3,}"
+            @"^[\s|\*]{3,}$"
+            + @"|^[\s|-]{3,}$"
         );
 
         string tag = "hr";
@@ -30,7 +30,7 @@ namespace MarkdownToHtml
             bool correctFormat = regexHorizontalRule.Match(lines[0]).Success;
             // Check there are enough - or * characters (3++)
             bool enoughNonWhitespace = (
-                (lines[0].Length - lines[0].Replace(" ", "").Length)
+                (lines[0].Length - lines[0].Replace("*", "").Replace("-", "").Length)
                 > 2
             );
             return correctFormat && enoughNonWhitespace;
