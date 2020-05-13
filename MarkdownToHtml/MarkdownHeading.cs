@@ -84,7 +84,7 @@ namespace MarkdownToHtml
             // Calculate heading level, (maximum 6)
             int level = 0;
             while (
-                (level < 7)
+                (level < 6)
                  && (lines[0][level] == '#')
             )
             {
