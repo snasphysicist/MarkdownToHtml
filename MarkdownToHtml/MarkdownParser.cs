@@ -91,7 +91,7 @@ namespace MarkdownToHtml
                 result = MarkdownHeading.ParseFrom(lines);
             } else if (MarkdownHorizontalRule.CanParseFrom(lines))
             {
-                result = MarkdownHeading.ParseFrom(lines);
+                result = MarkdownHorizontalRule.ParseFrom(lines);
             } else if (MarkdownQuote.CanParseFrom(lines))
             {
                 result = MarkdownQuote.ParseFrom(lines);
