@@ -22,7 +22,7 @@ namespace MarkdownToHtml
          */
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow(">test1\n\n\n>test2", "<blockquote><p>test1 test2</p></blockquote>")]
+        [DataRow(">test1\n\n\n>test2", "<blockquote><p>test1</p><p>test2</p></blockquote>")]
         public void ShouldGroupLinesSameTypeSeparatedByManyWhitespaceLines(
             string markdown,
             string targetHtml
