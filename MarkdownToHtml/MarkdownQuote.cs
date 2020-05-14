@@ -99,10 +99,19 @@ namespace MarkdownToHtml
         ) {
             int index = 1;
             bool previousLineWasWhitespace = false;
+            /* 
+             * Condition
+             * Don't allow index to exceed the number of elements to avoid Exceptions
+             * We want to break the loop when there is a whitespace line
+             * (previousLineWasWhitespace)
+             * followed by a non-whitespace line (!ContainsOnlyWhitespace(lines[index])) 
+             * which is not a quote line !lines[index].StarsWith(">")
+             */
             while (
                 index < lines.Count
                 && !(
                     previousLineWasWhitespace
+                    && !ContainsOnlyWhitespace(lines[index])
                     && !lines[index].StartsWith(">")
                 )
             ) {
