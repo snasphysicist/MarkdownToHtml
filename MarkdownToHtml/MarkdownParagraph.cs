@@ -36,42 +36,66 @@ namespace MarkdownToHtml
         ) {
             ParseResult result = new ParseResult();
             LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
-            for (int i = 0; i < lines.Count; i++)
+            int i = 0;
+            while (i < lines.Count)
             {
-                string line = lines[i];
-                if (endsWithAtLeastTwoSpaces(line))
+                lines = new ArraySegment<string>(
+                    lines.Array,
+                    lines.Offset + i,
+                    lines.Count - i
+                );
+                if (MarkdownCodeBlock.CanParseFrom(lines))
                 {
-                    string shortened = StripTrailingWhitespace(line);
-                    foreach (IHtmlable entry in MarkdownParser.ParseInnerText(shortened))
+                    ParseResult innerResult = MarkdownCodeBlock.ParseFrom(lines);
+                    foreach (IHtmlable entry in innerResult.GetContent())
                     {
                         innerContent.AddLast(entry);
                     }
-                    innerContent.AddLast(
-                        new MarkdownLinebreak()
-                    );
                 } else {
-                    foreach (IHtmlable entry in MarkdownParser.ParseInnerText(line))
+                    string line = lines[0];
+                    if (endsWithAtLeastTwoSpaces(line))
                     {
-                        innerContent.AddLast(entry);
-                    }
-                    /*
-                     * If this is not the last line,
-                     * it doesn't end in a manual linebreak
-                     * and the user hasn't added a space themselves
-                     * we need to add a space at the end
-                     */
-                    if (
-                        (i != (lines.Count - 1))
-                        && (line.Length > 0)
-                        && (line[^1] != ' ')
-                    ) {
+                        string shortened = StripTrailingWhitespace(line);
+                        foreach (IHtmlable entry in MarkdownParser.ParseInnerText(shortened))
+                        {
+                            innerContent.AddLast(entry);
+                        }
                         innerContent.AddLast(
-                            new MarkdownText(" ")
+                            new MarkdownLinebreak()
                         );
+                    } else {
+                        foreach (IHtmlable entry in MarkdownParser.ParseInnerText(line))
+                        {
+                            innerContent.AddLast(entry);
+                        }
+                        /*
+                        * If this is not the last line,
+                        * it doesn't end in a manual linebreak
+                        * and the user hasn't added a space themselves
+                        * we need to add a space at the end
+                        */
+                        if (
+                            (lines.Count != 1)
+                            && (line.Length > 0)
+                            && (line[^1] != ' ')
+                        ) {
+                            innerContent.AddLast(
+                                new MarkdownText(" ")
+                            );
+                        }
                     }
+                    // Clear the line just consumed
+                    lines[0] = "";
+                    // Move on to next non-empty line
+                    int j = 0;
+                    while (
+                        (j < lines.Count)
+                        && (ContainsOnlyWhitespace(lines[j]))
+                    ) {
+                        j++;
+                    }
+                    i += j;
                 }
-                // Clear the line just consumed
-                lines[i] = "";
             }
             MarkdownParagraph paragraph = new MarkdownParagraph(
                 LinkedListToArray(innerContent)
@@ -129,6 +153,16 @@ namespace MarkdownToHtml
             T[] array = new T[linkedList.Count];
             linkedList.CopyTo(array, 0);
             return array;
+        }
+
+        // Check whether a line contains only whitespace (or is empty)
+        private static bool ContainsOnlyWhitespace(
+            string line
+        ) {
+            return line.Replace(
+                " ",
+                ""
+            ).Length == 0;
         }
 
     }

@@ -95,9 +95,6 @@ namespace MarkdownToHtml
             } else if (MarkdownQuote.CanParseFrom(lines))
             {
                 result = MarkdownQuote.ParseFrom(lines);
-            } else if (MarkdownCodeBlock.CanParseFrom(lines))
-            {
-                result = MarkdownCodeBlock.ParseFrom(lines);
             } else {
                 result = MarkdownParagraph.ParseFrom(lines);
             }
