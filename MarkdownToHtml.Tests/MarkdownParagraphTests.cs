@@ -7,6 +7,7 @@ namespace MarkdownToHtml
     public class MarkdownParagraphTests
     {
         [TestMethod]
+        [Timeout(500)]
         public void ShouldParseTwoAdjacentLinesAsOneParagraphSuccess() {
             string[] testData = new string[]
             {
@@ -27,6 +28,7 @@ namespace MarkdownToHtml
         }
 
         [TestMethod]
+        [Timeout(500)]
         public void ShouldParseTwoSeparatedLinesAsTwoParagraphsSuccess() {
             string[] testData = new string[]
             {
@@ -48,6 +50,7 @@ namespace MarkdownToHtml
         }
 
         [TestMethod]
+        [Timeout(500)]
         public void ShouldParseTwoAdjacentLinesWithTwoSpacesAsOneParagraphWithLineBreakSuccess() {
             string[] testData = new string[]
             {

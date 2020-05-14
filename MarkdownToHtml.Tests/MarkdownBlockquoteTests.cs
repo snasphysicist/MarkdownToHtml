@@ -7,6 +7,7 @@ namespace MarkdownToHtml
     public class MarkdownBlockquoteTests
     {
         [DataTestMethod]
+        [Timeout(500)]
         [DataRow(">test", "<blockquote><p>test</p></blockquote>")]
         [DataRow("> test", "<blockquote><p>test</p></blockquote>")]
         [DataRow(">  test", "<blockquote><p>test</p></blockquote>")]

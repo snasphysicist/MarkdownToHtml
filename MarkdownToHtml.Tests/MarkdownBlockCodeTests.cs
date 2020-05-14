@@ -1,26 +1,23 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace MarkdownToHtml 
+namespace MarkdownToHtml
 {
     [TestClass]
-    public class MarkdownHorizontalRuleTests
+    public class MarkdownBlockCodeTests
     {
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("---", "<hr>")]
-        [DataRow("***", "<hr>")]
-        [DataRow("----", "<hr>")]
-        [DataRow("*****", "<hr>")]
-        public void ShouldParseCorrectlyFormattedHorizontalRuleSuccess(
+        [DataRow("```\ntest1\n```", "<p><code>test1</code></p>")]
+        [DataRow("test1\n```\ntest2\n```", "<p>test1 <code>test2</code></p>")]
+        [DataRow("test1\n\n```\ntest2\n```", "<p>test1</p><p><code>test2</code></p>")]
+        public void ShouldParseProperlyDelimitedBacktickCodeBlockSuccess(
             string markdown,
             string targetHtml
         ) {
             MarkdownParser parser = new MarkdownParser(
-                new string[] {
-                    markdown
-                }
+                markdown.Split('\n')
             );
             Assert.IsTrue(
                 parser.Success
@@ -34,16 +31,13 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("---*", "<p>---*</p>")]
-        [DataRow("*** test", "<p><em>*</em> test</p>")]
-        public void ShouldNotParseIncorrectlyFormattedHorizontalRuleFail(
+        [DataRow("```\ntest1\n\ntest2", "<p>``` test1</p><p>test2</p>")]
+        public void ShouldParseImproperlyDelimitedBacktickCodeBlockAsParagraphSuccess(
             string markdown,
             string targetHtml
         ) {
             MarkdownParser parser = new MarkdownParser(
-                new string[] {
-                    markdown
-                }
+                markdown.Split('\n')
             );
             Assert.IsTrue(
                 parser.Success
