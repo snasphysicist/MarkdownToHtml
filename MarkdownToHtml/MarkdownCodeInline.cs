@@ -7,7 +7,7 @@ namespace MarkdownToHtml
     {
 
         private static Regex regexParseable = new Regex(
-            @"^`.*`.*"
+            @"^`.*([^`])`.*"
         );
 
         IHtmlable[] content;
