@@ -10,7 +10,7 @@ namespace MarkdownToHtml
         [DataTestMethod]
         [Timeout(500)]
         [DataRow("```\ntest1\n```", "<p><code>test1</code></p>")]
-        [DataRow("test1\n```\ntest2\n```", "<p>test1<code>test2</code></p>")]
+        [DataRow("test1\n```\ntest2\n```", "<p>test1 <code>test2</code></p>")]
         [DataRow("test1\n\n```\ntest2\n```", "<p>test1</p><p><code>test2</code></p>")]
         public void ShouldParseProperlyDelimitedBacktickCodeBlockSuccess(
             string markdown,
