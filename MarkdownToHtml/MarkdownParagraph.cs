@@ -36,8 +36,20 @@ namespace MarkdownToHtml
         ) {
             ParseResult result = new ParseResult();
             LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
+            // The paragraph doesn't get parsed past the first blank line
+            int endIndex = 0;
+            while (
+                (endIndex < lines.Count)
+                && (
+                    !ContainsOnlyWhitespace(
+                        lines[endIndex]
+                    )
+                )
+            ) {
+                endIndex++;
+            }
             int i = 0;
-            while (i < lines.Count)
+            while (i < endIndex)
             {
                 lines = new ArraySegment<string>(
                     lines.Array,
