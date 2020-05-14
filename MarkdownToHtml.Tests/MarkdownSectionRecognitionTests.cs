@@ -21,7 +21,8 @@ namespace MarkdownToHtml
          * should be parsed into a single markdown element
          */
         [DataTestMethod]
-        [DataRow(">test1\n\n\n>test2", "<blockquote><p>test1 test2</p></blockquote>")]
+        [Timeout(500)]
+        [DataRow(">test1\n\n\n>test2", "<blockquote><p>test1</p><p>test2</p></blockquote>")]
         public void ShouldGroupLinesSameTypeSeparatedByManyWhitespaceLines(
             string markdown,
             string targetHtml
@@ -46,6 +47,7 @@ namespace MarkdownToHtml
          * be parsed into a single markdown element
          */
         [DataTestMethod]
+        [Timeout(500)]
         [DataRow(
            ">test1\n\ntest2\n\n>test3", 
             "<blockquote><p>test1</p></blockquote><p>test2</p>"
