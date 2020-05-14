@@ -87,7 +87,7 @@ namespace MarkdownToHtml
                         * we need to add a space at the end
                         */
                         if (
-                            (lines.Count != 1)
+                            (i < (endIndex - 1))
                             && (line.Length > 0)
                             && (line[^1] != ' ')
                         ) {
