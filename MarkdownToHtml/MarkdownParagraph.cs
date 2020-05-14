@@ -98,16 +98,16 @@ namespace MarkdownToHtml
                     }
                     // Clear the line just consumed
                     lines[0] = "";
-                    // Move on to next non-empty line
-                    int j = 0;
-                    while (
-                        (j < lines.Count)
-                        && (ContainsOnlyWhitespace(lines[j]))
-                    ) {
-                        j++;
-                    }
-                    i += j;
                 }
+                // Move on to next non-empty line
+                int j = 0;
+                while (
+                    (j < lines.Count)
+                    && (ContainsOnlyWhitespace(lines[j]))
+                ) {
+                    j++;
+                }
+                i += j;
             }
             MarkdownParagraph paragraph = new MarkdownParagraph(
                 LinkedListToArray(innerContent)
