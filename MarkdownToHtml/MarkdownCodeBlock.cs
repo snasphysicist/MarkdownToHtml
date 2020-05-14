@@ -78,6 +78,8 @@ namespace MarkdownToHtml
                 lines[i] = "";
                 i++;
             }
+            // Remember to clear final line (closing backticks)
+            lines[i] = "";
             MarkdownParagraph blockCodeElement = new MarkdownParagraph(
                 new IHtmlable[] {
                     new MarkdownCodeBlock(
