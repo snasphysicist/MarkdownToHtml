@@ -80,12 +80,8 @@ namespace MarkdownToHtml
             }
             // Remember to clear final line (closing backticks)
             lines[i] = "";
-            MarkdownParagraph blockCodeElement = new MarkdownParagraph(
-                new IHtmlable[] {
-                    new MarkdownCodeBlock(
-                        LinkedListToArray(innerContent)
-                    )
-                }
+            MarkdownCodeBlock blockCodeElement = new MarkdownCodeBlock(
+                LinkedListToArray(innerContent)
             );
             result.Success = true;
             result.AddContent(blockCodeElement);
