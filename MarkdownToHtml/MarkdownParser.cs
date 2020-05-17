@@ -24,6 +24,9 @@ namespace MarkdownToHtml
         public LinkedList<IHtmlable> Content
         { get; private set; }
 
+        private LinkedList<ReferencedUrl> Urls
+        { get; set; }
+
         public IHtmlable[] ContentAsArray()
         {
             IHtmlable[] contentArray = new IHtmlable[Content.Count];
@@ -52,6 +55,11 @@ namespace MarkdownToHtml
             Success = true;
             // Store parsed content as we go
             Content = new LinkedList<IHtmlable>();
+            // Urls potentially referenced by anchors/images
+            Urls = new LinkedList<ReferencedUrl>();
+            // Extract all 'footnote' style urls
+            ParseReferencedUrls(lines);
+            // Parsing printed content
             int currentIndex = 0;
             while (currentIndex < lines.Length) {
                 // Parse some lines
@@ -159,13 +167,26 @@ namespace MarkdownToHtml
             return contentArray;
         }
 
-        private T[] LinkedListToArray<T>(
-            LinkedList<T> linkedList
+        private void ParseReferencedUrls(
+            string[] lines
         ) {
-            T[] array = new T[linkedList.Count];
-            linkedList.CopyTo(array, 0);
-            return array;
+            for (int lineNumber = 0; lineNumber < lines.Length; lineNumber++)
+            {
+                ArraySegment<string> line = new ArraySegment<string>(
+                    lines,
+                    lineNumber,
+                    1
+                );
+                if (ReferencedUrl.CanParseFrom(line))
+                {
+                    Urls.AddLast(
+                        ReferencedUrl.ParseFrom(
+                            lines
+                        )
+                    );
+                }
+            }
         }
-
+        
     }
 }
