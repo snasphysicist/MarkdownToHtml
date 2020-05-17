@@ -152,7 +152,7 @@ namespace MarkdownToHtml
                     if (url.Reference == text)
                     {
                         result.Success = true;
-                        result.Line = regexLinkReference.Replace(
+                        result.Line = regexLinkSelfReference.Replace(
                             line,
                             ""
                         );
