@@ -122,7 +122,7 @@ namespace MarkdownToHtml
                 i += j;
             }
             MarkdownParagraph paragraph = new MarkdownParagraph(
-                LinkedListToArray(innerContent)
+                Utils.LinkedListToArray(innerContent)
             );
             result.Success = true;
             result.AddContent(
