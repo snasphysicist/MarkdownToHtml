@@ -10,6 +10,18 @@ namespace MarkdownToHtml
 
         private string[] lines;
 
+        public string FirstLine
+        {
+            get
+            {
+                return lines[startIndex];
+            }
+            set
+            {
+                lines[startIndex] = value;
+            }
+        }
+
         private int startIndex;
 
         private int elements;
