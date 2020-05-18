@@ -76,5 +76,13 @@ namespace MarkdownToHtml
             return this;
         }
 
+        public ParseInput JumpLines(
+            int numberOfLines
+        ) {
+            this.startIndex += numberOfLines;
+            this.elements -= numberOfLines;
+            return this;
+        }
+
     }
 }
