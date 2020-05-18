@@ -6,18 +6,23 @@ namespace MarkdownToHtml
     public class MarkdownText : IHtmlable
     {
 
-        private static string[][] EscapeReplacements = new string[][]{
-            new string[] {"\\*", "*"},
-            new string[] {"\\_", "_"},
-            new string[] {"\\~", "~"},
-            new string[] {"\\`", "`"}
-        };
-
-        private static char[] specialCharacters = new char[] {
+        private static char[] specialCharacters = new char[]
+        {
+            '\\',
+            '`',
             '*',
             '_',
-            '~',
-            '`'
+            '{',
+            '}',
+            '[',
+            ']',
+            '(',
+            ')',
+            '#',
+            '+',
+            '-',
+            '.',
+            '!',
         };
 
         string content;
@@ -41,11 +46,17 @@ namespace MarkdownToHtml
         private string ReplaceEscapeCharacters(
             string text
         ) {
-            foreach (string[] replacement in EscapeReplacements)
+            foreach (char special in specialCharacters)
             {
+                // escapeSequence like \\# -> replace with last char (#)
                 text = text.Replace(
-                    replacement[0],
-                    replacement[1]
+                    new string(
+                        new char[]{
+                            '\\', 
+                            special
+                        }
+                    ),
+                    new string(special, 1)
                 );
             }
             return text;
