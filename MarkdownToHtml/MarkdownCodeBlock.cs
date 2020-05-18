@@ -40,8 +40,9 @@ namespace MarkdownToHtml
         }
 
         public static bool CanParseFrom(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
+            ArraySegment<string> lines = input.Lines();
             if (!regexBacktickSectionOpen.Match(lines[0]).Success)
             {
                 return false;
@@ -58,13 +59,15 @@ namespace MarkdownToHtml
         }
 
         public static ParseResult ParseFrom(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
+
             ParseResult result = new ParseResult();
-            if (!CanParseFrom(lines))
+            if (!CanParseFrom(input))
             {
                 return result;
             }
+            ArraySegment<string> lines = input.Lines();
             lines[0] = "";
             LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
             int i = 1;
