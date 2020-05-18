@@ -38,6 +38,19 @@ namespace MarkdownToHtml
             this.elements = elements;
         }
 
+        public ParseInput(
+            ParseInput toCopy,
+            string line
+        ) {
+            Urls = toCopy.Urls;
+            lines = new string[]
+            {
+                line
+            };
+            startIndex = 0;
+            elements = 1;
+        }
+
         public ArraySegment<string> Lines()
         {
             return new ArraySegment<string>(
