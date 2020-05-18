@@ -52,7 +52,6 @@ namespace MarkdownToHtml
             int i = 0;
             while (i < endIndex)
             {
-                input = input.NextLine();
                 lines = input.Lines();
                 if (MarkdownCodeBlock.CanParseFrom(input))
                 {
@@ -120,6 +119,8 @@ namespace MarkdownToHtml
                     j++;
                 }
                 i += j;
+                // Move array slice to next non-empty line
+                input = input.JumpLines(j);
             }
             MarkdownParagraph paragraph = new MarkdownParagraph(
                 Utils.LinkedListToArray(innerContent)
