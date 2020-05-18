@@ -47,9 +47,10 @@ namespace MarkdownToHtml
         }
 
         public static bool CanParseFrom(
-            string line,
-            ReferencedUrl[] urls
+            ParseInput input
         ) {
+            string line = input.FirstLine;
+            ReferencedUrl[] urls = input.Urls;
             if (regexLinkImmediate.Match(line).Success)
             {
                 return true;
@@ -83,15 +84,13 @@ namespace MarkdownToHtml
 
         // Shared code for parsing emphasis sections
         public static ParseResult ParseFrom(
-            string line,
-            ReferencedUrl[] urls
+            ParseInput input
         ) {
+            string line = input.FirstLine;
+            ReferencedUrl[] urls = input.Urls;
             ParseResult result = new ParseResult();
             if (
-                !CanParseFrom(
-                    line,
-                    urls
-                )
+                !CanParseFrom(input)
             ) {
                 return result;
             }
@@ -110,7 +109,10 @@ namespace MarkdownToHtml
                 result.AddContent(
                     new MarkdownLink(
                         MarkdownParser.ParseInnerText(
-                            text
+                            new ParseInput(
+                                input,
+                                text
+                            )
                         ),
                         url
                     )
@@ -134,7 +136,10 @@ namespace MarkdownToHtml
                         result.AddContent(
                             new MarkdownLink(
                                 MarkdownParser.ParseInnerText(
-                                    text
+                                    new ParseInput(
+                                        input,
+                                        text
+                                    )
                                 ),
                                 url.Url
                             )
@@ -159,7 +164,10 @@ namespace MarkdownToHtml
                         result.AddContent(
                             new MarkdownLink(
                                 MarkdownParser.ParseInnerText(
-                                    text
+                                    new ParseInput(
+                                        input,
+                                        text
+                                    )
                                 ),
                                 url.Url
                             )
