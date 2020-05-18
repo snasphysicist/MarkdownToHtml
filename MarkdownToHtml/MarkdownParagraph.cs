@@ -32,8 +32,9 @@ namespace MarkdownToHtml
 
         // Parse a plain paragraph
         public static ParseResult ParseFrom(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
+            ArraySegment<string> lines = input.Lines();
             ParseResult result = new ParseResult();
             LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
             // The paragraph doesn't get parsed past the first blank line
@@ -51,14 +52,11 @@ namespace MarkdownToHtml
             int i = 0;
             while (i < endIndex)
             {
-                lines = new ArraySegment<string>(
-                    lines.Array,
-                    lines.Offset + i,
-                    lines.Count - i
-                );
-                if (MarkdownCodeBlock.CanParseFrom(lines))
+                input = input.NextLine();
+                lines = input.Lines();
+                if (MarkdownCodeBlock.CanParseFrom(input))
                 {
-                    ParseResult innerResult = MarkdownCodeBlock.ParseFrom(lines);
+                    ParseResult innerResult = MarkdownCodeBlock.ParseFrom(input);
                     foreach (IHtmlable entry in innerResult.GetContent())
                     {
                         innerContent.AddLast(entry);
@@ -68,16 +66,30 @@ namespace MarkdownToHtml
                     if (endsWithAtLeastTwoSpaces(line))
                     {
                         string shortened = StripTrailingWhitespace(line);
-                        foreach (IHtmlable entry in MarkdownParser.ParseInnerText(shortened))
-                        {
+                        foreach (
+                            IHtmlable entry 
+                            in MarkdownParser.ParseInnerText(
+                                new ParseInput(
+                                    input,
+                                    shortened
+                                )
+                            )
+                        ) {
                             innerContent.AddLast(entry);
                         }
                         innerContent.AddLast(
                             new MarkdownLinebreak()
                         );
                     } else {
-                        foreach (IHtmlable entry in MarkdownParser.ParseInnerText(line))
-                        {
+                        foreach (
+                            IHtmlable entry 
+                            in MarkdownParser.ParseInnerText(
+                                new ParseInput(
+                                    input,
+                                    line
+                                )
+                            )
+                        ) {
                             innerContent.AddLast(entry);
                         }
                         /*
