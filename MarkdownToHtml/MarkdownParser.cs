@@ -142,7 +142,7 @@ namespace MarkdownToHtml
                     result = MarkdownCodeInline.ParseFrom(input);
                 } else if (MarkdownLink.CanParseFrom(input))
                 {
-                    result = MarkdownLink.ParseFrom(input)
+                    result = MarkdownLink.ParseFrom(input);
                 } else {
                     result = MarkdownText.ParseFrom(
                         input,
