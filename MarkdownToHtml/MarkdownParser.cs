@@ -59,13 +59,19 @@ namespace MarkdownToHtml
             Urls = new LinkedList<ReferencedUrl>();
             // Extract all 'footnote' style urls
             ParseReferencedUrls(lines);
+            // Create new parse input to pass to parsers
+            ParseInput input = new ParseInput(
+                Utils.LinkedListToArray(Urls),
+                lines,
+                0,
+                lines.Length
+            );
             // Parsing printed content
             int currentIndex = 0;
             while (currentIndex < lines.Length) {
                 // Parse some lines
                 ParseLineGroup(
-                    new ArraySegment<string>(
-                        lines,
+                    input.Slice(
                         currentIndex,
                         lines.Length - currentIndex
                     )
@@ -91,20 +97,20 @@ namespace MarkdownToHtml
         }
 
         private void ParseLineGroup(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
             ParseResult result;
-            if (MarkdownHeading.CanParseFrom(lines))
+            if (MarkdownHeading.CanParseFrom(input))
             {
-                result = MarkdownHeading.ParseFrom(lines);
-            } else if (MarkdownHorizontalRule.CanParseFrom(lines))
+                result = MarkdownHeading.ParseFrom(input);
+            } else if (MarkdownHorizontalRule.CanParseFrom(input))
             {
-                result = MarkdownHorizontalRule.ParseFrom(lines);
-            } else if (MarkdownQuote.CanParseFrom(lines))
+                result = MarkdownHorizontalRule.ParseFrom(input);
+            } else if (MarkdownQuote.CanParseFrom(input))
             {
-                result = MarkdownQuote.ParseFrom(lines);
+                result = MarkdownQuote.ParseFrom(input);
             } else {
-                result = MarkdownParagraph.ParseFrom(lines);
+                result = MarkdownParagraph.ParseFrom(input);
             }
             foreach (IHtmlable entry in result.GetContent())
             {
@@ -114,29 +120,32 @@ namespace MarkdownToHtml
 
         // Given a single line of text, parse this, including special (emph, etc...) sections
         public static IHtmlable[] ParseInnerText(
-            string line
+            ParseInput input
         ) {
             // Store parsed content as we go
             LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
             // Until the whole string has been consumed
-            while (line.Length > 0)
+            while (input.FirstLine.Length > 0)
             {
                 ParseResult result;
-                if (MarkdownStrong.CanParseFrom(line))
+                if (MarkdownStrong.CanParseFrom(input))
                 {
-                    result = MarkdownStrong.ParseFrom(line);
-                } else if (MarkdownStrikethrough.CanParseFrom(line))
+                    result = MarkdownStrong.ParseFrom(input);
+                } else if (MarkdownStrikethrough.CanParseFrom(input))
                 {
-                    result = MarkdownStrikethrough.ParseFrom(line);
-                } else if (MarkdownEmphasis.CanParseFrom(line))
+                    result = MarkdownStrikethrough.ParseFrom(input);
+                } else if (MarkdownEmphasis.CanParseFrom(input))
                 {
-                    result = MarkdownEmphasis.ParseFrom(line);
-                } else if (MarkdownCodeInline.CanParseFrom(line))
+                    result = MarkdownEmphasis.ParseFrom(input);
+                } else if (MarkdownCodeInline.CanParseFrom(input))
                 {
-                    result = MarkdownCodeInline.ParseFrom(line);
+                    result = MarkdownCodeInline.ParseFrom(input);
+                } else if (MarkdownLink.CanParseFrom(input))
+                {
+                    result = MarkdownLink.ParseFrom(input)
                 } else {
                     result = MarkdownText.ParseFrom(
-                        line,
+                        input,
                         false
                     );
                 }
@@ -147,7 +156,7 @@ namespace MarkdownToHtml
                 if (!result.Success)
                 {
                     result = MarkdownText.ParseFrom(
-                        line,
+                        input,
                         true
                     );
                 }
@@ -157,7 +166,7 @@ namespace MarkdownToHtml
                     content.AddLast(entry);
                 }
                 // Update text to be parsed
-                line = result.Line;
+                input.FirstLine = result.Line;
             }
             IHtmlable[] contentArray = new IHtmlable[content.Count];
             content.CopyTo(
