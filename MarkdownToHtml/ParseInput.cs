@@ -3,7 +3,7 @@ using System;
 
 namespace MarkdownToHtml
 {
-    class ParseInput
+    public class ParseInput
     {
         public ReferencedUrl[] Urls
         { get; }
