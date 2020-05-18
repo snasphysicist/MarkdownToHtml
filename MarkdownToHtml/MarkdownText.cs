@@ -53,9 +53,10 @@ namespace MarkdownToHtml
 
         // Given a text snippet, parse a plain text section from its start
         public static ParseResult ParseFrom(
-            string line,
+            ParseInput input,
             bool force
         ) {
+            string line = input.FirstLine;
             ParseResult result = new ParseResult();
             int indexFirstSpecialCharacter = FindUnescapedSpecial(
                 line
