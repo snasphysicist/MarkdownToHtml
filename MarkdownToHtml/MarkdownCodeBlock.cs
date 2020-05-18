@@ -84,19 +84,11 @@ namespace MarkdownToHtml
             // Remember to clear final line (closing backticks)
             lines[i] = "";
             MarkdownCodeBlock blockCodeElement = new MarkdownCodeBlock(
-                LinkedListToArray(innerContent)
+                Utils.LinkedListToArray(innerContent)
             );
             result.Success = true;
             result.AddContent(blockCodeElement);
             return result;
-        }
-
-        private static T[] LinkedListToArray<T>(
-            LinkedList<T> linkedList
-        ) {
-            T[] array = new T[linkedList.Count];
-            linkedList.CopyTo(array, 0);
-            return array;
         }
 
     }
