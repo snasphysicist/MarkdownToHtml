@@ -24,27 +24,28 @@ namespace MarkdownToHtml
         }
 
         public static bool CanParseFrom(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
+            string line = input.FirstLine;
             // Check if the format is correct (* or - plus whitespace only)
-            bool correctFormat = regexHorizontalRule.Match(lines[0]).Success;
+            bool correctFormat = regexHorizontalRule.Match(line).Success;
             // Check there are enough - or * characters (3++)
             bool enoughNonWhitespace = (
-                (lines[0].Length - lines[0].Replace("*", "").Replace("-", "").Length)
+                (line.Length - line.Replace("*", "").Replace("-", "").Length)
                 > 2
             );
             return correctFormat && enoughNonWhitespace;
         }
 
         public static ParseResult ParseFrom(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
             ParseResult result = new ParseResult();
-            if (!CanParseFrom(lines))
+            if (!CanParseFrom(input))
             {
                 return result;
             }
-            lines[0] = "";
+            input.FirstLine = "";
             result.Success = true;
             result.AddContent(
                 new MarkdownHorizontalRule()
