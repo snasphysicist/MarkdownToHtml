@@ -8,11 +8,11 @@ namespace MarkdownToHtml
     {
 
         private static Regex regexLinkImmediate = new Regex(
-            @"^\[(.*[^\\])\]\(.*[^\\])\)"
+            @"^\[(.*[^\\])\]\((.*[^\\])\)"
         );
 
         private static Regex regexLinkReference = new Regex(
-            @"^\[(.*[^\\])\]\[.*[^\\])\]"
+            @"^\[(.*[^\\])\]\[(.*[^\\])\]"
         );
 
         private static Regex regexLinkSelfReference = new Regex(
