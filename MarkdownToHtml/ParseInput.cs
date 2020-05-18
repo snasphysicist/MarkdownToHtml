@@ -69,5 +69,12 @@ namespace MarkdownToHtml
             return this;
         }
 
+        public ParseInput NextLine()
+        {
+            this.startIndex++;
+            this.elements--;
+            return this;
+        }
+
     }
 }
