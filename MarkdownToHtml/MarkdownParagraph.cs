@@ -159,14 +159,6 @@ namespace MarkdownToHtml
             return line;
         }
 
-        private static T[] LinkedListToArray<T>(
-            LinkedList<T> linkedList
-        ) {
-            T[] array = new T[linkedList.Count];
-            linkedList.CopyTo(array, 0);
-            return array;
-        }
-
         // Check whether a line contains only whitespace (or is empty)
         private static bool ContainsOnlyWhitespace(
             string line
