@@ -19,34 +19,33 @@ namespace MarkdownToHtml
             @"^!\[(.*[^\\])\]\[(.*[^\\])\]"
         );
 
-        IHtmlable[] content;
-
         const string tag = "img";
 
         private string href = "";
 
         private string title = "";
 
+        private string altText = "";
+
         public const MarkdownElementType Type = MarkdownElementType.Image;
 
         public MarkdownImage(
-            IHtmlable[] content,
             string href,
-            string title
+            string title,
+            string altText
         ) {
-            this.content = content;
             this.href = href;
             this.title = title;
+            this.altText = altText;
         }
 
         public string ToHtml() 
         {
-            string html = $"<{tag} src=\"{href}\" title=\"{title}\">";
-            foreach (IHtmlable htmlable in content)
-            {
-                html += htmlable.ToHtml();
-            }
-            html += $"</{tag}>";
+            string html = 
+                $"<{tag} src=\"{href}\" "
+                + $"text=\"{altText}\" " 
+                + $"title=\"{title}\">"
+                + $"</{tag}>";
             return html;
         }
 
@@ -103,12 +102,7 @@ namespace MarkdownToHtml
                 );
                 result.AddContent(
                     new MarkdownImage(
-                        MarkdownParser.ParseInnerText(
-                            new ParseInput(
-                                input,
-                                text
-                            )
-                        ),
+                        text,
                         url,
                         title
                     )
@@ -128,12 +122,7 @@ namespace MarkdownToHtml
                 );
                 result.AddContent(
                     new MarkdownImage(
-                        MarkdownParser.ParseInnerText(
-                            new ParseInput(
-                                input,
-                                text
-                            )
-                        ),
+                        text,
                         url,
                         title
                     )
@@ -156,12 +145,7 @@ namespace MarkdownToHtml
                         );
                         result.AddContent(
                             new MarkdownImage(
-                                MarkdownParser.ParseInnerText(
-                                    new ParseInput(
-                                        input,
-                                        text
-                                    )
-                                ),
+                                text,
                                 url.Url,
                                 url.Title
                             )
