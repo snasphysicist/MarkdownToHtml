@@ -8,7 +8,7 @@ namespace MarkdownToHtml
     {
 
         private static Regex regexImageImmediateNoTitle = new Regex(
-            @"^!\[(.*[^\\])\]\((.*[^\\])\)"
+            @"^!\[(.*[^\\])\]\((\S*[^\\])\)"
         );
 
         private static Regex regexImageImmediateWithTitle = new Regex(
