@@ -21,7 +21,7 @@ namespace MarkdownToHtml
 
         IHtmlable[] content;
 
-        const string tag = "a";
+        const string tag = "img";
 
         private string href = "";
 
@@ -41,7 +41,7 @@ namespace MarkdownToHtml
 
         public string ToHtml() 
         {
-            string html = $"<{tag} href=\"{href}\" title=\"{title}\">";
+            string html = $"<{tag} src=\"{href}\" title=\"{title}\">";
             foreach (IHtmlable htmlable in content)
             {
                 html += htmlable.ToHtml();
