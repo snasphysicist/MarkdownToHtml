@@ -8,7 +8,7 @@ namespace MarkdownToHtml
     {
 
         private static Regex regexLinkReference = new Regex(
-            @"^\[(.*)[^\\]\]:(.+)"
+            @"^\[(.*[^\\])\]:\s*(.+)"
         );
 
         private static Regex regexImageReference = new Regex(
