@@ -41,7 +41,7 @@ namespace MarkdownToHtml
 
         public string ToHtml() 
         {
-            string html = $"<{tag} href=\"{href}\">";
+            string html = $"<{tag} href=\"{href}\" title=\"{title}\">";
             foreach (IHtmlable htmlable in content)
             {
                 html += htmlable.ToHtml();
