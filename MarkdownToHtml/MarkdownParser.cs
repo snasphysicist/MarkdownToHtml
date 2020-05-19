@@ -143,6 +143,9 @@ namespace MarkdownToHtml
                 } else if (MarkdownLink.CanParseFrom(input))
                 {
                     result = MarkdownLink.ParseFrom(input);
+                } else if (MarkdownImage.CanParseFrom(input))
+                {
+                    result = MarkdownImage.ParseFrom(input);
                 } else {
                     result = MarkdownText.ParseFrom(
                         input,
