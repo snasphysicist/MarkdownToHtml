@@ -12,7 +12,7 @@ namespace MarkdownToHtml
         );
 
         private static Regex regexImageImmediateWithTitle = new Regex(
-            @"^!\[(.*[^\\])\]\((.*[^\\])\s+("".+"")\s*\)"
+            @"^!\[(.*[^\\])\]\((.*?[^\\])\s+("".+"")\s*\)"
         );
 
         private static Regex regexImageReference = new Regex(
@@ -115,7 +115,7 @@ namespace MarkdownToHtml
                 );
             }
             // Format: ![text](url "title")
-            linkMatch = regexImageImmediateNoTitle.Match(line);
+            linkMatch = regexImageImmediateWithTitle.Match(line);
             if (linkMatch.Success)
             {
                 string text = linkMatch.Groups[1].Value;
