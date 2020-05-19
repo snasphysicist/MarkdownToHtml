@@ -59,7 +59,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "![alttext][ref]\n\n\n[ref]: url", 
-            "<p><img src=\"url\" alt=\"alttext\"></img></p>"
+            "<p><img src=\"url\" alt=\"alttext\" title=\"\"></img></p>"
         )]
         public void ShouldParseCorrectlyFormattedImageReferenceNoTitleSuccess(
             string markdown,
