@@ -35,7 +35,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "![alttext](url \"title\")", 
-            "<p>test <img src=\"url\" alt=\"alttext\" title=\"title\"></img></p>"
+            "<p><img src=\"url\" alt=\"alttext\" title=\"title\"></img></p>"
         )]
         public void ShouldParseCorrectlyFormattedImageAdjacentWithTitleSuccess(
             string markdown,
