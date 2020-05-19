@@ -31,12 +31,12 @@ namespace MarkdownToHtml
 
         public MarkdownImage(
             string href,
-            string title,
-            string altText
+            string altText,
+            string title
         ) {
             this.href = href;
-            this.title = title;
             this.altText = altText;
+            this.title = title;
         }
 
         public string ToHtml() 
@@ -102,8 +102,8 @@ namespace MarkdownToHtml
                 );
                 result.AddContent(
                     new MarkdownImage(
-                        text,
                         url,
+                        text,
                         title
                     )
                 );
@@ -122,8 +122,8 @@ namespace MarkdownToHtml
                 );
                 result.AddContent(
                     new MarkdownImage(
-                        text,
                         url,
+                        text,
                         title
                     )
                 );
@@ -145,8 +145,8 @@ namespace MarkdownToHtml
                         );
                         result.AddContent(
                             new MarkdownImage(
-                                text,
                                 url.Url,
+                                text,
                                 url.Title
                             )
                         );
