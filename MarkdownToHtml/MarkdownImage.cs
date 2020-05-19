@@ -43,7 +43,7 @@ namespace MarkdownToHtml
         {
             string html = 
                 $"<{tag} src=\"{href}\" "
-                + $"text=\"{altText}\" " 
+                + $"alt=\"{altText}\" " 
                 + $"title=\"{title}\">"
                 + $"</{tag}>";
             return html;
