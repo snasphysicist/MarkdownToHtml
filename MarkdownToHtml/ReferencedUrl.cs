@@ -76,7 +76,7 @@ namespace MarkdownToHtml
                 url = imageMatch.Groups[2].Value;
                 title = imageMatch.Groups[3].Value;
                 type = ReferencedUrlType.Image;
-                lines[0] = regexLinkReference.Replace(
+                lines[0] = regexImageReference.Replace(
                     lines[0],
                     ""
                 );
