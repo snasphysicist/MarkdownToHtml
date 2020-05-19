@@ -61,16 +61,7 @@ namespace MarkdownToHtml
             Match imageMatch = regexImageReference.Match(
                 lines[0]
             );
-            if (linkMatch.Success)
-            {
-                reference = linkMatch.Groups[1].Value;
-                url = linkMatch.Groups[2].Value;
-                type = ReferencedUrlType.Link;
-                lines[0] = regexLinkReference.Replace(
-                    lines[0],
-                    ""
-                );
-            } else if (imageMatch.Success)
+            if (imageMatch.Success)
             {
                 reference = imageMatch.Groups[1].Value;
                 url = imageMatch.Groups[2].Value;
@@ -80,7 +71,16 @@ namespace MarkdownToHtml
                     lines[0],
                     ""
                 );
-            }
+            } else if (linkMatch.Success)
+            {
+                reference = linkMatch.Groups[1].Value;
+                url = linkMatch.Groups[2].Value;
+                type = ReferencedUrlType.Link;
+                lines[0] = regexLinkReference.Replace(
+                    lines[0],
+                    ""
+                );
+            } 
             return new ReferencedUrl(
                 reference,
                 url,
