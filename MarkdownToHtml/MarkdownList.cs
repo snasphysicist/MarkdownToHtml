@@ -63,37 +63,10 @@ namespace MarkdownToHtml
             int endListSection = FindEndOfListSection(
                 lines
             );
-            string[] truncatedLines = new string[endListSection];
-            // Remove numbers and spaces, if needed
-            for (int i = 0; i < endListSection; i++)
-            {
-                string truncated = lines[i];
-                Match lineContentMatch = regexOrderedListLine.Match(lines[i]);
-                if (lineContentMatch.Success)
-                {
-                    truncated = lineContentMatch.Groups[1].Value;
-                    int spaces = 0;
-                    // Count spaces
-                    while(
-                        (spaces < truncated.Length)
-                        && (truncated[spaces] == ' ')
-                    ) {
-                        spaces++;
-                    }
-                    // If there are fewer than 5 spaces, remove all
-                    if (spaces < 5)
-                    {
-                        truncatedLines[i] = truncated.Substring(spaces);
-                    } else {
-                        // More than five, just remove one space
-                        truncatedLines[i] = truncated.Substring(1);
-                    }
-                } else {
-                    truncatedLines[i] = lines[i];
-                }
-                // Delete original line, don't parse again
-                lines[i] = "";
-            }
+            string[] truncatedLines = RemoveListIndicators(
+                lines,
+                endListSection
+            );
             // Need to split into groups per list item
             int currentIndex = 0;
             // Hold the parsed list items as we go
@@ -198,6 +171,43 @@ namespace MarkdownToHtml
                 index++;
             }
             return index;
+        }
+
+        private static string[] RemoveListIndicators(
+            ArraySegment<string> lines,
+            int endOfListSection
+        ) {
+            string[] truncatedLines = new string[endOfListSection];
+            for (int i = 0; i < endOfListSection; i++)
+            {
+                string truncated = lines[i];
+                Match lineContentMatch = regexOrderedListLine.Match(lines[i]);
+                if (lineContentMatch.Success)
+                {
+                    truncated = lineContentMatch.Groups[1].Value;
+                    int spaces = 0;
+                    // Count spaces
+                    while(
+                        (spaces < truncated.Length)
+                        && (truncated[spaces] == ' ')
+                    ) {
+                        spaces++;
+                    }
+                    // If there are fewer than 5 spaces, remove all
+                    if (spaces < 5)
+                    {
+                        truncatedLines[i] = truncated.Substring(spaces);
+                    } else {
+                        // More than five, just remove one space
+                        truncatedLines[i] = truncated.Substring(1);
+                    }
+                } else {
+                    truncatedLines[i] = lines[i];
+                }
+                // Delete original line, don't parse again
+                lines[i] = "";
+            }
+            return truncatedLines;
         }
 
         private static int FindEndOfListItem(
