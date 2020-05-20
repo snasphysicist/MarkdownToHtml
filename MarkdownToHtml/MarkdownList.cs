@@ -1,10 +1,16 @@
 
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
     public class MarkdownList : IHtmlable
     {
+
+        private static Regex regexOrderedListLine = new Regex(
+            @"[\s]{0,3}\d+\.(\s+?.*)"
+        );
 
         private IHtmlable[] content;
 
@@ -42,7 +48,7 @@ namespace MarkdownToHtml
         public static bool CanParseFrom(
             ParseInput input
         ) {
-            return input.FirstLine.StartsWith(">");
+            return regexOrderedListLine.Match(input.FirstLine).Success;
         }
 
         public static ParseResult ParseFrom(
@@ -54,17 +60,18 @@ namespace MarkdownToHtml
             {
                 return result;
             }
-            int endQuoteSection = FindEndOfQuoteSection(
+            int endQuoteSection = FindEndOfListSection(
                 lines
             );
             string[] truncatedLines = new string[endQuoteSection];
-            // Remove quote arrows and spaces, if needed
+            // Remove numbers and spaces, if needed
             for (int i = 0; i < endQuoteSection; i++)
             {
                 string truncated = lines[i];
-                if (lines[i].StartsWith(">"))
+                Match lineContentMatch = regexOrderedListLine.Match(lines[i]);
+                if (lineContentMatch.Success)
                 {
-                    truncated = truncated.Substring(1);
+                    truncated = lineContentMatch.Groups[1].Value;
                     int spaces = 0;
                     // Count spaces
                     while(
@@ -84,28 +91,84 @@ namespace MarkdownToHtml
                 } else {
                     truncatedLines[i] = lines[i];
                 }
-                // Remove original line
+                // Delete original line, don't parse again
                 lines[i] = "";
             }
-            /* 
-             * The truncated lines should be parsed as any other line group
-             * and wrapped in a blockquote element
-             */
-            MarkdownParser parser = new MarkdownParser(
-                truncatedLines
-            );
-
-            MarkdownQuote quoteElement = new MarkdownQuote(
-                parser.ContentAsArray()
-            );
+            // Need to split into groups per list item
+            int currentIndex = 0;
+            // Hold the parsed list items as we go
+            LinkedList<IHtmlable> listItems = new LinkedList<IHtmlable>();
+            while (currentIndex < truncatedLines.Length)
+            {
+                int endIndex = FindEndOfListItem(
+                    truncatedLines,
+                    currentIndex
+                );
+                // Should list item contents be in a paragraph?
+                bool wrapInParagraph = false;
+                // Is preceding line whitespace?
+                if (
+                    (currentIndex != 0)
+                    && (
+                        ContainsOnlyWhitespace(
+                            truncatedLines[currentIndex - 1]
+                        )
+                    )
+                ) {
+                    wrapInParagraph = true;
+                }
+                // Is following line whitespace?
+                if (
+                    (endIndex < (truncatedLines.Length - 1))
+                    && (
+                        ContainsOnlyWhitespace(
+                            truncatedLines[endIndex + 1]
+                        )
+                    )
+                ) {
+                    wrapInParagraph = true;
+                }
+                ParseResult nextListItem = MarkdownListItem.ParseFrom(
+                    new ParseInput(
+                        input.Urls,
+                        truncatedLines,
+                        currentIndex,
+                        endIndex - currentIndex
+                    ),
+                    wrapInParagraph
+                );
+                foreach(
+                    IHtmlable entry
+                    in nextListItem.GetContent()
+                ) {
+                    listItems.AddLast(
+                        entry
+                    );
+                }
+                while (
+                    (currentIndex < truncatedLines.Length)
+                    && (
+                        ContainsOnlyWhitespace(
+                        lines[currentIndex]
+                        )
+                    )
+                ) {
+                    currentIndex++;
+                }
+            }
             result.Success = true;
             result.AddContent(
-                quoteElement
+                new MarkdownList(
+                    Utils.LinkedListToArray(
+                        listItems
+                    ),
+                    MarkdownElementType.OrderedList
+                )
             );
             return result;
         }
 
-        private static int FindEndOfQuoteSection(
+        private static int FindEndOfListSection(
             ArraySegment<string> lines
         ) {
             int index = 1;
@@ -116,14 +179,14 @@ namespace MarkdownToHtml
              * We want to break the loop when there is a whitespace line
              * (previousLineWasWhitespace)
              * followed by a non-whitespace line (!ContainsOnlyWhitespace(lines[index])) 
-             * which is not a quote line !lines[index].StarsWith(">")
+             * which is not a list line !regex....Match(line).Success
              */
             while (
                 index < lines.Count
                 && !(
                     previousLineWasWhitespace
                     && !ContainsOnlyWhitespace(lines[index])
-                    && !lines[index].StartsWith(">")
+                    && !regexOrderedListLine.Match(lines[index]).Success
                 )
             ) {
                 if (ContainsOnlyWhitespace(lines[index]))
@@ -135,6 +198,21 @@ namespace MarkdownToHtml
                 index++;
             }
             return index;
+        }
+
+        private static int FindEndOfListItem(
+            string[] lines,
+            int startIndex
+        ) {
+            // The first line (0) will contain a 1. or similar, so skip it
+            int endIndex = startIndex + 1;
+            while (
+                (endIndex < lines.Length)
+                && (!regexOrderedListLine.Match(lines[endIndex]).Success)
+            ) {
+                endIndex++;
+            }
+            return endIndex;
         }
 
         private static bool ContainsOnlyWhitespace(
