@@ -73,25 +73,14 @@ namespace MarkdownToHtml
             int currentIndex = 0;
             // Hold the parsed list items as we go
             LinkedList<IHtmlable> listItems = new LinkedList<IHtmlable>();
+            // Track whether list item contents should be in a paragraph
+            bool wrapInParagraph = false;
             while (currentIndex < endListSection)
             {
                 int endIndex = FindEndOfListItem(
                     listLines,
                     currentIndex
                 );
-                // Should list item contents be in a paragraph?
-                bool wrapInParagraph = false;
-                // Is preceding line whitespace?
-                if (
-                    (currentIndex != 0)
-                    && (
-                        ContainsOnlyWhitespace(
-                            listLines[currentIndex - 1]
-                        )
-                    )
-                ) {
-                    wrapInParagraph = true;
-                }
                 // Is following line whitespace?
                 if (
                     (endIndex < (listLines.Count - 1))
@@ -125,6 +114,13 @@ namespace MarkdownToHtml
                         entry
                     );
                 }
+                // Jump over lines just parsed
+                currentIndex += (endIndex - currentIndex);
+                /*
+                 * If there are further whitespace lines then
+                 * the next list item contents need to be wrapped in a paragraph
+                 */
+                wrapInParagraph = false;
                 while (
                     (currentIndex < listLines.Count)
                     && (
@@ -133,6 +129,7 @@ namespace MarkdownToHtml
                         )
                     )
                 ) {
+                    wrapInParagraph = true;
                     currentIndex++;
                 }
             }
