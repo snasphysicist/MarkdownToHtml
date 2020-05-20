@@ -90,7 +90,7 @@ namespace MarkdownToHtml
                     (endIndex < listLines.Count)
                     && (
                         ContainsOnlyWhitespace(
-                            listLines[endIndex]
+                            listLines[endIndex - 1]
                         )
                     )
                 ) {
