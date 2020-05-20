@@ -281,11 +281,7 @@ namespace MarkdownToHtml
                     {
                         innerResult = MarkdownParagraph.ParseFrom(lines);
                         returnedElement = new MarkdownListItem(
-                            new IHtmlable[] {
-                                new MarkdownParagraph(
-                                    innerResult.GetContent()
-                                )
-                            }
+                            innerResult.GetContent()
                         );
                     } else 
                     {
