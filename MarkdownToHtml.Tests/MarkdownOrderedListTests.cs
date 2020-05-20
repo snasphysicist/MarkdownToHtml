@@ -8,10 +8,10 @@ namespace MarkdownToHtml
     {
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("* test1", "<ol><li>test1</li></ol>")]
-        [DataRow(" * test1", "<ol><li>test1</li></ol>")]
-        [DataRow("  * test1", "<ol><li>test1</li></ol>")]
-        [DataRow("   * test1", "<ol><li>test1</li></ol>")]
+        [DataRow("1. test1", "<ol><li>test1</li></ol>")]
+        [DataRow(" 1. test1", "<ol><li>test1</li></ol>")]
+        [DataRow("  1. test1", "<ol><li>test1</li></ol>")]
+        [DataRow("   1. test1", "<ol><li>test1</li></ol>")]
         public void ShouldParseOrderedListZeroToThreeSpacesSuccess(
             string markdown,
             string targetHtml
