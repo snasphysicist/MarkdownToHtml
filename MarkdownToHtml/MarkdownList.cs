@@ -210,8 +210,6 @@ namespace MarkdownToHtml
                 } else {
                     lines[i] = lines[i];
                 }
-                // Delete original line, don't parse again
-                lines[i] = "";
             }
         }
 
