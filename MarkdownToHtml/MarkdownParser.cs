@@ -109,7 +109,11 @@ namespace MarkdownToHtml
             } else if (MarkdownQuote.CanParseFrom(input))
             {
                 result = MarkdownQuote.ParseFrom(input);
-            } else {
+            } else if (MarkdownList.CanParseFrom(input))
+            {
+                result = MarkdownList.ParseFrom(input);
+            } else 
+            {
                 result = MarkdownParagraph.ParseFrom(input);
             }
             foreach (IHtmlable entry in result.GetContent())
