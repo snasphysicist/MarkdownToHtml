@@ -108,7 +108,7 @@ namespace MarkdownToHtml
                     input.Urls,
                     listLines.Array,
                     listLines.Offset + currentIndex,
-                    listLines.Count - currentIndex
+                    endIndex - currentIndex
                 );
                 RemoveListIndicators(
                     listItemLines
