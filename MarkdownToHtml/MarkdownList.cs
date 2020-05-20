@@ -74,23 +74,27 @@ namespace MarkdownToHtml
             // Hold the parsed list items as we go
             LinkedList<IHtmlable> listItems = new LinkedList<IHtmlable>();
             // Track whether list item contents should be in a paragraph
-            bool wrapInParagraph = false;
+            bool whitespaceLineBefore = false;
+            bool whitespaceLineAfter = false;
             while (currentIndex < endListSection)
             {
                 int endIndex = FindEndOfListItem(
                     listLines,
                     currentIndex
                 );
-                // Is following line whitespace?
+                /*
+                 * There is a whitespace line between
+                 * this list item and the following one
+                 */
                 if (
-                    (endIndex < (listLines.Count - 1))
+                    (endIndex < listLines.Count)
                     && (
                         ContainsOnlyWhitespace(
-                            listLines[endIndex + 1]
+                            listLines[endIndex]
                         )
                     )
                 ) {
-                    wrapInParagraph = true;
+                    whitespaceLineAfter = true;
                 }
                 // Create new parse input for this list item
                 ParseInput listItemLines = new ParseInput(
@@ -104,7 +108,7 @@ namespace MarkdownToHtml
                 );
                 ParseResult nextListItem = MarkdownListItem.ParseFrom(
                     listItemLines,
-                    wrapInParagraph
+                    whitespaceLineBefore || whitespaceLineAfter
                 );
                 foreach(
                     IHtmlable entry
@@ -116,11 +120,12 @@ namespace MarkdownToHtml
                 }
                 // Jump over lines just parsed
                 currentIndex += (endIndex - currentIndex);
-                /*
-                 * If there are further whitespace lines then
-                 * the next list item contents need to be wrapped in a paragraph
+                // Whitespace after previous entry becomes before next entry
+                whitespaceLineBefore = whitespaceLineAfter;
+                /* 
+                 * If there's further whitespace after parsed section
+                 * (for some reason) then jump over this too
                  */
-                wrapInParagraph = false;
                 while (
                     (currentIndex < listLines.Count)
                     && (
@@ -129,7 +134,6 @@ namespace MarkdownToHtml
                         )
                     )
                 ) {
-                    wrapInParagraph = true;
                     currentIndex++;
                 }
             }
