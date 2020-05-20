@@ -60,12 +60,12 @@ namespace MarkdownToHtml
             {
                 return result;
             }
-            int endQuoteSection = FindEndOfListSection(
+            int endListSection = FindEndOfListSection(
                 lines
             );
-            string[] truncatedLines = new string[endQuoteSection];
+            string[] truncatedLines = new string[endListSection];
             // Remove numbers and spaces, if needed
-            for (int i = 0; i < endQuoteSection; i++)
+            for (int i = 0; i < endListSection; i++)
             {
                 string truncated = lines[i];
                 Match lineContentMatch = regexOrderedListLine.Match(lines[i]);
