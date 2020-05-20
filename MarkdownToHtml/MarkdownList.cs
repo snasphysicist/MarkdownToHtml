@@ -85,17 +85,16 @@ namespace MarkdownToHtml
                 /*
                  * There is a whitespace line between
                  * this list item and the following one
+                 * and this list item isn't the final one
                  */
-                if (
+                whitespaceLineAfter = (
                     (endIndex < listLines.Count)
                     && (
                         ContainsOnlyWhitespace(
                             listLines[endIndex - 1]
                         )
                     )
-                ) {
-                    whitespaceLineAfter = true;
-                }
+                );
                 // Create new parse input for this list item
                 ParseInput listItemLines = new ParseInput(
                     input.Urls,
