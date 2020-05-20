@@ -63,18 +63,20 @@ namespace MarkdownToHtml
             int endListSection = FindEndOfListSection(
                 lines
             );
-            string[] truncatedLines = RemoveListIndicators(
-                lines,
+            // New array segment with only parsed content
+            ArraySegment<string> listLines = new ArraySegment<string>(
+                lines.Array,
+                lines.Offset,
                 endListSection
             );
             // Need to split into groups per list item
             int currentIndex = 0;
             // Hold the parsed list items as we go
             LinkedList<IHtmlable> listItems = new LinkedList<IHtmlable>();
-            while (currentIndex < truncatedLines.Length)
+            while (currentIndex < endListSection)
             {
                 int endIndex = FindEndOfListItem(
-                    truncatedLines,
+                    listLines,
                     currentIndex
                 );
                 // Should list item contents be in a paragraph?
@@ -84,7 +86,7 @@ namespace MarkdownToHtml
                     (currentIndex != 0)
                     && (
                         ContainsOnlyWhitespace(
-                            truncatedLines[currentIndex - 1]
+                            listLines[currentIndex - 1]
                         )
                     )
                 ) {
@@ -92,22 +94,27 @@ namespace MarkdownToHtml
                 }
                 // Is following line whitespace?
                 if (
-                    (endIndex < (truncatedLines.Length - 1))
+                    (endIndex < (listLines.Count - 1))
                     && (
                         ContainsOnlyWhitespace(
-                            truncatedLines[endIndex + 1]
+                            listLines[endIndex + 1]
                         )
                     )
                 ) {
                     wrapInParagraph = true;
                 }
+                // Create new parse input for this list item
+                ParseInput listItemLines = new ParseInput(
+                    input.Urls,
+                    listLines.Array,
+                    listLines.Offset + currentIndex,
+                    listLines.Count - currentIndex
+                );
+                RemoveListIndicators(
+                    listItemLines
+                );
                 ParseResult nextListItem = MarkdownListItem.ParseFrom(
-                    new ParseInput(
-                        input.Urls,
-                        truncatedLines,
-                        currentIndex,
-                        endIndex - currentIndex
-                    ),
+                    listItemLines,
                     wrapInParagraph
                 );
                 foreach(
@@ -119,7 +126,7 @@ namespace MarkdownToHtml
                     );
                 }
                 while (
-                    (currentIndex < truncatedLines.Length)
+                    (currentIndex < listLines.Count)
                     && (
                         ContainsOnlyWhitespace(
                         lines[currentIndex]
@@ -173,12 +180,11 @@ namespace MarkdownToHtml
             return index;
         }
 
-        private static string[] RemoveListIndicators(
-            ArraySegment<string> lines,
-            int endOfListSection
+        private static void RemoveListIndicators(
+            ParseInput input
         ) {
-            string[] truncatedLines = new string[endOfListSection];
-            for (int i = 0; i < endOfListSection; i++)
+            ArraySegment<string> lines = input.Lines();
+            for (int i = 0; i < lines.Count; i++)
             {
                 string truncated = lines[i];
                 Match lineContentMatch = regexOrderedListLine.Match(lines[i]);
@@ -196,28 +202,27 @@ namespace MarkdownToHtml
                     // If there are fewer than 5 spaces, remove all
                     if (spaces < 5)
                     {
-                        truncatedLines[i] = truncated.Substring(spaces);
+                        lines[i] = truncated.Substring(spaces);
                     } else {
                         // More than five, just remove one space
-                        truncatedLines[i] = truncated.Substring(1);
+                        lines[i] = truncated.Substring(1);
                     }
                 } else {
-                    truncatedLines[i] = lines[i];
+                    lines[i] = lines[i];
                 }
                 // Delete original line, don't parse again
                 lines[i] = "";
             }
-            return truncatedLines;
         }
 
         private static int FindEndOfListItem(
-            string[] lines,
+            ArraySegment<string> lines,
             int startIndex
         ) {
             // The first line (0) will contain a 1. or similar, so skip it
             int endIndex = startIndex + 1;
             while (
-                (endIndex < lines.Length)
+                (endIndex < lines.Count)
                 && (!regexOrderedListLine.Match(lines[endIndex]).Success)
             ) {
                 endIndex++;
