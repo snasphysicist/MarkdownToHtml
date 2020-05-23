@@ -173,7 +173,10 @@ namespace MarkdownToHtml
                 && !(
                     previousLineWasWhitespace
                     && !ContainsOnlyWhitespace(lines[index])
-                    && !regexOrderedListLine.Match(lines[index]).Success
+                    && !(
+                        regexOrderedListLine.Match(lines[index]).Success
+                        || regexUnorderedListLine.Match(lines[index]).Success
+                    )
                 )
             ) {
                 if (ContainsOnlyWhitespace(lines[index]))
