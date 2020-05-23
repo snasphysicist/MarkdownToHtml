@@ -9,7 +9,11 @@ namespace MarkdownToHtml
     {
 
         private static Regex regexOrderedListLine = new Regex(
-            @"[\s]{0,3}\d+\.(\s+?.*)"
+            @"^[\s]{0,3}\d+\.(\s+?.*)"
+        );
+
+        private static Regex regexUnorderedListLine = new Regex(
+            @"^[\s]{0,3}[\*|\+|-](\s+?.*)"
         );
 
         private IHtmlable[] content;
@@ -48,7 +52,10 @@ namespace MarkdownToHtml
         public static bool CanParseFrom(
             ParseInput input
         ) {
-            return regexOrderedListLine.Match(input.FirstLine).Success;
+            return (
+                regexOrderedListLine.Match(input.FirstLine).Success
+                || regexUnorderedListLine.Match(input.FirstLine).Success
+            );
         }
 
         public static ParseResult ParseFrom(
