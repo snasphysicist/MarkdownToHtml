@@ -99,7 +99,7 @@ namespace MarkdownToHtml
         [DataTestMethod]
         [Timeout(500)]
         [DataRow(
-            "* test1\n\n\n*test2", 
+            "* test1\n\n\n* test2", 
             "<ul><li><p>test1</p></li><li><p>test2</p></li></ul>"
         )]
         public void ShouldParseUnorderedListLinesSeparatedByWhitespaceSuccess(
