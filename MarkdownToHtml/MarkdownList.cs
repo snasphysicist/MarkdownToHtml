@@ -231,7 +231,10 @@ namespace MarkdownToHtml
             int endIndex = startIndex + 1;
             while (
                 (endIndex < lines.Count)
-                && (!regexOrderedListLine.Match(lines[endIndex]).Success)
+                && !(
+                    regexOrderedListLine.Match(lines[endIndex]).Success
+                    || regexUnorderedListLine.Match(lines[endIndex]).Success
+                )
             ) {
                 endIndex++;
             }
