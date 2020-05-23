@@ -16,6 +16,7 @@ namespace MarkdownToHtml
         Strikethrough,
         OrderedList,
         UnorderedList,
+        ListItem,
         Link,
         Image,
         CodeInline,

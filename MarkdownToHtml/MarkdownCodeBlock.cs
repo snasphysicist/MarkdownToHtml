@@ -40,8 +40,9 @@ namespace MarkdownToHtml
         }
 
         public static bool CanParseFrom(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
+            ArraySegment<string> lines = input.Lines();
             if (!regexBacktickSectionOpen.Match(lines[0]).Success)
             {
                 return false;
@@ -58,13 +59,15 @@ namespace MarkdownToHtml
         }
 
         public static ParseResult ParseFrom(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
+
             ParseResult result = new ParseResult();
-            if (!CanParseFrom(lines))
+            if (!CanParseFrom(input))
             {
                 return result;
             }
+            ArraySegment<string> lines = input.Lines();
             lines[0] = "";
             LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
             int i = 1;
@@ -81,19 +84,11 @@ namespace MarkdownToHtml
             // Remember to clear final line (closing backticks)
             lines[i] = "";
             MarkdownCodeBlock blockCodeElement = new MarkdownCodeBlock(
-                LinkedListToArray(innerContent)
+                Utils.LinkedListToArray(innerContent)
             );
             result.Success = true;
             result.AddContent(blockCodeElement);
             return result;
-        }
-
-        private static T[] LinkedListToArray<T>(
-            LinkedList<T> linkedList
-        ) {
-            T[] array = new T[linkedList.Count];
-            linkedList.CopyTo(array, 0);
-            return array;
         }
 
     }

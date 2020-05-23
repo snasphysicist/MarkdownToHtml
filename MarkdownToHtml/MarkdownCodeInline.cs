@@ -34,17 +34,18 @@ namespace MarkdownToHtml
         }
 
         public static bool CanParseFrom(
-            string line
+            ParseInput input
         ) {
-            return regexParseable.Match(line).Success;
+            return regexParseable.Match(input.FirstLine).Success;
         }
 
         // Shared code for parsing emphasis sections
         public static ParseResult ParseFrom(
-            string line
+            ParseInput input
         ) {
+            string line = input.FirstLine;
             ParseResult result = new ParseResult();
-            if (!CanParseFrom(line))
+            if (!CanParseFrom(input))
             {
                 // Fail immediately if this string cannot be parsed
                 result.Line = line;
@@ -70,7 +71,10 @@ namespace MarkdownToHtml
             // Parse everything inside the backticks
             MarkdownCodeInline element = new MarkdownCodeInline(
                 MarkdownParser.ParseInnerText(
-                    line.Substring(1, j - 1)
+                    new ParseInput(
+                        input,
+                        line.Substring(1, j - 1)
+                    )
                 )
             );
             result.AddContent(element);

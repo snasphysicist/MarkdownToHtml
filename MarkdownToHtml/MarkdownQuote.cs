@@ -30,16 +30,17 @@ namespace MarkdownToHtml
         }
 
         public static bool CanParseFrom(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
-            return lines[0].StartsWith(">");
+            return input.FirstLine.StartsWith(">");
         }
 
         public static ParseResult ParseFrom(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
+            ArraySegment<string> lines = input.Lines();
             ParseResult result = new ParseResult();
-            if (!CanParseFrom(lines))
+            if (!CanParseFrom(input))
             {
                 return result;
             }

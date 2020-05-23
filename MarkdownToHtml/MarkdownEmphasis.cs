@@ -35,16 +35,17 @@ namespace MarkdownToHtml
         }
 
         public static bool CanParseFrom(
-            string line
+            ParseInput input
         ) {
-            return regexParseable.Match(line).Success;
+            return regexParseable.Match(input.FirstLine).Success;
         }
 
         public static ParseResult ParseFrom(
-            string line
+            ParseInput input
         ) {
+            string line = input.FirstLine;
             ParseResult result = new ParseResult();
-            if (!CanParseFrom(line))
+            if (!CanParseFrom(input))
             {
                 // Return a failed result if cannot parse from this line
                 result.Line = line;
@@ -62,7 +63,10 @@ namespace MarkdownToHtml
             // Parse everything inside the stars
             MarkdownEmphasis element = new MarkdownEmphasis(
                 MarkdownParser.ParseInnerText(
-                    content
+                    new ParseInput(
+                        input,
+                        content
+                    )
                 )
             );
             result.AddContent(element);

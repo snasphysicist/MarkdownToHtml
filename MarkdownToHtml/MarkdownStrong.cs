@@ -35,15 +35,16 @@ namespace MarkdownToHtml
         }
 
         public static bool CanParseFrom(
-            string line
+            ParseInput input
         ) {
-            return regexParseable.Match(line).Success;
+            return regexParseable.Match(input.FirstLine).Success;
         }
 
         public static ParseResult ParseFrom(
-            string line
+            ParseInput input
         ) {
-            if (!CanParseFrom(line))
+            string line = input.FirstLine;
+            if (!CanParseFrom(input))
             {
                 // Return a failed result if this cannot be parsed
                 ParseResult result = new ParseResult();
@@ -54,12 +55,12 @@ namespace MarkdownToHtml
             if (line.StartsWith("**"))
             {
                 return ParseStrongSection(
-                    line,
+                    input,
                     "**"
                 );
             } else {
                 return ParseStrongSection(
-                    line,
+                    input,
                     "__"
                 );
             }
@@ -67,9 +68,10 @@ namespace MarkdownToHtml
 
         // Shared code for parsing strong sections
         private static ParseResult ParseStrongSection(
-            string line,
+            ParseInput input,
             string delimiter
         ) {
+            string line = input.FirstLine;
             ParseResult result = new ParseResult();
             int j = 2;
             // Find closing two characters
@@ -91,7 +93,10 @@ namespace MarkdownToHtml
             // Parse everything inside the strong section delimiters
             MarkdownStrong element = new MarkdownStrong(
                 MarkdownParser.ParseInnerText(
-                    line.Substring(2, j - 3)
+                    new ParseInput(
+                        input,
+                        line.Substring(2, j - 3)
+                    )
                 )
             );
             result.AddContent(element);

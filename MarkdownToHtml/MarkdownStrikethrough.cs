@@ -34,16 +34,17 @@ namespace MarkdownToHtml
         }
 
         public static bool CanParseFrom(
-            string line
+            ParseInput input
         ) {
-            return regexParseable.Match(line).Success;
+            return regexParseable.Match(input.FirstLine).Success;
         }
 
         public static ParseResult ParseFrom(
-            string line
+            ParseInput input
         ) {
+            string line = input.FirstLine;
             ParseResult result = new ParseResult();
-            if (!CanParseFrom(line))
+            if (!CanParseFrom(input))
             {
                 // Fail immediately if we cannot parse this text as strikethrough
                 result.Line = line;
@@ -69,7 +70,10 @@ namespace MarkdownToHtml
             // Parse everything inside the stars
             MarkdownStrikethrough element = new MarkdownStrikethrough(
                 MarkdownParser.ParseInnerText(
-                    line.Substring(2, j - 3)
+                    new ParseInput(
+                        input,
+                        line.Substring(2, j - 3)
+                    )
                 )
             );
             result.AddContent(element);

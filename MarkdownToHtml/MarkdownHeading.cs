@@ -72,48 +72,49 @@ namespace MarkdownToHtml
         }
 
         public static bool CanParseFrom(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
             return (
-                CanParseSingleLineHeading(lines)
-                || CanParseDoubleLineHeading(lines)
+                CanParseSingleLineHeading(input)
+                || CanParseDoubleLineHeading(input)
             );
         }
 
         private static bool CanParseSingleLineHeading(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
-            return regexSingleLineHeading.Match(lines[0]).Success;
+            return regexSingleLineHeading.Match(input.FirstLine).Success;
         }
 
         private static bool CanParseDoubleLineHeading(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
             bool isDoubleLineHeading = false;
-            if (lines.Count > 1)
+            if (input.Lines().Count > 1)
             {
-                isDoubleLineHeading = regexDoubleLineHeading.Match(lines[1]).Success;
+                isDoubleLineHeading = regexDoubleLineHeading.Match(input.Lines()[1]).Success;
             }
             return isDoubleLineHeading;
         }
 
         public static ParseResult ParseFrom(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
-            if (CanParseSingleLineHeading(lines))
+            if (CanParseSingleLineHeading(input))
             {
-                return ParseSingleLineHeading(lines);
-            } else if (CanParseDoubleLineHeading(lines)) 
+                return ParseSingleLineHeading(input);
+            } else if (CanParseDoubleLineHeading(input)) 
             {
-                return ParseDoubleLineHeading(lines);
+                return ParseDoubleLineHeading(input);
             } else {
                 return new ParseResult();
             }
         }
 
         private static ParseResult ParseSingleLineHeading(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
+            ArraySegment<string> lines = input.Lines();
             ParseResult result = new ParseResult();
             // Calculate heading level, (maximum 6)
             int level = 0;
@@ -138,7 +139,10 @@ namespace MarkdownToHtml
                 new MarkdownHeading(
                     level,
                     MarkdownParser.ParseInnerText(
-                        content
+                        new ParseInput(
+                            input,
+                            content
+                        )
                     )
                 )
             );
@@ -146,8 +150,9 @@ namespace MarkdownToHtml
         }
 
         private static ParseResult ParseDoubleLineHeading(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
+            ArraySegment<string> lines = input.Lines();
             ParseResult result = new ParseResult();
             int level;
             if (lines[1].StartsWith("="))
@@ -159,7 +164,10 @@ namespace MarkdownToHtml
             MarkdownHeading element = new MarkdownHeading(
                 level,
                 MarkdownParser.ParseInnerText(
-                    lines[0]
+                    new ParseInput(
+                        input,
+                        lines[0]
+                    )
                 )
             );
             lines[0] = "";

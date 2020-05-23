@@ -1,23 +1,35 @@
 
 using System;
+using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
     public class MarkdownText : IHtmlable
     {
 
-        private static string[][] EscapeReplacements = new string[][]{
-            new string[] {"\\*", "*"},
-            new string[] {"\\_", "_"},
-            new string[] {"\\~", "~"},
-            new string[] {"\\`", "`"}
-        };
-
-        private static char[] specialCharacters = new char[] {
+        // Special characters that could start different element type
+        private static Regex regexSpecialCharacter = new Regex(
+            @"[^\\][`|\*|_|\[|\]|#|!|~]"
+        );
+        
+        private static char[] specialCharacters = new char[]
+        {
+            '\\',
+            '`',
             '*',
             '_',
-            '~',
-            '`'
+            '{',
+            '}',
+            '[',
+            ']',
+            '(',
+            ')',
+            '#',
+            '+',
+            '-',
+            '.',
+            '!',
+            '~'
         };
 
         string content;
@@ -41,11 +53,17 @@ namespace MarkdownToHtml
         private string ReplaceEscapeCharacters(
             string text
         ) {
-            foreach (string[] replacement in EscapeReplacements)
+            foreach (char special in specialCharacters)
             {
+                // escapeSequence like \\# -> replace with last char (#)
                 text = text.Replace(
-                    replacement[0],
-                    replacement[1]
+                    new string(
+                        new char[]{
+                            '\\', 
+                            special
+                        }
+                    ),
+                    new string(special, 1)
                 );
             }
             return text;
@@ -53,9 +71,10 @@ namespace MarkdownToHtml
 
         // Given a text snippet, parse a plain text section from its start
         public static ParseResult ParseFrom(
-            string line,
+            ParseInput input,
             bool force
         ) {
+            string line = input.FirstLine;
             ParseResult result = new ParseResult();
             int indexFirstSpecialCharacter = FindUnescapedSpecial(
                 line
@@ -101,29 +120,24 @@ namespace MarkdownToHtml
         private static int FindUnescapedSpecial(
             string line
         ) {
-            // First char is special case, cannot be escaped
+            // First character is special case, cannot be escaped
             if (
                 IsInArray(
-                        line[0],
-                        specialCharacters
-                    )
+                    line[0],
+                    specialCharacters
+                )
             ) {
                 return 0;
             }
-            int j = 1;
-            while (
-                (j < line.Length)
-                && !(
-                    IsInArray(
-                        line[j],
-                        specialCharacters
-                    )
-                    && (line[j-1] != '\\')
-                )
-            ) {
-                j++;
+            Match matchSpecialCharacters = regexSpecialCharacter.Match(line);
+            if (matchSpecialCharacters.Success)
+            {
+                // Return index of first capture
+                return matchSpecialCharacters.Groups[1].Index;
+            } else {
+                // No match, return index outside of string
+                return line.Length;
             }
-            return j;
         }
 
         // Check whether a value is in an array
