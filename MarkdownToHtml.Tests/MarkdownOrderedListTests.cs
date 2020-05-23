@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace MarkdownToHtml 
 {
     [TestClass]
-    public class MarkdownListTests
+    public class MarkdownOrderedListTests
     {
         [DataTestMethod]
         [Timeout(500)]
