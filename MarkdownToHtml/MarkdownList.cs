@@ -197,10 +197,19 @@ namespace MarkdownToHtml
             for (int i = 0; i < lines.Count; i++)
             {
                 string truncated = lines[i];
-                Match lineContentMatch = regexOrderedListLine.Match(lines[i]);
-                if (lineContentMatch.Success)
+                Match lineOrderedContentMatch = regexOrderedListLine.Match(lines[i]);
+                Match lineUnorderedContentMatch = regexUnorderedListLine.Match(lines[i]);
+                if (
+                    lineOrderedContentMatch.Success
+                    || lineUnorderedContentMatch.Success
+                )
                 {
-                    truncated = lineContentMatch.Groups[1].Value;
+                    if (lineOrderedContentMatch.Success) {
+                        truncated = lineOrderedContentMatch.Groups[1].Value;
+                    } else if (lineUnorderedContentMatch.Success)
+                    {
+                        truncated = lineUnorderedContentMatch.Groups[1].Value;
+                    }
                     int spaces = 0;
                     // Count spaces
                     while(
