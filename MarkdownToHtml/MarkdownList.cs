@@ -67,6 +67,18 @@ namespace MarkdownToHtml
             {
                 return result;
             }
+            /* 
+             * Work out the list type from the first line
+             * before we start to mangle the line contents
+             */
+            MarkdownElementType type;
+            if (regexOrderedListLine.Match(input.FirstLine).Success)
+            {
+                type = MarkdownElementType.OrderedList;
+            } else
+            {
+                type = MarkdownElementType.UnorderedList;
+            }
             int endListSection = FindEndOfListSection(
                 lines
             );
@@ -149,7 +161,7 @@ namespace MarkdownToHtml
                     Utils.LinkedListToArray(
                         listItems
                     ),
-                    MarkdownElementType.OrderedList
+                    type
                 )
             );
             return result;
