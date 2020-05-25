@@ -7,7 +7,7 @@ namespace MdToHtml
     public class ArgumentParser
     {
         private static Regex regexArgumentFlag = new Regex(
-            @"\s[-|/][A-Z|a-z][\s+|^]"
+            @"^(-|\\)[A-Z|a-z]|\s(-|\\)[A-Z|a-z]"
         );
 
         private LinkedList<CommandLineArgument> providedArguments;
@@ -19,20 +19,22 @@ namespace MdToHtml
             MatchCollection flagsMatch = regexArgumentFlag.Matches(
                 arguments
             );
-            int[] matchLocations = new int[flagsMatch.Count];
+            int[] matchLocations = new int[flagsMatch.Count + 1];
             for (int i = 0; i < flagsMatch.Count; i++)
             {
                 matchLocations[i] = flagsMatch[i].Index;
             }
+            // End final match at end of string
+            matchLocations[flagsMatch.Count] = arguments.Length;
             // Parse each section associated with a flag
             providedArguments = new LinkedList<CommandLineArgument>();
-            for (int i = 1; i < flagsMatch.Count; i++)
+            for (int i = 0; i < flagsMatch.Count; i++)
             {
                 providedArguments.AddLast(
                     new CommandLineArgument(
                         arguments.Substring(
-                            matchLocations[i - 1],
-                            matchLocations[i]
+                            matchLocations[i],
+                            matchLocations[i + 1]
                         )
                     )
                 );
