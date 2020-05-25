@@ -1,6 +1,5 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 namespace MdToHtml
 {
@@ -28,7 +27,7 @@ namespace MdToHtml
         }
 
         [DataTestMethod]
-        [DataRow("-f -g", "fg")]
+        [DataRow("-f -g", "f g")]
         public void ShouldParseTwoArgumentsWithoutValuesCorrectFlagsSuccess(
             string arguments,
             string flags
@@ -40,20 +39,12 @@ namespace MdToHtml
             Assert.IsTrue(
                 parsed.AllArgumentsValid()
             );
-            for (int i = 0; i < flags.Length; i++)
+            string[] separateFlags = flags.Split(" ");
+            foreach(string flag in separateFlags)
             {
-                Console.WriteLine(
-                    flags.Substring(
-                            i,
-                            1
-                        )
-                );
                 Assert.IsTrue(
                     parsed.HasValidFlag(
-                        flags.Substring(
-                            i,
-                            1
-                        )
+                        flag
                     )
                 );
             }
