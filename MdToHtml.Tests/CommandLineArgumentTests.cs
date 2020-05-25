@@ -1,3 +1,4 @@
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MdToHtml
@@ -60,6 +61,25 @@ namespace MdToHtml
         [DataTestMethod]
         [DataRow("-F", "f")]
         public void ShouldParseDashUpperCharacterAsLowerFlagNoValueSuccess(
+            string argument,
+            string flag
+        )
+        {
+            CommandLineArgument parsed = new CommandLineArgument(
+                argument
+            );
+            Assert.IsTrue(
+                parsed.Valid
+            );
+            Assert.AreEqual(
+                flag,
+                parsed.Flag
+            );
+        }
+
+        [DataTestMethod]
+        [DataRow(" -f", "f")]
+        public void ShouldParseDashCharacterWithLeadingWhitespaceAsFlagNoValueSuccess(
             string argument,
             string flag
         )
