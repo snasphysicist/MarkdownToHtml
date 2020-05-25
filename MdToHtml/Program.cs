@@ -13,7 +13,8 @@ namespace MdToHtml
             + "  -i input_file  -> path to Markdown file to be converted\n"
             + "  -o output_file -> path to which converted HTML file will be saved\n"
             + "\nOptional Flags:\n"
-            + "  -h             -> print help text";
+            + "  -h             -> print help text\n"
+            + "  -f             -> force overwrite output file if it already exists\n" ;
 
         private const string InvalidInputsText = 
             "Markdown To HTML Conversion Utility\n\n"
@@ -25,6 +26,12 @@ namespace MdToHtml
         private const string MissingInputFileText = 
             "Markdown To HTML Conversion Utility\n\n"
             + "Input file is empty or does not exist\n\n"
+            + "Please run MdToHtml -h for help text/more information";
+
+        private const string OutputFileExistsText = 
+            "Markdown To HTML Conversion Utility\n\n"
+            + "A file already exists at the output file path\n"
+            + "and the 'force overwrite' flag has not been set\n\n"
             + "Please run MdToHtml -h for help text/more information";
 
         static void Main(
@@ -70,6 +77,22 @@ namespace MdToHtml
             {
                 PrintErrorAndExit(
                     MissingInputFileText
+                );
+            }
+            // Check whether output file exists
+            string outputFilePath = arguments.ValueForFlag(
+                "o"
+            );
+            if (
+                File.Exists(
+                    outputFilePath
+                )
+                && !arguments.HasValidFlag(
+                    "f"
+                )
+            ) {
+                PrintErrorAndExit(
+                    OutputFileExistsText
                 );
             }
         }
