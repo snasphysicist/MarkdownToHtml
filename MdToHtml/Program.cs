@@ -8,9 +8,10 @@ namespace MdToHtml
         private const string HelpText =
             "Markdown To HTML Conversion Utility\n\n"
             + "Usage: MdToHtml -i input_file -o output_file\n\n"
-            + "Flags:\n"
+            + "Required Flags:\n"
             + "  -i input_file  -> path to Markdown file to be converted\n"
             + "  -o output_file -> path to which converted HTML file will be saved\n"
+            + "\nOptional Flags:\n"
             + "  -h             -> print help text";
 
         static void Main(
