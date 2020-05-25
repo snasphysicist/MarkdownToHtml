@@ -6,7 +6,7 @@ namespace MdToHtml
     public class CommandLineArgument
     {
         private static Regex regexArgument = new Regex(
-            @"^[-|/]([A-Z|a-z])(\s+(\S*)\s*)?$"
+            @"^\s?[-|/]([A-Z|a-z])(\s+(\S*)\s*)?$"
         );
 
         public string Flag
