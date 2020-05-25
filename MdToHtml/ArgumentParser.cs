@@ -39,12 +39,15 @@ namespace MdToHtml
             }
         }
 
-        public bool HasFlag(
+        public bool HasValidFlag(
             string flag
         ) {
             foreach (CommandLineArgument argument in providedArguments)
             {
-                if(flag == argument.Flag)
+                if(
+                    (flag == argument.Flag)
+                    && (argument.Valid)
+                )
                 {
                     return true;
                 }
