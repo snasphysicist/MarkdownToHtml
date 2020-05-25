@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.IO;
 
 namespace MdToHtml
 {
@@ -12,7 +13,14 @@ namespace MdToHtml
             + "  -i input_file  -> path to Markdown file to be converted\n"
             + "  -o output_file -> path to which converted HTML file will be saved\n"
             + "\nOptional Flags:\n"
-            + "  -h             -> print help text";
+            + "  -h             -> print help text\n";
+
+        private const string InvalidInputsText = 
+            "Markdown To HTML Conversion Utility\n\n"
+            + "Invalid/missing input file and/or output file\n\n"
+            + "You must provide both an input file path (i flag)\n"
+            + "and an output file path (o flag)\n\n"
+            + "Please run MdToHtml -h for help text/more information\n";
 
         static void Main(
             string[] args
@@ -24,6 +32,7 @@ namespace MdToHtml
                     args
                 )
             );
+            // Print help if no arguments/invalid arguments/h flag
             if (
                 !arguments.AllArgumentsValid()
                 || arguments.HasValidFlag("h")
@@ -33,6 +42,16 @@ namespace MdToHtml
                 PrintHelp();
                 System.Environment.Exit(0);
             }
+            // Need input file output file arguments
+            if (
+                !(
+                    arguments.HasValidFlag("i")
+                    && arguments.HasValidFlag("o")
+                )
+            ) {
+                PrintInvalidInputsMessage();
+            }
+            // 
         }
 
         static void PrintHelp()
@@ -40,6 +59,32 @@ namespace MdToHtml
             Console.WriteLine(
                 HelpText
             );
+        }
+
+        static void PrintInvalidInputFlagsMessage()
+        {
+            Console.WriteLine(
+                InvalidInputsText
+            );
+        }
+
+        static string ReadFileIfExists(
+            string filePath
+        ) {
+            if (
+                File.Exists(
+                    filePath
+                )
+            ) {
+                string[] lines = File.ReadAllLines(
+                    filePath
+                );
+                return String.Join(
+                    "\n",
+                    filePath
+                );
+            }
+            return "";
         }
     }
 }
