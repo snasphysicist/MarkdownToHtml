@@ -39,5 +39,30 @@ namespace MdToHtml
             }
         }
 
+        public bool HasFlag(
+            string flag
+        ) {
+            foreach (CommandLineArgument argument in providedArguments)
+            {
+                if(flag == argument.Flag)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public string ValueForFlag(
+            string value
+        ) {
+            foreach (CommandLineArgument argument in providedArguments)
+            {
+                if (flag == argument.Flag)
+                {
+                    return argument.Value;
+                }
+            }
+            return "";
+        }
     }
 }
