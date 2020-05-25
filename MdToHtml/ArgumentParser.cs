@@ -65,7 +65,7 @@ namespace MdToHtml
                     return argument.Value;
                 }
             }
-            return "";
+            return null;
         }
 
         public bool AllArgumentsValid()
