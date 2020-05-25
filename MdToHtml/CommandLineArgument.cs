@@ -1,5 +1,5 @@
 
-using System.Text.Regex;
+using System.Text.RegularExpressions;
 
 namespace MdToHtml
 {
@@ -15,7 +15,7 @@ namespace MdToHtml
         public string Value
         { get; private set; }
 
-        public boolean Valid
+        public bool Valid
         { get; private set; }
 
         public CommandLineArgument(
