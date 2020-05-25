@@ -113,5 +113,29 @@ namespace MdToHtml
                 );
             }
         }
+
+        [DataTestMethod]
+        [DataRow("-f -g -h", "f g h")]
+        public void ShouldParseInnerArgumentWithoutValueCorrectFlagSuccess(
+            string arguments,
+            string flags
+        )
+        {
+            ArgumentParser parsed = new ArgumentParser(
+                arguments
+            );
+            Assert.IsTrue(
+                parsed.AllArgumentsValid()
+            );
+            string[] separateFlags = flags.Split(" ");
+            for (int i = 0; i < separateFlags.Length; i++)
+            {
+                Assert.IsTrue(
+                    parsed.HasValidFlag(
+                        separateFlags[i]
+                    )
+                );
+            }
+        }
     }
 }
