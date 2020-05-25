@@ -140,7 +140,7 @@ namespace MdToHtml
         }
 
         [DataTestMethod]
-        [DataRow("/f test/test", "f", "test-test")]
+        [DataRow("/f test/test", "f", "test/test")]
         public void ShouldPreserveSlashInValueSuccess(
             string argument,
             string flag,
