@@ -5,7 +5,7 @@ namespace MdToHtml
 {
     public class CommandLineArgument
     {
-        Regex regexArgument = new Regex(
+        private static Regex regexArgument = new Regex(
             @"^[-|/]([A-Z|a-z])(\s+(\S*)\s*)?$"
         );
 
