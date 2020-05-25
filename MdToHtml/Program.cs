@@ -22,6 +22,11 @@ namespace MdToHtml
             + "and an output file path (o flag)\n\n"
             + "Please run MdToHtml -h for help text/more information\n";
 
+        private const string MissingInputFileText = 
+            "Markdown To HTML Conversion Utility\n\n"
+            + "Input file is empty or does not exist\n\n"
+            + "Please run MdToHtml -h for help text/more information\n";
+
         static void Main(
             string[] args
         )
@@ -39,8 +44,9 @@ namespace MdToHtml
                 || arguments.NoValidArguments()
             )
             {
-                PrintHelp();
-                System.Environment.Exit(0);
+                PrintAndExit(
+                    HelpText
+                );
             }
             // Need input file output file arguments
             if (
@@ -49,23 +55,32 @@ namespace MdToHtml
                     && arguments.HasValidFlag("o")
                 )
             ) {
-                PrintInvalidInputsMessage();
+                PrintAndExit(
+                    InvalidInputsText
+                );
             }
-            // 
+            // Attempt to read in file, error if cannot
+            string inputFilePath = arguments.ValueForFlag(
+                "i"
+            );
+            string input = ReadFileIfExists(
+                filePath
+            );
+            if (input == "")
+            {
+                PrintAndExit(
+                    MissingInputFileText
+                );
+            }
         }
 
-        static void PrintHelp()
-        {
+        static void PrintAndExit(
+            string message
+        ) {
             Console.WriteLine(
-                HelpText
+                message
             );
-        }
-
-        static void PrintInvalidInputFlagsMessage()
-        {
-            Console.WriteLine(
-                InvalidInputsText
-            );
+            System.Environment.Exit(0);
         }
 
         static string ReadFileIfExists(
