@@ -34,7 +34,7 @@ namespace MdToHtml
                     new CommandLineArgument(
                         arguments.Substring(
                             matchLocations[i],
-                            matchLocations[i + 1]
+                            matchLocations[i + 1] - matchLocations[i]
                         )
                     )
                 );
