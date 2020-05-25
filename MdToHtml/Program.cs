@@ -13,19 +13,19 @@ namespace MdToHtml
             + "  -i input_file  -> path to Markdown file to be converted\n"
             + "  -o output_file -> path to which converted HTML file will be saved\n"
             + "\nOptional Flags:\n"
-            + "  -h             -> print help text\n";
+            + "  -h             -> print help text";
 
         private const string InvalidInputsText = 
             "Markdown To HTML Conversion Utility\n\n"
             + "Invalid/missing input file and/or output file\n\n"
             + "You must provide both an input file path (i flag)\n"
             + "and an output file path (o flag)\n\n"
-            + "Please run MdToHtml -h for help text/more information\n";
+            + "Please run MdToHtml -h for help text/more information";
 
         private const string MissingInputFileText = 
             "Markdown To HTML Conversion Utility\n\n"
             + "Input file is empty or does not exist\n\n"
-            + "Please run MdToHtml -h for help text/more information\n";
+            + "Please run MdToHtml -h for help text/more information";
 
         static void Main(
             string[] args
@@ -55,7 +55,7 @@ namespace MdToHtml
                     && arguments.HasValidFlag("o")
                 )
             ) {
-                PrintAndExit(
+                PrintErrorAndExit(
                     InvalidInputsText
                 );
             }
@@ -68,10 +68,23 @@ namespace MdToHtml
             );
             if (input == "")
             {
-                PrintAndExit(
+                PrintErrorAndExit(
                     MissingInputFileText
                 );
             }
+        }
+
+        static void PrintErrorAndExit(
+            string message
+        ) {
+            Console.BackgroundColor = ConsoleColor.DarkRed;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(
+                message
+            );
+            Console.ResetColor();
+            Console.WriteLine("\n");
+            System.Environment.Exit(0);
         }
 
         static void PrintAndExit(
@@ -80,6 +93,8 @@ namespace MdToHtml
             Console.WriteLine(
                 message
             );
+            Console.ResetColor();
+            Console.WriteLine("\n");
             System.Environment.Exit(0);
         }
 
