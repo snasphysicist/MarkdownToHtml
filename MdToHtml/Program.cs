@@ -34,6 +34,18 @@ namespace MdToHtml
             + "and the 'force overwrite' flag has not been set\n\n"
             + "Please run MdToHtml -h for help text/more information";
 
+        private const string OutputFileDirectoryDoesNotExistText = 
+            "Markdown To HTML Conversion Utility\n\n"
+            + "The output could not be written to the output file\n\n"
+            + "Ensure that the directory in the output file path exists\n\n" 
+            + "Please run MdToHtml -h for help text/more information";
+
+        private const string CouldNotWriteOutputFileText = 
+            "Markdown To HTML Conversion Utility\n\n"
+            + "The output could not be written to the output file\n\n"
+            + "Ensure that application has the required permissions\n\n" 
+            + "Please run MdToHtml -h for help text/more information";
+
         static void Main(
             string[] args
         )
@@ -93,6 +105,26 @@ namespace MdToHtml
             ) {
                 PrintErrorAndExit(
                     OutputFileExistsText
+                );
+            }
+            // Otherwise, convert and attempt to write out
+            try 
+            {
+                File.WriteAllLines(
+                    outputFilePath,
+                    new string[]{"test2"}
+                );
+            } catch (DirectoryNotFoundException e) {
+                PrintErrorAndExit(
+                    OutputFileDirectoryDoesNotExistText
+                );
+            } catch (IOException e) {
+                PrintErrorAndExit(
+                    CouldNotWriteOutputFileText
+                );
+            } catch (UnauthorizedAccessException e) {
+                PrintErrorAndExit(
+                    CouldNotWriteOutputFileText
                 );
             }
         }
