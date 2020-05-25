@@ -81,5 +81,17 @@ namespace MdToHtml
             }
             return true;
         }
+
+        public bool NoValidArguments()
+        {
+            foreach (CommandLineArgument argument in providedArguments)
+            {
+                if (argument.Valid)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
