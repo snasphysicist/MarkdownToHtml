@@ -49,5 +49,37 @@ namespace MdToHtml
                 );
             }
         }
+
+        [DataTestMethod]
+        [DataRow("-f test", "f", "test")]
+        public void ShouldParseOneArgumentWithValuesCorrectFlagValueSuccess(
+            string arguments,
+            string flags,
+            string values
+        )
+        {
+            ArgumentParser parsed = new ArgumentParser(
+                arguments
+            );
+            Assert.IsTrue(
+                parsed.AllArgumentsValid()
+            );
+            string[] separateFlags = flags.Split(" ");
+            string[] separateValues = values.Split(" ");
+            for (int i = 0; i < separateFlags.Length; i++)
+            {
+                Assert.IsTrue(
+                    parsed.HasValidFlag(
+                        separateFlags[i]
+                    )
+                );
+                Assert.AreEqual(
+                    separateValues[i],
+                    parsed.ValueForFlag(
+                        separateFlags[i]
+                    )
+                );
+            }
+        }
     }
 }
