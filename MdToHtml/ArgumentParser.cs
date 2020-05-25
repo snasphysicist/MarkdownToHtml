@@ -10,7 +10,7 @@ namespace MdToHtml
             @"\s[-|/][A-Z|a-z][\s+|^]"
         );
 
-        private List<CommandLineArgument> providedArguments;
+        private LinkedList<CommandLineArgument> providedArguments;
 
         public ArgumentParser(
             string arguments
@@ -22,15 +22,15 @@ namespace MdToHtml
             int[] matchLocations = new int[flagsMatch.Count];
             for (int i = 0; i < flagsMatch.Count; i++)
             {
-                matchLocations[i] = flagsMatch.Item[i].Index;
+                matchLocations[i] = flagsMatch[i].Index;
             }
             // Parse each section associated with a flag
             providedArguments = new LinkedList<CommandLineArgument>();
             for (int i = 1; i < flagsMatch.Count; i++)
             {
-                providedArguments.Add(
+                providedArguments.AddLast(
                     new CommandLineArgument(
-                        argument.Substring(
+                        arguments.Substring(
                             matchLocations[i - 1],
                             matchLocations[i]
                         )
@@ -56,7 +56,7 @@ namespace MdToHtml
         }
 
         public string ValueForFlag(
-            string value
+            string flag
         ) {
             foreach (CommandLineArgument argument in providedArguments)
             {
