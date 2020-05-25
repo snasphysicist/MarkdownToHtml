@@ -18,10 +18,14 @@ namespace MdToHtml
         public bool Valid
         { get; private set; }
 
+        public string Input
+        { get; private set; }
+
         public CommandLineArgument(
             string argument
         ) {
-            Match contentMatch = regexArgument.Match(argument);
+            Input = argument;
+            Match contentMatch = regexArgument.Match(Input);
             Valid = contentMatch.Success;
             if (Valid)
             {
