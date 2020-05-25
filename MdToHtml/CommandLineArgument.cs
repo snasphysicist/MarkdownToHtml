@@ -25,7 +25,7 @@ namespace MdToHtml
             Valid = contentMatch.Success;
             if (Valid)
             {
-                Flag = contentMatch.Groups[1].Value;
+                Flag = contentMatch.Groups[1].Value.ToLower();
                 Value = contentMatch.Groups[3].Value;
             } else {
                 Flag = "";
