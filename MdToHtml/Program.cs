@@ -1,4 +1,5 @@
 ﻿
+using MarkdownToHtml;
 using System;
 using System.IO;
 
@@ -46,6 +47,12 @@ namespace MdToHtml
             + "Ensure that application has the required permissions\n\n" 
             + "Please run MdToHtml -h for help text/more information";
 
+        private const string CouldNotConvertToHtmlText = 
+            "Markdown To HTML Conversion Utility\n\n"
+            + "The Markdown file could not be converted to HTML\n\n"
+            + "Ensure that the Markdown file is correctly formatted\n\n" 
+            + "Please run MdToHtml -h for help text/more information";
+
         static void Main(
             string[] args
         )
@@ -82,10 +89,10 @@ namespace MdToHtml
             string inputFilePath = arguments.ValueForFlag(
                 "i"
             );
-            string input = ReadFileIfExists(
+            string[] input = ReadFileIfExists(
                 inputFilePath
             );
-            if (input == "")
+            if (input.Length == 0)
             {
                 PrintErrorAndExit(
                     MissingInputFileText
@@ -108,11 +115,23 @@ namespace MdToHtml
                 );
             }
             // Otherwise, convert and attempt to write out
+            MarkdownParser markdownParser = new MarkdownParser(
+                input
+            );
+            if (!markdownParser.Success)
+            {
+                PrintErrorAndExit(
+                    CouldNotConvertToHtmlText
+                );
+            }
             try 
             {
                 File.WriteAllLines(
                     outputFilePath,
-                    new string[]{"test2"}
+                    new string[]
+                    {
+                        markdownParser.ToHtml()
+                    }
                 );
             } catch (DirectoryNotFoundException e) {
                 PrintErrorAndExit(
@@ -129,7 +148,7 @@ namespace MdToHtml
             }
         }
 
-        static void PrintErrorAndExit(
+        private static void PrintErrorAndExit(
             string message
         ) {
             Console.BackgroundColor = ConsoleColor.DarkRed;
@@ -142,7 +161,7 @@ namespace MdToHtml
             System.Environment.Exit(0);
         }
 
-        static void PrintAndExit(
+        private static void PrintAndExit(
             string message
         ) {
             Console.WriteLine(
@@ -153,7 +172,7 @@ namespace MdToHtml
             System.Environment.Exit(0);
         }
 
-        static string ReadFileIfExists(
+        private static string[] ReadFileIfExists(
             string filePath
         ) {
             if (
@@ -161,15 +180,11 @@ namespace MdToHtml
                     filePath
                 )
             ) {
-                string[] lines = File.ReadAllLines(
-                    filePath
-                );
-                return String.Join(
-                    "\n",
+                return File.ReadAllLines(
                     filePath
                 );
             }
-            return "";
+            return new string[]{};
         }
     }
 }
