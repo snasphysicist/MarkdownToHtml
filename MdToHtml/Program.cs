@@ -64,7 +64,7 @@ namespace MdToHtml
                 "i"
             );
             string input = ReadFileIfExists(
-                filePath
+                inputFilePath
             );
             if (input == "")
             {
