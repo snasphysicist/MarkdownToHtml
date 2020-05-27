@@ -4,5 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MarkdownToHtml\MarkdownToHtml.csproj" />
+  </ItemGroup>
 
 </Project>
