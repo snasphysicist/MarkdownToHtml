@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
+using MarkdownToHtml;
+
 namespace MdToHtmlServer.Controllers
 {
     [ApiController]
@@ -17,8 +19,14 @@ namespace MdToHtmlServer.Controllers
         public JsonResult Post(
             [FromBody] MarkdownModel markdown
         ) {
+            MarkdownParser parser = new MarkdownParser(
+                markdown.Lines()
+            );
+            HtmlModel html = new HtmlModel(
+                parser.ToHtml()
+            );
             return new JsonResult(
-                markdown
+                html
             );
         }
 
@@ -26,6 +34,23 @@ namespace MdToHtmlServer.Controllers
         {
             public string Markdown
             { get; set; }
+
+            public string[] Lines()
+            {
+                return Markdown.Split("\n");
+            }
+        }
+
+        public class HtmlModel
+        {
+            public string Html
+            { get; set; }
+
+            public HtmlModel(
+                string html
+            ) {
+                Html = html;
+            }
         }
     }
 }
