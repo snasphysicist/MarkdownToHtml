@@ -15,10 +15,10 @@ namespace MdToHtmlServer.Controllers
     {
         [HttpPost]
         public JsonResult Post(
-            MarkdownModel data
+            [FromBody] MarkdownModel markdown
         ) {
             return new JsonResult(
-                data
+                markdown
             );
         }
 
