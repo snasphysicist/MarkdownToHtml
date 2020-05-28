@@ -10,7 +10,7 @@ namespace MarkdownToHtml
 
         protected string Tag {
             get {
-                return Type.TagFor();
+                return Type.Tag();
             }
         }
     }

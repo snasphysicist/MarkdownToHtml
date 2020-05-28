@@ -34,7 +34,7 @@ namespace MarkdownToHtml
             string altText,
             string title
         ) {
-            tag = Type.TagFor();
+            tag = Type.Tag();
             this.href = href;
             this.altText = altText;
             this.title = title;
