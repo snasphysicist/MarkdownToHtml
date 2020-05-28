@@ -5,11 +5,11 @@ namespace MarkdownToHtml
 {
     public abstract class MarkdownElement
     {
-        MarkdownElementType Type
-        { get; set; }
+        public MarkdownElementType Type
+        { get; protected set; }
 
-        IHtmlable[] content;
+        protected IHtmlable[] content;
 
-        private string tag;
+        protected string tag;
     }
 }
