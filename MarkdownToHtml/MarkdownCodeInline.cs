@@ -3,22 +3,18 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownCodeInline : IHtmlable
+    public class MarkdownCodeInline : MarkdownElement, IHtmlable
     {
 
         private static Regex regexParseable = new Regex(
             @"^`.*([^`])`.*"
         );
 
-        IHtmlable[] content;
-
-        const string tag = "code";
-
-        public const MarkdownElementType Type = MarkdownElementType.CodeInline;
-
         public MarkdownCodeInline(
             IHtmlable[] content
         ) {
+            tag = "code";
+            Type = MarkdownElementType.CodeInline;
             this.content = content;
         }
 
