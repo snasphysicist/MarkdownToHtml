@@ -1,6 +1,4 @@
 
-using System.Collections.Generic;
-
 namespace MarkdownToHtml
 {
     public abstract class MarkdownElement
@@ -10,6 +8,10 @@ namespace MarkdownToHtml
 
         protected IHtmlable[] content;
 
-        protected string tag;
+        protected string Tag {
+            get {
+                return Type.TagFor();
+            }
+        }
     }
 }
