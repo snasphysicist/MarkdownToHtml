@@ -10,19 +10,18 @@ namespace MarkdownToHtml
         public MarkdownParagraph(
             IHtmlable[] innerContent
         ) {
-            tag = "p";
             Type = MarkdownElementType.Paragraph;
             content = innerContent;
         }
 
         public string ToHtml() 
         {
-            string html = $"<{tag}>";
+            string html = $"<{Tag}>";
             foreach (IHtmlable htmlable in content)
             {
                 html += htmlable.ToHtml();
             }
-            html += $"</{tag}>";
+            html += $"</{Tag}>";
             return html;
         }
 

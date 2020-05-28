@@ -15,18 +15,17 @@ namespace MarkdownToHtml
             IHtmlable[] content
         ) {
             Type = MarkdownElementType.Strong;
-            tag = "strong";
             this.content = content;
         }
 
         public string ToHtml() 
         {
-            string html = $"<{tag}>";
+            string html = $"<{Tag}>";
             foreach (IHtmlable htmlable in content)
             {
                 html += htmlable.ToHtml();
             }
-            html += $"</{tag}>";
+            html += $"</{Tag}>";
             return html;
         }
 

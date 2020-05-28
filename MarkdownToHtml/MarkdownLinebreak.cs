@@ -6,14 +6,12 @@ namespace MarkdownToHtml
 
         public const MarkdownElementType Type = MarkdownElementType.Linebreak;
 
-        const string html = "<br>";
-
         public MarkdownLinebreak() 
         {}
 
         public string ToHtml() 
         {
-            return html;
+            return $"<{Type.Tag()}>";
         }
 
     }

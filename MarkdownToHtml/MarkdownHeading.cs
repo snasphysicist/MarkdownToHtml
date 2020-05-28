@@ -20,13 +20,6 @@ namespace MarkdownToHtml
             IHtmlable[] content
         ) {
             this.content = content;
-            if ((level > 0) && (level < 7))
-            {
-                this.tag = $"h{level}";
-            } else {
-                // If not a valid heading level, fall back to paragraph
-                this.tag = "p";
-            }
             switch (level)
             {
                 case 1:
@@ -55,12 +48,12 @@ namespace MarkdownToHtml
 
         public string ToHtml() 
         {
-            string html = $"<{tag}>";
+            string html = $"<{Tag}>";
             foreach (IHtmlable htmlable in content)
             {
                 html += htmlable.ToHtml();
             }
-            html += $"</{tag}>";
+            html += $"</{Tag}>";
             return html;
         }
 
