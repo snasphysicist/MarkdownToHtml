@@ -33,7 +33,7 @@ namespace MarkdownToHtml
             {MarkdownElementType.Linebreak, "br"}
         };
 
-        public static string TagFor(
+        public static string Tag(
             this MarkdownElementType type
         ) {
             string tag = tags[
