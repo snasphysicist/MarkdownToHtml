@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownList : IHtmlable
+    public class MarkdownList : MarkdownElement, IHtmlable
     {
 
         private static Regex regexOrderedListLine = new Regex(
@@ -15,13 +15,6 @@ namespace MarkdownToHtml
         private static Regex regexUnorderedListLine = new Regex(
             @"^[\s]{0,3}[\*|\+|-](\s+?.*)"
         );
-
-        private IHtmlable[] content;
-
-        private string tag = "";
-
-        public MarkdownElementType Type
-        { get; private set; }
 
         public MarkdownList(
             IHtmlable[] content,
@@ -272,17 +265,14 @@ namespace MarkdownToHtml
         }
 
         // List item inner class = o
-        class MarkdownListItem : IHtmlable {
-
-            private IHtmlable[] content;
-
-            private const string tag = "li";
-
-            public MarkdownElementType Type = MarkdownElementType.ListItem;
+        class MarkdownListItem : MarkdownElement, IHtmlable 
+        {
 
             private MarkdownListItem(
                 IHtmlable[] content
             ) {
+                tag = "li";
+                Type = MarkdownElementType.ListItem;
                 this.content = content;
             }
 
