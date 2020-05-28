@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownEmphasis : IHtmlable
+    public class MarkdownEmphasis : MarkdownElement, IHtmlable
     {
 
         private static Regex regexParseable = new Regex(
@@ -11,26 +11,21 @@ namespace MarkdownToHtml
             + @"|^_(.*?[^\\])_"
         );
 
-        IHtmlable[] content;
-
-        const string tag = "em";
-
-        public const MarkdownElementType Type = MarkdownElementType.Emphasis;
-
         public MarkdownEmphasis(
             IHtmlable[] content
         ) {
+            Type = MarkdownElementType.Emphasis;
             this.content = content;
         }
 
         public string ToHtml() 
         {
-            string html = $"<{tag}>";
+            string html = $"<{Tag}>";
             foreach (IHtmlable htmlable in content)
             {
                 html += htmlable.ToHtml();
             }
-            html += $"</{tag}>";
+            html += $"</{Tag}>";
             return html;
         }
 
