@@ -19,7 +19,7 @@ namespace MarkdownToHtml
             @"^!\[(.*[^\\])\]\[(.*[^\\])\]"
         );
 
-        const string tag = "img";
+        private string tag;
 
         private string href = "";
 
@@ -34,6 +34,7 @@ namespace MarkdownToHtml
             string altText,
             string title
         ) {
+            tag = Type.TagFor();
             this.href = href;
             this.altText = altText;
             this.title = title;
