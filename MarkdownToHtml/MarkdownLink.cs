@@ -26,19 +26,18 @@ namespace MarkdownToHtml
             string href
         ) {
             Type = MarkdownElementType.Link;
-            tag = "a";
             this.content = content;
             this.href = href;
         }
 
         public string ToHtml() 
         {
-            string html = $"<{tag} href=\"{href}\">";
+            string html = $"<{Tag} href=\"{href}\">";
             foreach (IHtmlable htmlable in content)
             {
                 html += htmlable.ToHtml();
             }
-            html += $"</{tag}>";
+            html += $"</{Tag}>";
             return html;
         }
 

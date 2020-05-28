@@ -22,23 +22,16 @@ namespace MarkdownToHtml
         ) {
             this.content = content;
             Type = type;
-            if (Type == MarkdownElementType.OrderedList)
-            {
-                tag = "ol";
-            } else if (Type == MarkdownElementType.UnorderedList)
-            {
-                tag = "ul";
-            }
         }
 
         public string ToHtml() 
         {
-            string html = $"<{tag}>";
+            string html = $"<{Tag}>";
             foreach (IHtmlable htmlable in content)
             {
                 html += htmlable.ToHtml();
             }
-            html += $"</{tag}>";
+            html += $"</{Tag}>";
             return html;
         }
 
@@ -271,19 +264,18 @@ namespace MarkdownToHtml
             private MarkdownListItem(
                 IHtmlable[] content
             ) {
-                tag = "li";
                 Type = MarkdownElementType.ListItem;
                 this.content = content;
             }
 
             public string ToHtml()
             {
-                string html = $"<{tag}>";
+                string html = $"<{Tag}>";
                 foreach (IHtmlable entry in content)
                 {
                     html += entry.ToHtml();
                 }
-                html += $"</{tag}>";
+                html += $"</{Tag}>";
                 return html;
             }
 
