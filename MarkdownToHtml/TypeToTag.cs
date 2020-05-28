@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MarkdownToHtml
 {
-    public static class TagToType
+    public static class TypeToTag
     {
         private static Dictionary<MarkdownElementType, string> tags
             = new Dictionary<MarkdownElementType, string>()
