@@ -3,22 +3,18 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownStrikethrough : IHtmlable
+    public class MarkdownStrikethrough : MarkdownElement, IHtmlable
     {
 
         private static Regex regexParseable = new Regex(
             @"^~{2}.+~{2}.*"
         );
 
-        IHtmlable[] content;
-
-        const string tag = "s";
-
-        public const MarkdownElementType Type = MarkdownElementType.Strikethrough;
-
         public MarkdownStrikethrough(
             IHtmlable[] content
         ) {
+            Type = MarkdownElementType.Strikethrough;
+            tag = "s";
             this.content = content;
         }
 
