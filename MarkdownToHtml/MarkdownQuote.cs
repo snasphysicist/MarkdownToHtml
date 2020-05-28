@@ -3,18 +3,13 @@ using System;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownQuote : IHtmlable
+    public class MarkdownQuote : MarkdownElement, IHtmlable
     {
-
-        IHtmlable[] content;
-
-        const string tag = "blockquote";
-
-        public const MarkdownElementType Type = MarkdownElementType.Quote;
-
         public MarkdownQuote(
             IHtmlable[] content
         ) {
+            Type = MarkdownElementType.Quote;
+            tag = "blockquote";
             this.content = content;
         }
 

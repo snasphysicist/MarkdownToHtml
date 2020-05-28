@@ -4,18 +4,14 @@ using System.Collections.Generic;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownParagraph : IHtmlable
+    public class MarkdownParagraph : MarkdownElement, IHtmlable
     {
-
-        IHtmlable[] content;
-
-        const string tag = "p";
-
-        public const MarkdownElementType Type = MarkdownElementType.Paragraph;
 
         public MarkdownParagraph(
             IHtmlable[] innerContent
         ) {
+            tag = "p";
+            Type = MarkdownElementType.Paragraph;
             content = innerContent;
         }
 

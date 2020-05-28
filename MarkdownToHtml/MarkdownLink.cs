@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownLink : IHtmlable
+    public class MarkdownLink : MarkdownElement, IHtmlable
     {
 
         private static Regex regexLinkImmediate = new Regex(
@@ -19,18 +19,14 @@ namespace MarkdownToHtml
             @"^\[(.*[^\\])\]"
         );
 
-        IHtmlable[] content;
-
-        const string tag = "a";
-
         private string href = "";
-
-        public const MarkdownElementType Type = MarkdownElementType.Link;
 
         public MarkdownLink(
             IHtmlable[] content,
             string href
         ) {
+            Type = MarkdownElementType.Link;
+            tag = "a";
             this.content = content;
             this.href = href;
         }

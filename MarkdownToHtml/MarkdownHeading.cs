@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownHeading : IHtmlable
+    public class MarkdownHeading : MarkdownElement, IHtmlable
     {
 
         private static Regex regexSingleLineHeading = new Regex(
@@ -14,13 +14,6 @@ namespace MarkdownToHtml
         private static Regex regexDoubleLineHeading = new Regex(
             @"^=+$|^-+$"
         );
-
-        IHtmlable[] content;
-
-        string tag;
-
-        public MarkdownElementType Type
-        { get; private set; }
         
         public MarkdownHeading(
             int level,

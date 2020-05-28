@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownStrong : IHtmlable
+    public class MarkdownStrong : MarkdownElement, IHtmlable
     {
 
         private static Regex regexParseable = new Regex(
@@ -11,15 +11,11 @@ namespace MarkdownToHtml
             + @"|^_{2}.+_{2}.*"
         );
 
-        IHtmlable[] content;
-
-        const string tag = "strong";
-
-        public const MarkdownElementType Type = MarkdownElementType.Strong;
-
         public MarkdownStrong(
             IHtmlable[] content
         ) {
+            Type = MarkdownElementType.Strong;
+            tag = "strong";
             this.content = content;
         }
 
