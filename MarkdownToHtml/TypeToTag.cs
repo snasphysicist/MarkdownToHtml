@@ -36,7 +36,7 @@ namespace MarkdownToHtml
         public static string TagFor(
             this MarkdownElementType type
         ) {
-            string tag = TagToType.tags[
+            string tag = tags[
                 type
             ];
             if (tag != null)
