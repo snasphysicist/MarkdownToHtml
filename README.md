@@ -7,7 +7,7 @@ Here you will find a few tools written in C# that convert Markdown files into HT
 
 I choose to write this library for a couple of reasons.
 
-Firstly I started writing some articles in Markdown to post on my own website and, naturally, they needed to be converted to HTML before displaying on the website. Ideally this process should be automated (or automatable) so any changes I make to the Markdown will c. immediately be reflected on the website. I didn't find any satisfactory, existing tools to do this.
+Firstly I started writing some articles in Markdown to post on my own website and, naturally, they needed to be converted to HTML before displaying on the website. Ideally this process should be automated (or automatable) so any changes I make to the Markdown will (more or less) immediately be reflected on the website. I didn't find any satisfactory, existing tools to do this.
 
 Secondly it was a learning exercise for myself both for C# and particular for web servers in C#.
 
@@ -74,23 +74,23 @@ The biggest group of files/glasses in the project are those that represent "Mark
 
 These classes are responsible for detecting whether an element of that type can be parsed from a line or set of lines, and actually parsing that element out. They all provide two static methods to do this - `CanParseFrom` and `ParseFrom`.
 
-CanParseFrom takes a ParseInput object (explained below) and detects whether the element of the type is present at the start of the line(s) in the ParseInput object, returning this as a boolean.
+`CanParseFrom` takes a `ParseInput` object (explained below) and detects whether the element of the type is present at the start of the line(s) in the `ParseInput` object, returning this as a boolean.
 
-ParseFrom takes a ParseInput object and creates a new object of this element type from the start of the line(s) in the ParseInput provided (if possible). A ParseResult is returned indicating whether the parsing was successful and including the object of this type that was created. For elements which appear within a line (i.e. don't take up a whole line or don't span multiple lines, e.g. inline code) the updated line with the text used to create this new object removed may be added to the ParseResult.
+`ParseFrom` takes a `ParseInput` object and creates a new object of this element type from the start of the line(s) in the `ParseInput` provided (if possible). A `ParseResult` is returned indicating whether the parsing was successful and including the object of this type that was created. For elements which appear within a line (i.e. don't take up a whole line or don't span multiple lines, e.g. inline code) the updated line with the text used to create this new object removed may be added to the `ParseResult`.
 
 Most element types will contain a `tag` string, which is the HTML tag type corresponding to the element - for example, `strong` for the `MarkdownStrong` element type.
 
-Many element types can contain nested elements. Generally these elements will hold a IHtmlable array called contents, which will hold these nested elements.
+Many element types can contain nested elements. Generally these elements will hold a `IHtmlable` array called contents, which will hold these nested elements.
 
-All element types contain a Type property of type MarkdownElementType, which can indicate to external classes which element type it is.
+All element types contain a `Type` property of type `MarkdownElementType`, which can indicate to external classes which element type it is.
 
 All Markdown element classes should implement `IHtmlable`.
 
 ## IHtmlable
 
-This interface can be applied to any class whose objects have a meaningful HTML representation. It requires a ToHtml method which returns the HTML respresentation of the object as a string.
+This interface can be applied to any class whose objects have a meaningful HTML representation. It requires a `ToHtml` method which returns the HTML respresentation of the object as a string.
 
-Many of the Markdown elements contain nested elements. For these elements typically the ToHtml method will call ToHtml on all of the elements it contains, string the results together and wrap them in the appropriate tags for the element.
+Many of the Markdown elements contain nested elements. For these elements typically the `ToHtml` method will call `ToHtml` on all of the elements it contains, string the results together and wrap them in the appropriate tags for the element.
 
 ## MarkdownParser
 
