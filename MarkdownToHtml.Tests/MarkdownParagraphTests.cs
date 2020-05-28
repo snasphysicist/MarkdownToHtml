@@ -57,7 +57,7 @@ namespace MarkdownToHtml
                 "test1  ",
                 "test2"
             };
-            string targetHtml = "<p>test1<br/>test2</p>";
+            string targetHtml = "<p>test1<br>test2</p>";
             MarkdownParser parser = new MarkdownParser(
                 testData
             );
