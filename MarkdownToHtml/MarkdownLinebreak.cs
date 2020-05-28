@@ -11,7 +11,7 @@ namespace MarkdownToHtml
 
         public string ToHtml() 
         {
-            return $"{Type.Tag()}";
+            return $"<{Type.Tag()}>";
         }
 
     }
