@@ -24,17 +24,6 @@ namespace MarkdownToHtml
             Type = type;
         }
 
-        public string ToHtml() 
-        {
-            string html = $"<{Tag}>";
-            foreach (IHtmlable htmlable in content)
-            {
-                html += htmlable.ToHtml();
-            }
-            html += $"</{Tag}>";
-            return html;
-        }
-
         public static bool CanParseFrom(
             ParseInput input
         ) {
@@ -266,17 +255,6 @@ namespace MarkdownToHtml
             ) {
                 Type = MarkdownElementType.ListItem;
                 this.content = content;
-            }
-
-            public string ToHtml()
-            {
-                string html = $"<{Tag}>";
-                foreach (IHtmlable entry in content)
-                {
-                    html += entry.ToHtml();
-                }
-                html += $"</{Tag}>";
-                return html;
             }
 
             public static ParseResult ParseFrom(
