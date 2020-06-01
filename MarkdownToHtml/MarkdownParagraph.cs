@@ -14,17 +14,6 @@ namespace MarkdownToHtml
             content = innerContent;
         }
 
-        public string ToHtml() 
-        {
-            string html = $"<{Tag}>";
-            foreach (IHtmlable htmlable in content)
-            {
-                html += htmlable.ToHtml();
-            }
-            html += $"</{Tag}>";
-            return html;
-        }
-
         // Parse a plain paragraph
         public static ParseResult ParseFrom(
             ParseInput input

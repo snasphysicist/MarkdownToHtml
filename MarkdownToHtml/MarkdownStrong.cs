@@ -18,17 +18,6 @@ namespace MarkdownToHtml
             this.content = content;
         }
 
-        public string ToHtml() 
-        {
-            string html = $"<{Tag}>";
-            foreach (IHtmlable htmlable in content)
-            {
-                html += htmlable.ToHtml();
-            }
-            html += $"</{Tag}>";
-            return html;
-        }
-
         public static bool CanParseFrom(
             ParseInput input
         ) {
