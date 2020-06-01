@@ -14,7 +14,7 @@ namespace MarkdownToHtml
             }
         }
 
-        public string ToHtml() {
+        public virtual string ToHtml() {
             string html = $"<{Tag}>";
             foreach (IHtmlable htmlable in content)
             {
