@@ -27,7 +27,6 @@ namespace MarkdownToHtml
         ) {
             Type = MarkdownElementType.Image;
             tag = Type.Tag();
-            this.content = new IHtmlable[]{};
             this.attributes = new Dictionary<string, string>();
             attributes.Add(
                 "src",
