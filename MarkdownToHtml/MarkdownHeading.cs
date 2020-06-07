@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownHeading : IHtmlable
+    public class MarkdownHeading : MarkdownElementWithContent, IHtmlable
     {
 
         private static Regex regexSingleLineHeading = new Regex(
@@ -14,26 +14,12 @@ namespace MarkdownToHtml
         private static Regex regexDoubleLineHeading = new Regex(
             @"^=+$|^-+$"
         );
-
-        IHtmlable[] content;
-
-        string tag;
-
-        public MarkdownElementType Type
-        { get; private set; }
         
         public MarkdownHeading(
             int level,
             IHtmlable[] content
         ) {
             this.content = content;
-            if ((level > 0) && (level < 7))
-            {
-                this.tag = $"h{level}";
-            } else {
-                // If not a valid heading level, fall back to paragraph
-                this.tag = "p";
-            }
             switch (level)
             {
                 case 1:
@@ -58,17 +44,6 @@ namespace MarkdownToHtml
                     Type = MarkdownElementType.Paragraph;
                     break;
             }
-        }
-
-        public string ToHtml() 
-        {
-            string html = $"<{tag}>";
-            foreach (IHtmlable htmlable in content)
-            {
-                html += htmlable.ToHtml();
-            }
-            html += $"</{tag}>";
-            return html;
         }
 
         public static bool CanParseFrom(

@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownList : IHtmlable
+    public class MarkdownList : MarkdownElementWithContent, IHtmlable
     {
 
         private static Regex regexOrderedListLine = new Regex(
@@ -16,37 +16,12 @@ namespace MarkdownToHtml
             @"^[\s]{0,3}[\*|\+|-](\s+?.*)"
         );
 
-        private IHtmlable[] content;
-
-        private string tag = "";
-
-        public MarkdownElementType Type
-        { get; private set; }
-
         public MarkdownList(
             IHtmlable[] content,
             MarkdownElementType type
         ) {
             this.content = content;
             Type = type;
-            if (Type == MarkdownElementType.OrderedList)
-            {
-                tag = "ol";
-            } else if (Type == MarkdownElementType.UnorderedList)
-            {
-                tag = "ul";
-            }
-        }
-
-        public string ToHtml() 
-        {
-            string html = $"<{tag}>";
-            foreach (IHtmlable htmlable in content)
-            {
-                html += htmlable.ToHtml();
-            }
-            html += $"</{tag}>";
-            return html;
         }
 
         public static bool CanParseFrom(
@@ -272,29 +247,14 @@ namespace MarkdownToHtml
         }
 
         // List item inner class = o
-        class MarkdownListItem : IHtmlable {
-
-            private IHtmlable[] content;
-
-            private const string tag = "li";
-
-            public MarkdownElementType Type = MarkdownElementType.ListItem;
+        class MarkdownListItem : MarkdownElementWithContent, IHtmlable 
+        {
 
             private MarkdownListItem(
                 IHtmlable[] content
             ) {
+                Type = MarkdownElementType.ListItem;
                 this.content = content;
-            }
-
-            public string ToHtml()
-            {
-                string html = $"<{tag}>";
-                foreach (IHtmlable entry in content)
-                {
-                    html += entry.ToHtml();
-                }
-                html += $"</{tag}>";
-                return html;
             }
 
             public static ParseResult ParseFrom(

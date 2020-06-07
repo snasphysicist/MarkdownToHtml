@@ -1,10 +1,10 @@
 
-
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownImage : IHtmlable
+    public class MarkdownImage : MarkdownElementWithAttributes, IHtmlable
     {
 
         private static Regex regexImageImmediateNoTitle = new Regex(
@@ -19,34 +19,27 @@ namespace MarkdownToHtml
             @"^!\[(.*[^\\])\]\[(.*[^\\])\]"
         );
 
-        const string tag = "img";
-
-        private string href = "";
-
-        private string title = "";
-
-        private string altText = "";
-
-        public const MarkdownElementType Type = MarkdownElementType.Image;
-
+        private string tag;
         public MarkdownImage(
             string href,
             string altText,
             string title
         ) {
-            this.href = href;
-            this.altText = altText;
-            this.title = title;
-        }
-
-        public string ToHtml() 
-        {
-            string html = 
-                $"<{tag} src=\"{href}\" "
-                + $"alt=\"{altText}\" " 
-                + $"title=\"{title}\">"
-                + $"</{tag}>";
-            return html;
+            Type = MarkdownElementType.Image;
+            tag = Type.Tag();
+            this.attributes = new Dictionary<string, string>();
+            attributes.Add(
+                "src",
+                href
+            );
+            attributes.Add(
+                "alt",
+                altText
+            );
+            attributes.Add(
+                "title",
+                title
+            );
         }
 
         public static bool CanParseFrom(

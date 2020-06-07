@@ -1,10 +1,10 @@
 
-
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownLink : IHtmlable
+    public class MarkdownLink : MarkdownElementFull, IHtmlable
     {
 
         private static Regex regexLinkImmediate = new Regex(
@@ -19,31 +19,17 @@ namespace MarkdownToHtml
             @"^\[(.*[^\\])\]"
         );
 
-        IHtmlable[] content;
-
-        const string tag = "a";
-
-        private string href = "";
-
-        public const MarkdownElementType Type = MarkdownElementType.Link;
-
         public MarkdownLink(
             IHtmlable[] content,
             string href
         ) {
+            Type = MarkdownElementType.Link;
             this.content = content;
-            this.href = href;
-        }
-
-        public string ToHtml() 
-        {
-            string html = $"<{tag} href=\"{href}\">";
-            foreach (IHtmlable htmlable in content)
-            {
-                html += htmlable.ToHtml();
-            }
-            html += $"</{tag}>";
-            return html;
+            attributes = new Dictionary<string, string>();
+            attributes.Add(
+                "href",
+                href
+            );
         }
 
         public static bool CanParseFrom(
@@ -82,7 +68,6 @@ namespace MarkdownToHtml
             return false;
         }
 
-        // Shared code for parsing emphasis sections
         public static ParseResult ParseFrom(
             ParseInput input
         ) {

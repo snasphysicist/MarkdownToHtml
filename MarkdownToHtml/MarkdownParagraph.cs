@@ -4,30 +4,14 @@ using System.Collections.Generic;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownParagraph : IHtmlable
+    public class MarkdownParagraph : MarkdownElementWithContent, IHtmlable
     {
-
-        IHtmlable[] content;
-
-        const string tag = "p";
-
-        public const MarkdownElementType Type = MarkdownElementType.Paragraph;
 
         public MarkdownParagraph(
             IHtmlable[] innerContent
         ) {
+            Type = MarkdownElementType.Paragraph;
             content = innerContent;
-        }
-
-        public string ToHtml() 
-        {
-            string html = $"<{tag}>";
-            foreach (IHtmlable htmlable in content)
-            {
-                html += htmlable.ToHtml();
-            }
-            html += $"</{tag}>";
-            return html;
         }
 
         // Parse a plain paragraph

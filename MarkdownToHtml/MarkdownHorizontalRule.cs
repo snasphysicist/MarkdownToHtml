@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownHorizontalRule : IHtmlable
+    public class MarkdownHorizontalRule : MarkdownElementBase, IHtmlable
     {
 
         static Regex regexHorizontalRule = new Regex(
@@ -12,15 +12,9 @@ namespace MarkdownToHtml
             + @"|^[\s|-]{3,}$"
         );
 
-        string tag = "hr";
-
-        public const MarkdownElementType Type = MarkdownElementType.HorizontalRule;
-
         public MarkdownHorizontalRule() 
-        {}
-
-        public string ToHtml() {
-            return $"<{tag}>";
+        {
+            Type = MarkdownElementType.HorizontalRule;
         }
 
         public static bool CanParseFrom(
