@@ -68,9 +68,18 @@ It will respond with the usual JSON error messages provided by the ASP.NET MVC f
 
 # MarkdownToHtml
 
-## Markdown Element classes
+## Element parent classes
 
-The biggest group of files/glasses in the project are those that represent "Markdown elements". Broadly speaking these are some specific sub-part of a Markdown document, such as a code block, a heading or a emphasised piece of text. These are the classes prefixed with Markdown, with the exception of the `MarkdownParser` and the `MarkdownElementType` class.
+There are four abstract parent classes which are inherited by the classes described below which represent particular elements of the Markdown document. Each different markdown element contains some combination of the following data items: a *type* (with corresponding html tag), some inner *content* (as other element objects), some *attributes* (as string:string key:value pairs). The four parent classes thus define four different combinations of these data items, and the `ToHtml` methods in each case.
+
+* `MarkdownElementBase` - *type* only
+* `MarkdownElementWithContent` - *type* + *content*
+* `MarkdownElementWithAttributes` - *type* + *attributes*
+* `MarkdownElementFull` - *type* + *content* + *attributes*
+
+## Element classes
+
+The biggest group of files/glasses in the project are those that represent "Markdown elements". Broadly speaking these are some specific sub-part of a Markdown document, such as a code block, a heading or a emphasised piece of text. These are the classes prefixed with Markdown, with the exception of the following: `MarkdownElementBase`, `MarkdownElementFull`, `MarkdownElementWithAttributes`, `MarkdownElementWithContent` `MarkdownElementType`, `MarkdownLineGroupType`, `MarkdownParser`, 
 
 These classes are responsible for detecting whether an element of that type can be parsed from a line or set of lines, and actually parsing that element out. They all provide two static methods to do this - `CanParseFrom` and `ParseFrom`.
 
@@ -84,7 +93,7 @@ Many element types can contain nested elements. Generally these elements will ho
 
 All element types contain a `Type` property of type `MarkdownElementType`, which can indicate to external classes which element type it is.
 
-All Markdown element classes should implement `IHtmlable`.
+All Markdown element classes should implement `IHtmlable`. In almost all cases, however, the ToHtml will be inherited from a parent class (described in the previous section).
 
 ## IHtmlable
 
