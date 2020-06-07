@@ -1,10 +1,10 @@
 
-
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownLink : MarkdownElement, IHtmlable
+    public class MarkdownLink : MarkdownElementWithAttributes, IHtmlable
     {
 
         private static Regex regexLinkImmediate = new Regex(
@@ -19,26 +19,17 @@ namespace MarkdownToHtml
             @"^\[(.*[^\\])\]"
         );
 
-        private string href = "";
-
         public MarkdownLink(
             IHtmlable[] content,
             string href
         ) {
             Type = MarkdownElementType.Link;
             this.content = content;
-            this.href = href;
-        }
-
-        public override string ToHtml() 
-        {
-            string html = $"<{Tag} href=\"{href}\">";
-            foreach (IHtmlable htmlable in content)
-            {
-                html += htmlable.ToHtml();
-            }
-            html += $"</{Tag}>";
-            return html;
+            attributes = new Dictionary<string, string>();
+            attributes.Add(
+                "href",
+                href
+            );
         }
 
         public static bool CanParseFrom(
