@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace MarkdownToHtml
 {
-    public abstract class MarkdownElementWithAttributes : MarkdownElementBase, IHtmlable
+    public abstract class MarkdownElementFull : MarkdownElementWithAttributes, IHtmlable
     {
 
-        protected Dictionary<string, string> attributes;
+        protected IHtmlable[] content;
 
         public override string ToHtml() {
             string attributeSection = "";
@@ -15,6 +15,10 @@ namespace MarkdownToHtml
                 attributeSection += $" {entry.Key}=\"{entry.Value}\"";
             }
             string html = $"<{Tag}{attributeSection}>";
+            foreach (IHtmlable htmlable in content)
+            {
+                html += htmlable.ToHtml();
+            }
             html += $"</{Tag}>";
             return html;
         }

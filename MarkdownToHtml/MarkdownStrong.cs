@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownStrong : MarkdownElement, IHtmlable
+    public class MarkdownStrong : MarkdownElementWithContent, IHtmlable
     {
 
         private static Regex regexParseable = new Regex(

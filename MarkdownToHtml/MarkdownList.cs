@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownList : MarkdownElement, IHtmlable
+    public class MarkdownList : MarkdownElementWithContent, IHtmlable
     {
 
         private static Regex regexOrderedListLine = new Regex(
@@ -247,7 +247,7 @@ namespace MarkdownToHtml
         }
 
         // List item inner class = o
-        class MarkdownListItem : MarkdownElement, IHtmlable 
+        class MarkdownListItem : MarkdownElementWithContent, IHtmlable 
         {
 
             private MarkdownListItem(

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownParagraph : MarkdownElement, IHtmlable
+    public class MarkdownParagraph : MarkdownElementWithContent, IHtmlable
     {
 
         public MarkdownParagraph(

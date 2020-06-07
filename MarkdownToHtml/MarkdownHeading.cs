@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownHeading : MarkdownElement, IHtmlable
+    public class MarkdownHeading : MarkdownElementWithContent, IHtmlable
     {
 
         private static Regex regexSingleLineHeading = new Regex(

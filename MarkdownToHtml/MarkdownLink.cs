@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownLink : MarkdownElementWithAttributes, IHtmlable
+    public class MarkdownLink : MarkdownElementFull, IHtmlable
     {
 
         private static Regex regexLinkImmediate = new Regex(
@@ -68,7 +68,6 @@ namespace MarkdownToHtml
             return false;
         }
 
-        // Shared code for parsing emphasis sections
         public static ParseResult ParseFrom(
             ParseInput input
         ) {

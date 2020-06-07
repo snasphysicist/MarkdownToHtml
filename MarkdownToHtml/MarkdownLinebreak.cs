@@ -1,18 +1,11 @@
 
 namespace MarkdownToHtml
 {
-    public class MarkdownLinebreak : IHtmlable
+    public class MarkdownLinebreak : MarkdownElementBase, IHtmlable
     {
-
-        public const MarkdownElementType Type = MarkdownElementType.Linebreak;
-
         public MarkdownLinebreak() 
-        {}
-
-        public string ToHtml() 
         {
-            return $"<{Type.Tag()}>";
+            Type = MarkdownElementType.Linebreak;
         }
-
     }
 }

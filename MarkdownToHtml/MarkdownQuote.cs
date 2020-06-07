@@ -3,7 +3,7 @@ using System;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownQuote : MarkdownElement, IHtmlable
+    public class MarkdownQuote : MarkdownElementWithContent, IHtmlable
     {
         public MarkdownQuote(
             IHtmlable[] content

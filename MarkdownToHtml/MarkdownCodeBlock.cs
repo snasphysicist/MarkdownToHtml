@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownCodeBlock : MarkdownElement, IHtmlable
+    public class MarkdownCodeBlock : MarkdownElementWithContent, IHtmlable
     {
 
         private static Regex regexBacktickSectionOpen = new Regex(
