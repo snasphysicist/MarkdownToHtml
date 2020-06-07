@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MarkdownToHtml
 {
-    public abstract class MarkdownElementWithAttributes : MarkdownElement, IHtmlable
+    public abstract class MarkdownElementWithAttributes : MarkdownElementWithContent, IHtmlable
     {
 
         protected Dictionary<string, string> attributes;
