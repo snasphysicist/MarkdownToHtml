@@ -1,20 +1,12 @@
 
 namespace MarkdownToHtml
 {
-    public abstract class MarkdownElement : IHtmlable
+    public abstract class MarkdownElementWithContent : MarkdownElementBase, IHtmlable
     {
-        public MarkdownElementType Type
-        { get; protected set; }
 
         protected IHtmlable[] content;
 
-        protected string Tag {
-            get {
-                return Type.Tag();
-            }
-        }
-
-        public virtual string ToHtml() {
+        public override string ToHtml() {
             string html = $"<{Tag}>";
             foreach (IHtmlable htmlable in content)
             {
