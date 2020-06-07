@@ -9,7 +9,7 @@ I choose to write this library for a couple of reasons.
 
 Firstly I started writing some articles in Markdown to post on my own website and, naturally, they needed to be converted to HTML before displaying on the website. Ideally this process should be automated (or automatable) so any changes I make to the Markdown will (more or less) immediately be reflected on the website. I didn't find any satisfactory, existing tools to do this.
 
-Secondly it was a learning exercise for myself both for C# and particular for web servers in C#.
+Secondly it was a learning exercise for myself both for C# and particularly for web servers in C#.
 
 Thirdly I had some ideas in mind for extensions/custom functionality that I wanted to add to the Markdown (i.e. custom elements types) so I wanted to create a package that makes this straightforward to do.
 
