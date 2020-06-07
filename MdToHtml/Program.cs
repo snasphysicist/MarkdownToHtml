@@ -133,15 +133,15 @@ namespace MdToHtml
                         markdownParser.ToHtml()
                     }
                 );
-            } catch (DirectoryNotFoundException e) {
+            } catch (DirectoryNotFoundException) {
                 PrintErrorAndExit(
                     OutputFileDirectoryDoesNotExistText
                 );
-            } catch (IOException e) {
+            } catch (IOException) {
                 PrintErrorAndExit(
                     CouldNotWriteOutputFileText
                 );
-            } catch (UnauthorizedAccessException e) {
+            } catch (UnauthorizedAccessException) {
                 PrintErrorAndExit(
                     CouldNotWriteOutputFileText
                 );
