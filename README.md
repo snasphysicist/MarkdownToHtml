@@ -79,7 +79,7 @@ There are four abstract parent classes which are inherited by the classes descri
 
 ## Element classes
 
-The biggest group of files/glasses in the project are those that represent "Markdown elements". Broadly speaking these are some specific sub-part of a Markdown document, such as a code block, a heading or a emphasised piece of text. These are the classes prefixed with Markdown, with the exception of the following: `MarkdownElementBase`, `MarkdownElementFull`, `MarkdownElementWithAttributes`, `MarkdownElementWithContent` `MarkdownElementType`, `MarkdownLineGroupType`, `MarkdownParser`, 
+The biggest group of files/glasses in the project are those that represent "Markdown elements". Broadly speaking these are some specific sub-part of a Markdown document, such as a code block, a heading or a emphasised piece of text. These are the classes prefixed with Markdown, with the exception of the following: `MarkdownElementBase`, `MarkdownElementFull`, `MarkdownElementWithAttributes`, `MarkdownElementWithContent` `MarkdownElementType`, `MarkdownParser`, 
 
 These classes are responsible for detecting whether an element of that type can be parsed from a line or set of lines, and actually parsing that element out. They all provide two static methods to do this - `CanParseFrom` and `ParseFrom`.
 
