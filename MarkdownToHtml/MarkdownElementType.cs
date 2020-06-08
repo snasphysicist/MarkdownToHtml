@@ -25,6 +25,7 @@ namespace MarkdownToHtml
         HorizontalRule,
         Paragraph,
         Text,
-        Linebreak
+        Linebreak,
+        Preformatted
     }
 }
