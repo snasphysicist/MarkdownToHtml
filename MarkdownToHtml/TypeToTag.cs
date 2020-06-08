@@ -30,7 +30,8 @@ namespace MarkdownToHtml
             {MarkdownElementType.HorizontalRule, "hr"},
             {MarkdownElementType.Paragraph, "p"},
             {MarkdownElementType.Text, ""},
-            {MarkdownElementType.Linebreak, "br"}
+            {MarkdownElementType.Linebreak, "br"},
+            {MarkdownElementType.Preformatted, "pre"}
         };
 
         public static string Tag(

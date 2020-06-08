@@ -81,43 +81,10 @@ namespace MarkdownToHtml
         private static int FindEndOfQuoteSection(
             ArraySegment<string> lines
         ) {
-            int index = 1;
-            bool previousLineWasWhitespace = false;
-            /* 
-             * Condition
-             * Don't allow index to exceed the number of elements to avoid Exceptions
-             * We want to break the loop when there is a whitespace line
-             * (previousLineWasWhitespace)
-             * followed by a non-whitespace line (!ContainsOnlyWhitespace(lines[index])) 
-             * which is not a quote line !lines[index].StarsWith(">")
-             */
-            while (
-                index < lines.Count
-                && !(
-                    previousLineWasWhitespace
-                    && !ContainsOnlyWhitespace(lines[index])
-                    && !lines[index].StartsWith(">")
-                )
-            ) {
-                if (ContainsOnlyWhitespace(lines[index]))
-                {
-                    previousLineWasWhitespace = true;
-                } else {
-                    previousLineWasWhitespace = false;
-                }
-                index++;
-            }
-            return index;
+            return Utils.FindEndOfSection(
+                lines,
+                ">"
+            );
         }
-
-        private static bool ContainsOnlyWhitespace(
-            string line
-        ) {
-            return line.Replace(
-                " ",
-                ""
-            ).Length == 0;
-        }
-
     }
 }

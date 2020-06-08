@@ -45,7 +45,11 @@ namespace MarkdownToHtml
                         innerContent.AddLast(entry);
                     }
                 } else {
-                    string line = lines[0];
+                    // Always remove leading spaces
+                    string line = Utils.StripLeadingCharacter(
+                        lines[0],
+                        ' '
+                    );
                     if (endsWithAtLeastTwoSpaces(line))
                     {
                         string shortened = StripTrailingWhitespace(line);

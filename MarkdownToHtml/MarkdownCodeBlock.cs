@@ -19,7 +19,7 @@ namespace MarkdownToHtml
         public MarkdownCodeBlock(
             IHtmlable[] content
         ) {
-            Type = MarkdownElementType.CodeInline;
+            Type = MarkdownElementType.CodeBlock;
             this.content = content;
         }
 

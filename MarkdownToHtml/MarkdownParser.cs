@@ -100,7 +100,10 @@ namespace MarkdownToHtml
             ParseInput input
         ) {
             ParseResult result;
-            if (MarkdownHeading.CanParseFrom(input))
+            if (MarkdownPreformattedCodeBlock.CanParseFrom(input))
+            {
+                result = MarkdownPreformattedCodeBlock.ParseFrom(input);
+            } else if (MarkdownHeading.CanParseFrom(input))
             {
                 result = MarkdownHeading.ParseFrom(input);
             } else if (MarkdownHorizontalRule.CanParseFrom(input))
