@@ -62,5 +62,18 @@ namespace MarkdownToHtml
                 ""
             ).Length == 0;
         }
+
+        public static string StripLeadingCharacter(
+            string line,
+            char character
+        ) {
+            while (
+                (line.Length > 0)
+                && (line[0] == character)
+            ) {
+                line = line.Substring(1);
+            }
+            return line;
+        }
     }
 }
