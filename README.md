@@ -34,7 +34,6 @@ Not all functionality expected of basic Markdown is yet included in this impleme
 ### "Missing" Functionality
 
 * Nested lists (untested)
-* 4 space indented block code sections
 
 Also the functionality to include custom extensions/elements has not yet been added.
 
