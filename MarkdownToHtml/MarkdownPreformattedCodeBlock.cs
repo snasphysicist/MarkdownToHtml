@@ -7,6 +7,9 @@ namespace MarkdownToHtml
 {
     public class MarkdownPreformattedCodeBlock : MarkdownElementWithContent, IHtmlable
     {
+        private static MarkdownText newLine = new MarkdownText(
+            "\n"
+        );
 
         private static Regex regexIndentedLineStart = new Regex(
             @"^ {4}.*"
@@ -53,6 +56,13 @@ namespace MarkdownToHtml
                         line
                     )
                 );
+                // Add a newline character after all lines except final line
+                if (i != endOfCodeBlock - 1)
+                {
+                    innerContent.AddLast(
+                        newLine
+                    );
+                }
                 // Clear original line from original data
                 lines[i] = "";
             }
