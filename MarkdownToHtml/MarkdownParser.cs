@@ -37,7 +37,6 @@ namespace MarkdownToHtml
             return contentArray;
         }
 
-        // TODO replace with MarkdownDocument object
         public string ToHtml()
         {
             string html = "";
