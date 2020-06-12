@@ -3,7 +3,7 @@ namespace MarkdownToHtml
 {
     public abstract class MarkdownElementBase : IHtmlable
     {
-        public MarkdownElementType Type
+        public ElementType Type
         { get; protected set; }
 
         protected string Tag {
