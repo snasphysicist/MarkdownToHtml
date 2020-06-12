@@ -3,16 +3,17 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class Strikethrough : IMarkdownParser
+    public class Strong : IMarkdownParser
     {
-        private static Regex regexStruckthroughText = new Regex(
-            @"^~{2}(.+)~{2}.*"
+        private static Regex regexStrongText = new Regex(
+            @"^\*{2}(.+)\*{2}.*"
+            + @"|^_{2}(.+)_{2}.*"
         );
 
         public bool CanParseFrom(
             ParseInput input
         ) {
-            return regexStruckthroughText.Match(input.FirstLine).Success;
+            return regexStrongText.Match(input.FirstLine).Success;
         }
 
         public ParseResult ParseFrom(
@@ -22,15 +23,15 @@ namespace MarkdownToHtml
             ParseResult result = new ParseResult();
             if (!CanParseFrom(input))
             {
-                // Fail immediately if we cannot parse this text as strikethrough
+                // Fail immediately if we cannot parse this text as strong
                 return result;
             }
-            Match contentMatch = regexStruckthroughText.Match(
+            Match contentMatch = regexStrongText.Match(
                 line
             );
-            string innerText = contentMatch.Groups[1].Value;
-            Element strikethrough = new ElementFactory().New(
-                ElementType.Strikethrough,
+            string innerText = contentMatch.Groups[1].Value + contentMatch.Groups[2].Value;
+            Element strong = new ElementFactory().New(
+                ElementType.Strong,
                 MarkdownParser.ParseInnerText(
                     new ParseInput(
                         input,
@@ -39,9 +40,9 @@ namespace MarkdownToHtml
                 )
             );
             result.AddContent(
-                strikethrough
+                strong
             );
-            input.FirstLine = regexStruckthroughText.Replace(
+            input.FirstLine = regexStrongText.Replace(
                 line,
                 ""
             );
