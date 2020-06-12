@@ -23,7 +23,16 @@ namespace MarkdownToHtml
 
         public IEnumerable<IHtmlable> Content()
         {
-            foreach (IHtmlable item in content) {
+            foreach (IHtmlable item in content) 
+            {
+                yield return item;
+            }
+        }
+
+        public IEnumerable<Attribute> Attributes()
+        {
+            foreach (Attribute item in attributes)
+            {
                 yield return item;
             }
         }
