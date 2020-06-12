@@ -1,7 +1,7 @@
 
 namespace MarkdownToHtml
 {
-    public enum MarkdownElementType
+    public enum ElementType
     {
         Heading1,
         Heading2,
