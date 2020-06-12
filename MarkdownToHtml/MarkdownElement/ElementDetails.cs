@@ -53,6 +53,14 @@ namespace MarkdownToHtml
 
         public ElementDetails(
             ElementType type,
+            Attribute[] attributes
+        ) : this(type) 
+        {
+            this.attributes = attributes;
+        }
+
+        public ElementDetails(
+            ElementType type,
             IHtmlable[] content,
             Attribute[] attributes
         ) : this(type, content)

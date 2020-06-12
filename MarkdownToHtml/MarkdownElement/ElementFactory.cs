@@ -35,6 +35,20 @@ namespace MarkdownToHtml
 
         public Element New(
             ElementType type,
+            Attribute[] attributes
+        ) {
+            ElementDetails details = new ElementDetails(
+                type,
+                attributes
+            );
+            return new Element(
+                details,
+                new TagAttributesWriter()
+            );
+        }
+
+        public Element New(
+            ElementType type,
             IHtmlable[] content,
             Attribute[] attributes
         ) {
