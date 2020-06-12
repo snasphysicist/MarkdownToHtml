@@ -6,6 +6,7 @@ namespace MarkdownToHtml
     public class ElementFactory
     {
         public ElementFactory() {}
+        
         public Element New(
             ElementType type
         ) {
