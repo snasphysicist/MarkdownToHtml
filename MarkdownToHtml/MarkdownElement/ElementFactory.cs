@@ -35,7 +35,7 @@ namespace MarkdownToHtml
         public Element New(
             ElementType type,
             IHtmlable[] content,
-            Dictionary<string, string> attributes
+            Attribute[] attributes
         ) {
             ElementDetails details = new ElementDetails(
                 type,
