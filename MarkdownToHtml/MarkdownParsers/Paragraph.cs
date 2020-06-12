@@ -4,18 +4,20 @@ using System.Collections.Generic;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownParagraph : MarkdownElementWithContent, IHtmlable
+    public class Paragraph : IMarkdownParser
     {
+        private static Element linebreak = new ElementFactory().New(
+            ElementType.Linebreak
+        );
 
-        public MarkdownParagraph(
-            IHtmlable[] innerContent
-        ) {
-            Type = MarkdownElementType.Paragraph;
-            content = innerContent;
+        public bool CanParseFrom(
+            ParseInput input
+        )
+        {
+            return true;
         }
 
-        // Parse a plain paragraph
-        public static ParseResult ParseFrom(
+        public ParseResult ParseFrom(
             ParseInput input
         ) {
             ArraySegment<string> lines = input.Lines();
@@ -37,9 +39,9 @@ namespace MarkdownToHtml
             while (i < endIndex)
             {
                 lines = input.Lines();
-                if (MarkdownCodeBlock.CanParseFrom(input))
+                if (new CodeBlock().CanParseFrom(input))
                 {
-                    ParseResult innerResult = MarkdownCodeBlock.ParseFrom(input);
+                    ParseResult innerResult = new CodeBlock().ParseFrom(input);
                     foreach (IHtmlable entry in innerResult.GetContent())
                     {
                         innerContent.AddLast(entry);
@@ -65,7 +67,7 @@ namespace MarkdownToHtml
                             innerContent.AddLast(entry);
                         }
                         innerContent.AddLast(
-                            new MarkdownLinebreak()
+                            linebreak
                         );
                     } else {
                         foreach (
@@ -110,7 +112,8 @@ namespace MarkdownToHtml
                 // Move array slice to next non-empty line
                 input = input.JumpLines(j);
             }
-            MarkdownParagraph paragraph = new MarkdownParagraph(
+            Element paragraph = new ElementFactory().New(
+                ElementType.Paragraph,
                 Utils.LinkedListToArray(innerContent)
             );
             result.Success = true;
@@ -169,6 +172,5 @@ namespace MarkdownToHtml
                 ""
             ).Length == 0;
         }
-
     }
 }
