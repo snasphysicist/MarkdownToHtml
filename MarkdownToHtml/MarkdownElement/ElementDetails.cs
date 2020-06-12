@@ -19,7 +19,7 @@ namespace MarkdownToHtml
 
         private IHtmlable[] content = new IHtmlable[]{};
 
-        private Dictionary<string, string> attributes = new Dictionary<string, string>();
+        private Attribute[] attributes = new Attribute[]{};
 
         public IEnumerable<IHtmlable> Content()
         {
@@ -45,7 +45,7 @@ namespace MarkdownToHtml
         public ElementDetails(
             ElementType type,
             IHtmlable[] content,
-            Dictionary<string, string> attributes
+            Attribute[] attributes
         ) : this(type, content)
         {
             this.attributes = attributes;
