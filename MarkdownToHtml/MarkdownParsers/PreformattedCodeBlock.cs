@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownPreformattedCodeBlock : MarkdownElementWithContent, IHtmlable
+    public class PreformattedCodeBlock : IMarkdownParser
     {
         private static MarkdownText newLine = new MarkdownText(
             "\n"
@@ -15,20 +15,13 @@ namespace MarkdownToHtml
             @"^ {4}.*"
         );
 
-        public MarkdownPreformattedCodeBlock(
-            IHtmlable[] content
-        ) {
-            Type = MarkdownElementType.CodeBlock;
-            this.content = content;
-        }
-
-        public static bool CanParseFrom(
+        public bool CanParseFrom(
             ParseInput input
         ) {
             return regexIndentedLineStart.Match(input.FirstLine).Success;
         }
 
-        public static ParseResult ParseFrom(
+        public ParseResult ParseFrom(
             ParseInput input
         ) {
 
@@ -66,28 +59,17 @@ namespace MarkdownToHtml
                 // Clear original line from original data
                 lines[i] = "";
             }
-            MarkdownPreformatted codeBlock = new MarkdownPreformatted(
-                new MarkdownCodeBlock(
-                    Utils.LinkedListToArray(innerContent)
-                )
+            Element codeBlock = new ElementFactory().New(
+                ElementType.CodeBlock,
+                Utils.LinkedListToArray(innerContent)
+            );
+            Element preformatted = new ElementFactory().New(
+                ElementType.Preformatted,
+                codeBlock
             );
             result.Success = true;
-            result.AddContent(codeBlock);
+            result.AddContent(preformatted);
             return result;
         }
-
-        class MarkdownPreformatted : MarkdownElementWithContent, IHtmlable
-        {
-            public MarkdownPreformatted(
-                IHtmlable content
-            ) {
-                Type = MarkdownElementType.Preformatted;
-                this.content = new IHtmlable[]
-                {
-                    content
-                };
-            }
-        }
-
     }
 }
