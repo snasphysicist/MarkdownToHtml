@@ -21,6 +21,13 @@ namespace MarkdownToHtml
 
         private Dictionary<string, string> attributes = new Dictionary<string, string>();
 
+        public IEnumerable<IHtmlable> Content()
+        {
+            foreach (IHtmlable item in content) {
+                yield return item;
+            }
+        }
+
         public ElementDetails(
             ElementType type
         ) {
