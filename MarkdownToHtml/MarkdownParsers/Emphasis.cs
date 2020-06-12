@@ -3,28 +3,20 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownEmphasis : MarkdownElementWithContent, IHtmlable
+    public class Emphasis
     {
-
         private static Regex regexParseable = new Regex(
             @"^\*(.*?[^\\])\*"
             + @"|^_(.*?[^\\])_"
         );
 
-        public MarkdownEmphasis(
-            IHtmlable[] content
-        ) {
-            Type = MarkdownElementType.Emphasis;
-            this.content = content;
-        }
-
-        public static bool CanParseFrom(
+        public bool CanParseFrom(
             ParseInput input
         ) {
             return regexParseable.Match(input.FirstLine).Success;
         }
 
-        public static ParseResult ParseFrom(
+        public ParseResult ParseFrom(
             ParseInput input
         ) {
             string line = input.FirstLine;
@@ -45,7 +37,8 @@ namespace MarkdownToHtml
                 content = contentMatch.Groups[2].Value;
             }
             // Parse everything inside the stars
-            MarkdownEmphasis element = new MarkdownEmphasis(
+            Element element = new ElementFactory().New(
+                ElementType.Emphasis,
                 MarkdownParser.ParseInnerText(
                     new ParseInput(
                         input,
@@ -54,12 +47,11 @@ namespace MarkdownToHtml
                 )
             );
             result.AddContent(element);
-            result.Line = line.Substring(
+            input.FirstLine = line.Substring(
                 content.Length + 2
             );
             result.Success = true;
             return result;
         }
-
     }
 }
