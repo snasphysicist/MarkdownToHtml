@@ -34,13 +34,13 @@ namespace MarkdownToHtml
 
         string content;
 
-        public MarkdownElementType Type
+        public ElementType Type
         { get; private set; }
 
         public MarkdownText(
             string content
         ) {
-            Type = MarkdownElementType.Text;
+            Type = ElementType.Text;
             this.content = ReplaceEscapeCharacters(
                 content
             );
