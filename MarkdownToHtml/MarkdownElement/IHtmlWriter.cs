@@ -1,8 +1,10 @@
 
 namespace MarkdownToHtml
 {
-    public interface HtmlWriter
+    public interface IHtmlWriter
     {
-        string WriteToString();
+        public string WriteToString(
+            ElementDetails details
+        );
     }
 }
