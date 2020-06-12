@@ -1,23 +1,16 @@
 
-using System;
 using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownHorizontalRule : MarkdownElementBase, IHtmlable
+    public class HorizontalRule : IMarkdownParser
     {
-
         static Regex regexHorizontalRule = new Regex(
             @"^[\s|\*]{3,}$"
             + @"|^[\s|-]{3,}$"
         );
 
-        public MarkdownHorizontalRule() 
-        {
-            Type = MarkdownElementType.HorizontalRule;
-        }
-
-        public static bool CanParseFrom(
+        public bool CanParseFrom(
             ParseInput input
         ) {
             string line = input.FirstLine;
@@ -31,7 +24,7 @@ namespace MarkdownToHtml
             return correctFormat && enoughNonWhitespace;
         }
 
-        public static ParseResult ParseFrom(
+        public ParseResult ParseFrom(
             ParseInput input
         ) {
             ParseResult result = new ParseResult();
@@ -42,10 +35,11 @@ namespace MarkdownToHtml
             input.FirstLine = "";
             result.Success = true;
             result.AddContent(
-                new MarkdownHorizontalRule()
+                new ElementFactory().New(
+                    ElementType.HorizontalRule
+                )
             );
             return result;
         }
-
     }
 }
