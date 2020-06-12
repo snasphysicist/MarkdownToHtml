@@ -4,9 +4,8 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownImage : MarkdownElementWithAttributes, IHtmlable
+    public class Image : IMarkdownParser
     {
-
         private static Regex regexImageImmediateNoTitle = new Regex(
             @"^!\[(.*[^\\])\]\((\S*[^\\])\)"
         );
@@ -19,30 +18,7 @@ namespace MarkdownToHtml
             @"^!\[(.*[^\\])\]\[(.*[^\\])\]"
         );
 
-        private string tag;
-        public MarkdownImage(
-            string href,
-            string altText,
-            string title
-        ) {
-            Type = MarkdownElementType.Image;
-            tag = Type.Tag();
-            this.attributes = new Dictionary<string, string>();
-            attributes.Add(
-                "src",
-                href
-            );
-            attributes.Add(
-                "alt",
-                altText
-            );
-            attributes.Add(
-                "title",
-                title
-            );
-        }
-
-        public static bool CanParseFrom(
+        public bool CanParseFrom(
             ParseInput input
         ) {
             string line = input.FirstLine;
@@ -69,7 +45,7 @@ namespace MarkdownToHtml
             return false;
         }
 
-        public static ParseResult ParseFrom(
+        public ParseResult ParseFrom(
             ParseInput input
         ) {
             string line = input.FirstLine;
@@ -80,74 +56,107 @@ namespace MarkdownToHtml
             ) {
                 return result;
             }
+            LinkedList<Attribute> attributes = new LinkedList<Attribute>();
             Match linkMatch;
             // Format: ![text](url)
             linkMatch = regexImageImmediateNoTitle.Match(line);
             if (linkMatch.Success)
             {
-                string text = linkMatch.Groups[1].Value;
-                string url = linkMatch.Groups[2].Value;
-                string title = "";
-                result.Success = true;
-                result.Line = regexImageImmediateNoTitle.Replace(
+                attributes.AddLast(
+                    new Attribute(
+                        "text",
+                        linkMatch.Groups[1].Value
+                    )
+                );
+                attributes.AddLast(
+                    new Attribute(
+                        "url",
+                        linkMatch.Groups[2].Value
+                    )
+                );
+                attributes.AddLast(
+                    new Attribute(
+                        "title",
+                        ""
+                    )
+                );
+                input.FirstLine = regexImageImmediateNoTitle.Replace(
                     line,
                     ""
-                );
-                result.AddContent(
-                    new MarkdownImage(
-                        url,
-                        text,
-                        title
-                    )
                 );
             }
             // Format: ![text](url "title")
             linkMatch = regexImageImmediateWithTitle.Match(line);
             if (linkMatch.Success)
             {
-                string text = linkMatch.Groups[1].Value;
-                string url = linkMatch.Groups[2].Value;
-                string title = linkMatch.Groups[3].Value;
+                attributes.AddLast(
+                    new Attribute(
+                        "text",
+                        linkMatch.Groups[1].Value
+                    )
+                );
+                attributes.AddLast(
+                    new Attribute(
+                        "url",
+                        linkMatch.Groups[2].Value
+                    )
+                );
+                attributes.AddLast(
+                    new Attribute(
+                        "title",
+                        linkMatch.Groups[3].Value
+                    )
+                );
                 result.Success = true;
-                result.Line = regexImageImmediateWithTitle.Replace(
+                input.FirstLine = regexImageImmediateWithTitle.Replace(
                     line,
                     ""
-                );
-                result.AddContent(
-                    new MarkdownImage(
-                        url,
-                        text,
-                        title
-                    )
                 );
             }
             // Format: [text][id]    [id]: url     (title optional)
             linkMatch = regexImageReference.Match(line);
             if (linkMatch.Success)
             {
+                attributes.AddLast(
+                    new Attribute(
+                        "text",
+                        linkMatch.Groups[1].Value
+                    )
+                );
                 string text = linkMatch.Groups[1].Value;
                 string reference = linkMatch.Groups[2].Value;
                 foreach (ReferencedUrl url in urls)
                 {
                     if (url.Reference == reference)
                     {
-                        result.Success = true;
-                        result.Line = regexImageReference.Replace(
-                            line,
-                            ""
+                        attributes.AddLast(
+                            new Attribute(
+                                "url",
+                                url.Url
+                            )
                         );
-                        result.AddContent(
-                            new MarkdownImage(
-                                url.Url,
-                                text,
+                        attributes.AddLast(
+                            new Attribute(
+                                "title",
                                 url.Title
                             )
                         );
+                        result.Success = true;
+                        input.FirstLine = regexImageReference.Replace(
+                            line,
+                            ""
+                        );
+                        break;
                     }
                 }
             }
+            result.AddContent(
+                new ElementFactory().New(
+                    ElementType.Image,
+                    Utils.LinkedListToArray(attributes)
+                )
+            );
             return result;
         }
-
     }
 }
