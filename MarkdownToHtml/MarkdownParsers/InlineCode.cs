@@ -9,14 +9,14 @@ namespace MarkdownToHtml
             @"^`.*([^`])`.*"
         );
 
-        public static bool CanParseFrom(
+        public bool CanParseFrom(
             ParseInput input
         ) {
             return regexParseable.Match(input.FirstLine).Success;
         }
 
         // Shared code for parsing emphasis sections
-        public static ParseResult ParseFrom(
+        public ParseResult ParseFrom(
             ParseInput input
         ) {
             string line = input.FirstLine;
