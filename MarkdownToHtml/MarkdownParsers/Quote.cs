@@ -3,7 +3,7 @@ using System;
 
 namespace MarkdownToHtml
 {
-    public class Quote
+    public class Quote : IMarkdownParser
     {
         public bool CanParseFrom(
             ParseInput input
