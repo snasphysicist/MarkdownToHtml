@@ -245,57 +245,5 @@ namespace MarkdownToHtml
                 ""
             ).Length == 0;
         }
-
-        // List item inner class = o
-        class MarkdownListItem : MarkdownElementWithContent, IHtmlable 
-        {
-
-            private MarkdownListItem(
-                IHtmlable[] content
-            ) {
-                Type = MarkdownElementType.ListItem;
-                this.content = content;
-            }
-
-            public static ParseResult ParseFrom(
-                ParseInput lines,
-                bool innerParagraph
-            ) {
-                ParseResult result = new ParseResult();
-                ParseResult innerResult;
-                IHtmlable returnedElement;
-                // If the list items content contains another list
-                if (MarkdownList.CanParseFrom(lines))
-                {
-                    innerResult = MarkdownList.ParseFrom(lines);
-                    returnedElement = new MarkdownListItem(
-                        innerResult.GetContent()
-                    );
-                } else 
-                {
-                    // Otherwise, if the item content should go in a paragraph
-                    if (innerParagraph)
-                    {
-                        innerResult = MarkdownParagraph.ParseFrom(lines);
-                        returnedElement = new MarkdownListItem(
-                            innerResult.GetContent()
-                        );
-                    } else 
-                    {
-                        // line item content should not go in a paragraph
-                        returnedElement = new MarkdownListItem(
-                            MarkdownParser.ParseInnerText(lines)
-                        );
-                    }
-                }
-                result.Success = true;
-                result.AddContent(
-                    returnedElement
-                );
-                return result;
-            }
-            
-        } // End of inner class
-
     }
 }
