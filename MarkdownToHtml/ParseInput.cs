@@ -123,7 +123,7 @@ namespace MarkdownToHtml
             return this;
         }
 
-        public ParseInput NextLine()
+        public void NextLine()
         {
             startIndex++;
             elements--;
