@@ -125,9 +125,8 @@ namespace MarkdownToHtml
 
         public ParseInput NextLine()
         {
-            this.startIndex++;
-            this.elements--;
-            return this;
+            startIndex++;
+            elements--;
         }
 
         public ParseInput JumpLines(
