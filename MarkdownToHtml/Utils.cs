@@ -21,7 +21,7 @@ namespace MarkdownToHtml
          * start of the line to indicate the section
          */
         public static int FindEndOfSection(
-            ArraySegment<String> lines,
+            ParseInput input,
             string sectionIndicator
         )
         {
@@ -36,14 +36,16 @@ namespace MarkdownToHtml
              * which is not a line of given section type !lines[index].StartsWith
              */
             while (
-                index < lines.Count
+                index < input.Count
                 && !(
                     previousLineWasWhitespace
-                    && !ContainsOnlyWhitespace(lines[index])
-                    && !lines[index].StartsWith(sectionIndicator)
+                    && !input[index].ContainsOnlyWhitespace()
+                    && !input[index].StartsWith(
+                        sectionIndicator
+                    )
                 )
             ) {
-                if (ContainsOnlyWhitespace(lines[index]))
+                if (input[index].ContainsOnlyWhitespace())
                 {
                     previousLineWasWhitespace = true;
                 } else {
