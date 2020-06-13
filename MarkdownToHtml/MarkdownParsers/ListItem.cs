@@ -73,36 +73,5 @@ namespace MarkdownToHtml
             );
             return result;
         }
-
-        private bool WhitespaceLinePreceedsOrFollowsThisItem(
-            ParseInput lines
-        ) {
-            bool whitespaceAdjacent = false;
-            if (!lines.AtFirstLine())
-            {
-                lines.BackOneLine();
-                if (
-                    Utils.ContainsOnlyWhitespace(
-                        lines.CurrentLine
-                    )
-                ) {
-                    whitespaceAdjacent = true;
-                }
-                lines.ForwardOneLine();
-            }
-            if (!lines.AtLastLine())
-            {
-                lines.ForwardOneLine();
-                if (
-                    Utils.ContainsOnlyWhitespace(
-                        lines.CurrentLine
-                    )
-                ) {
-                    whitespaceAdjacent = true;
-                }
-                lines.BackOneLine();
-            }
-            return whitespaceAdjacent;
-        }
     }
 }
