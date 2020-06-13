@@ -22,6 +22,22 @@ namespace MarkdownToHtml
 
         private int elements;
 
+        public Line this[int index]
+        {
+            get
+            {
+                return lines[startIndex + index];
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                return elements;
+            }
+        }
+
         public ParseInput(
             ReferencedUrl[] urls,
             string[] lines,
