@@ -1,4 +1,5 @@
 
+using System;
 using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
@@ -39,6 +40,9 @@ namespace MarkdownToHtml
                 input
             );
             // AdjacentToWhitespace?
+            bool wrapInParagraph = IsWhitespaceLineAdjacent(
+                input
+            );
             // ContainsWhitespace?
             // ParseAsParagraph
 
@@ -103,6 +107,29 @@ namespace MarkdownToHtml
                 i++;
             }
             return i;
+        }
+
+        private bool IsWhitespaceLineAdjacent(
+            ParseInput input
+        ) {
+            bool foundAdjacentWhitespaceLine = false;
+            try
+            {
+                foundAdjacentWhitespaceLine =
+                    foundAdjacentWhitespaceLine || input[-1].ContainsOnlyWhitespace();
+            } catch (IndexOutOfRangeException)
+            {
+                // We were at the start of the input, so can't be preceded by whitespace
+            }
+            try
+            {
+                foundAdjacentWhitespaceLine =
+                    foundAdjacentWhitespaceLine || input[1].ContainsOnlyWhitespace();
+            } catch (IndexOutOfRangeException)
+            {
+                // We were at the end of the input, so can't be followed by whitespace
+            }
+            return foundAdjacentWhitespaceLine;
         }
     }
 }
