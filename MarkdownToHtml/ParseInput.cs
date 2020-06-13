@@ -56,6 +56,18 @@ namespace MarkdownToHtml
             this.elements = elements;
         }
 
+        private ParseInput(
+            ReferencedUrl[] urls,
+            Line[] lines,
+            int startIndex,
+            int elements
+        ) {
+            Urls = urls;
+            this.lines = lines;
+            this.startIndex = startIndex;
+            this.elements = elements;
+        }
+
         public ParseInput(
             ParseInput toCopy,
             string line
@@ -69,6 +81,28 @@ namespace MarkdownToHtml
             };
             startIndex = 0;
             elements = 1;
+        }
+
+        public ParseInput LinesFromStart(
+            int numberOfLines
+        ) {
+            return new ParseInput(
+                Urls,
+                lines,
+                startIndex,
+                numberOfLines
+            );
+        }
+
+        public ParseInput LinesUpTo(
+            int endIndex
+        ) {
+            return new ParseInput(
+                Urls,
+                lines,
+                startIndex,
+                endIndex - startIndex
+            );
         }
 
         public ArraySegment<Line> Lines()
