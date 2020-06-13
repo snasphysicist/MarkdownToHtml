@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
@@ -50,54 +51,25 @@ namespace MarkdownToHtml
             input[0].Text = RemoveListIndicator(
                 input[0].Text
             );
-            ParseResult paragraph = new Paragraph().ParseFrom(
-                input.LinesUpTo(
-                    endOfListItem
-                )
-            );
+            ParseResult innerContent;
+            if (wrapInParagraph)
+            {
+                innerContent = new Paragraph().ParseFrom(
+                    input.LinesUpTo(
+                        endOfListItem
+                    )
+                );
+            } else {
+                innerContent = new MultiLineText().ParseFrom(
+                    input.LinesUpTo(
+                        endOfListItem
+                    )
+                );
+            }
             Element listItem = new ElementFactory().New(
                 ElementType.ListItem,
-                paragraph.GetContent()
+                innerContent.GetContent()
             );
-            // Match orderedListItemContent = regexOrderedListLine.Match(input.FirstLine);
-            // string innerText = ;
-            // if (orderedListItemContent.Success)
-            // {
-
-            // } else {
-
-            // }
-            // bool wrapInParagraph = WhitespaceLinePreceedsOrFollowsThisItem(
-            //     input
-            // );
-            // Element listItem;
-            // if (
-            //     !input.AtLastLine()
-            //     && CanParseFrom(
-            //         input.NextLine()
-            //     )
-            // ) {
-            //     listItem = new ElementFactory().New(
-            //         ElementType.ListItem,
-            //         MarkdownParser.ParseInnerText(
-
-            //         )
-            //     )
-            // }
-
-            // if (wrapInParagraph)
-            // {
-            //     innerResult = MarkdownParagraph.ParseFrom(lines);
-            //     returnedElement = new MarkdownListItem(
-            //         innerResult.GetContent()
-            //     );
-            // } else 
-            // {
-            //     // line item content should not go in a paragraph
-            //     returnedElement = new MarkdownListItem(
-            //         MarkdownParser.ParseInnerText(lines)
-            //     );
-            // }
             result.Success = true;
             result.AddContent(
                 listItem
