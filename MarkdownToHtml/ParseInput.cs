@@ -8,17 +8,13 @@ namespace MarkdownToHtml
         public ReferencedUrl[] Urls
         { get; }
 
-        private string[] lines;
+        private Line[] lines;
 
-        public string FirstLine
+        public Line FirstLine
         {
             get
             {
                 return lines[startIndex];
-            }
-            set
-            {
-                lines[startIndex] = value;
             }
         }
 
@@ -33,7 +29,13 @@ namespace MarkdownToHtml
             int elements
         ) {
             Urls = urls;
-            this.lines = lines;
+            this.lines = new Line[lines.Length];
+            for (int i = 0; i < lines.Length; i++)
+            {
+                this.lines[i] = new Line(
+                    lines[i]
+                );
+            }
             this.startIndex = startIndex;
             this.elements = elements;
         }
@@ -43,17 +45,19 @@ namespace MarkdownToHtml
             string line
         ) {
             Urls = toCopy.Urls;
-            lines = new string[]
+            lines = new Line[]
             {
-                line
+                new Line(
+                    line
+                )
             };
             startIndex = 0;
             elements = 1;
         }
 
-        public ArraySegment<string> Lines()
+        public ArraySegment<Line> Lines()
         {
-            return new ArraySegment<string>(
+            return new ArraySegment<Line>(
                 lines,
                 startIndex,
                 elements
