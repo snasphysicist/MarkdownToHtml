@@ -16,8 +16,8 @@ namespace MarkdownToHtml
         public bool CanParseFrom(
             ParseInput input
         ) {
-            return regexOrderedListLine.Match(input.FirstLine).Success
-                || regexUnorderedListLine.Match(input.FirstLine).Success;
+            return regexOrderedListLine.Match(input[0].Text).Success
+                || regexUnorderedListLine.Match(input[0].Text).Success;
         }
 
         public ParseResult ParseFrom(
