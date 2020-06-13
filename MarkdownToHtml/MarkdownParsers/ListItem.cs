@@ -44,6 +44,11 @@ namespace MarkdownToHtml
                 input
             );
             // ContainsWhitespace?
+            wrapInParagraph = wrapInParagraph
+                || ContainsWhitespaceLine(
+                    input,
+                    endOfListItem
+            );
             // ParseAsParagraph
 
             // Match orderedListItemContent = regexOrderedListLine.Match(input.FirstLine);
@@ -130,6 +135,20 @@ namespace MarkdownToHtml
                 // We were at the end of the input, so can't be followed by whitespace
             }
             return foundAdjacentWhitespaceLine;
+        }
+
+        private bool ContainsWhitespaceLine(
+            ParseInput input,
+            int endIndex
+        ) {
+            for (int i = 0; i  < endIndex; i++)
+            {
+                if (input[i].ContainsOnlyWhitespace())
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
