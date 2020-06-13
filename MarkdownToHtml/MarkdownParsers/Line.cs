@@ -26,12 +26,18 @@ namespace MarkdownToHtml
             return hasBeenParsed;
         }
 
-        public void wasParsed()
+        public void WasParsed()
         {
             hasBeenParsed = true;
         }
 
         // Wrapping the required string methods
-        
+        public bool StartsWith(
+            string startText
+        ) {
+            return Text.StartsWith(
+                startText
+            );
+        }
     }
 }

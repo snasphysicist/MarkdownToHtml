@@ -17,14 +17,13 @@ namespace MarkdownToHtml
         public bool CanParseFrom(
             ParseInput input
         ) {
-            ArraySegment<string> lines = input.Lines();
-            if (!regexBacktickSectionOpen.Match(lines[0]).Success)
+            if (!regexBacktickSectionOpen.Match(input[0].Text).Success)
             {
                 return false;
             } else {
-                for (int i = 1; i < lines.Count; i++)
+                for (int i = 1; i < input.Count; i++)
                 {
-                    if (regexBacktickSectionClose.Match(lines[i]).Success)
+                    if (regexBacktickSectionClose.Match(input[i].Text).Success)
                     {
                         return true;
                     }
@@ -42,22 +41,21 @@ namespace MarkdownToHtml
             {
                 return result;
             }
-            ArraySegment<string> lines = input.Lines();
-            lines[0] = "";
+            input[0].WasParsed();
             LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
             int i = 1;
-            while (!regexBacktickSectionClose.Match(lines[i]).Success)
+            while (!regexBacktickSectionClose.Match(input[i].Text).Success)
             {
                 innerContent.AddLast(
                     new MarkdownText(
-                        lines[i]
+                        input[i].Text
                     )
                 );
-                lines[i] = "";
+                input[i].WasParsed();
                 i++;
             }
             // Remember to clear final line (closing backticks)
-            lines[i] = "";
+            input[i].WasParsed();
             Element element = new ElementFactory().New(
                 ElementType.CodeBlock,
                 Utils.LinkedListToArray(innerContent)

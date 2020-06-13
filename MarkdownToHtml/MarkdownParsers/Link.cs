@@ -21,7 +21,7 @@ namespace MarkdownToHtml
         public bool CanParseFrom(
             ParseInput input
         ) {
-            string line = input.FirstLine;
+            string line = input[0].Text;
             ReferencedUrl[] urls = input.Urls;
             if (regexLinkImmediate.Match(line).Success)
             {
@@ -57,7 +57,7 @@ namespace MarkdownToHtml
         public ParseResult ParseFrom(
             ParseInput input
         ) {
-            string line = input.FirstLine;
+            string line = input[0].Text;
             ReferencedUrl[] urls = input.Urls;
             ParseResult result = new ParseResult();
             if (
@@ -78,7 +78,7 @@ namespace MarkdownToHtml
                     )
                 );
                 result.Success = true;
-                input.FirstLine = regexLinkImmediate.Replace(
+                input[0].Text = regexLinkImmediate.Replace(
                     line,
                     ""
                 );
@@ -111,7 +111,7 @@ namespace MarkdownToHtml
                             )
                         );
                         result.Success = true;
-                        input.FirstLine = regexLinkReference.Replace(
+                        input[0].Text = regexLinkReference.Replace(
                             line,
                             ""
                         );
@@ -145,7 +145,7 @@ namespace MarkdownToHtml
                             )
                         );
                         result.Success = true;
-                        input.FirstLine = regexLinkSelfReference.Replace(
+                        input[0].Text = regexLinkSelfReference.Replace(
                             line,
                             ""
                         );

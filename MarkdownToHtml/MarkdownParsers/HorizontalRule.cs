@@ -13,8 +13,7 @@ namespace MarkdownToHtml
         public bool CanParseFrom(
             ParseInput input
         ) {
-            string line = input.FirstLine;
-            // Check if the format is correct (* or - plus whitespace only)
+            string line = input[0].Text;
             bool correctFormat = regexHorizontalRule.Match(line).Success;
             // Check there are enough - or * characters (3++)
             bool enoughNonWhitespace = (
@@ -32,7 +31,7 @@ namespace MarkdownToHtml
             {
                 return result;
             }
-            input.FirstLine = "";
+            input[0].WasParsed();
             result.Success = true;
             result.AddContent(
                 new ElementFactory().New(

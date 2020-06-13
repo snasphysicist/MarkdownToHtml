@@ -14,9 +14,9 @@ namespace MarkdownToHtml
             ParseInput input
         ) {
             bool isDoubleLineHeading = false;
-            if (input.Lines().Count > 1)
+            if (input.Count > 1)
             {
-                isDoubleLineHeading = regexDoubleLineHeading.Match(input.Lines()[1]).Success;
+                isDoubleLineHeading = regexDoubleLineHeading.Match(input[1].Text).Success;
             }
             return isDoubleLineHeading;
         }
@@ -24,10 +24,9 @@ namespace MarkdownToHtml
         public ParseResult ParseFrom(
             ParseInput input
         ) {
-            ArraySegment<string> lines = input.Lines();
             ParseResult result = new ParseResult();
             ElementType headingLevel;
-            if (lines[1].StartsWith("="))
+            if (input[1].StartsWith("="))
             {
                 headingLevel = ElementType.Heading1Underlined;
             } else {
@@ -38,12 +37,12 @@ namespace MarkdownToHtml
                 MarkdownParser.ParseInnerText(
                     new ParseInput(
                         input,
-                        lines[0]
+                        input[0].Text
                     )
                 )                
             );
-            lines[0] = "";
-            lines[1] = "";
+            input[0].WasParsed();
+            input[1].WasParsed();
             result.Success = true;
             result.AddContent(
                 element

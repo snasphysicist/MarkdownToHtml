@@ -20,17 +20,14 @@ namespace MarkdownToHtml
         public ParseResult ParseFrom(
             ParseInput input
         ) {
-            ArraySegment<string> lines = input.Lines();
             ParseResult result = new ParseResult();
             LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
             // The paragraph doesn't get parsed past the first blank line
             int endIndex = 0;
             while (
-                (endIndex < lines.Count)
+                (endIndex < input.Count)
                 && (
-                    !ContainsOnlyWhitespace(
-                        lines[endIndex]
-                    )
+                    !input[endIndex].ContainsOnlyWhitespace()
                 )
             ) {
                 endIndex++;
@@ -38,7 +35,6 @@ namespace MarkdownToHtml
             int i = 0;
             while (i < endIndex)
             {
-                lines = input.Lines();
                 if (new CodeBlock().CanParseFrom(input))
                 {
                     ParseResult innerResult = new CodeBlock().ParseFrom(input);
@@ -49,7 +45,7 @@ namespace MarkdownToHtml
                 } else {
                     // Always remove leading spaces
                     string line = Utils.StripLeadingCharacter(
-                        lines[0],
+                        input[0].Text,
                         ' '
                     );
                     if (endsWithAtLeastTwoSpaces(line))
@@ -98,13 +94,13 @@ namespace MarkdownToHtml
                         }
                     }
                     // Clear the line just consumed
-                    lines[0] = "";
+                    input[0].WasParsed();
                 }
                 // Move on to next non-empty line
                 int j = 0;
                 while (
-                    (j < lines.Count)
-                    && (ContainsOnlyWhitespace(lines[j]))
+                    (j < input.Count)
+                    && (input[j].ContainsOnlyWhitespace())
                 ) {
                     j++;
                 }

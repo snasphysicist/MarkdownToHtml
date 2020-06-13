@@ -12,13 +12,13 @@ namespace MarkdownToHtml
         public bool CanParseFrom(
             ParseInput input
         ) {
-            return regexStruckthroughText.Match(input.FirstLine).Success;
+            return regexStruckthroughText.Match(input[0].Text).Success;
         }
 
         public ParseResult ParseFrom(
             ParseInput input
         ) {
-            string line = input.FirstLine;
+            string line = input[0].Text;
             ParseResult result = new ParseResult();
             if (!CanParseFrom(input))
             {
@@ -41,7 +41,7 @@ namespace MarkdownToHtml
             result.AddContent(
                 strikethrough
             );
-            input.FirstLine = regexStruckthroughText.Replace(
+            input[0].Text = regexStruckthroughText.Replace(
                 line,
                 ""
             );

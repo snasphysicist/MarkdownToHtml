@@ -8,27 +8,30 @@ namespace MarkdownToHtml
         public bool CanParseFrom(
             ParseInput input
         ) {
-            return input.FirstLine.StartsWith(">");
+            return input[0].StartsWith(">");
         }
 
         public ParseResult ParseFrom(
             ParseInput input
         ) {
-            ArraySegment<string> lines = input.Lines();
             ParseResult result = new ParseResult();
             if (!CanParseFrom(input))
             {
                 return result;
             }
             int endQuoteSection = FindEndOfQuoteSection(
-                lines
+                input
             );
             string[] truncatedLines = new string[endQuoteSection];
             // Remove quote arrows and spaces, if needed
             for (int i = 0; i < endQuoteSection; i++)
             {
-                string truncated = lines[i];
-                if (lines[i].StartsWith(">"))
+                string truncated = input[i].Text;
+                if (
+                    input[i].StartsWith(
+                        ">"
+                    )
+                )
                 {
                     truncated = truncated.Substring(1);
                     int spaces = 0;
@@ -48,10 +51,10 @@ namespace MarkdownToHtml
                         truncatedLines[i] = truncated.Substring(1);
                     }
                 } else {
-                    truncatedLines[i] = lines[i];
+                    truncatedLines[i] = truncated;
                 }
                 // Remove original line
-                lines[i] = "";
+                input[i].WasParsed();
             }
             /* 
              * The truncated lines should be parsed as any other line group
@@ -72,10 +75,10 @@ namespace MarkdownToHtml
         }
 
         private static int FindEndOfQuoteSection(
-            ArraySegment<string> lines
+            ParseInput input
         ) {
             return Utils.FindEndOfSection(
-                lines,
+                input,
                 ">"
             );
         }

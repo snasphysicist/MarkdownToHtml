@@ -18,7 +18,7 @@ namespace MarkdownToHtml
         public bool CanParseFrom(
             ParseInput input
         ) {
-            return regexIndentedLineStart.Match(input.FirstLine).Success;
+            return regexIndentedLineStart.Match(input[0].Text).Success;
         }
 
         public ParseResult ParseFrom(
@@ -30,15 +30,14 @@ namespace MarkdownToHtml
             {
                 return result;
             }
-            ArraySegment<string> lines = input.Lines();
             int endOfCodeBlock = Utils.FindEndOfSection(
-                lines,
+                input,
                 "    "
             );
             LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
             for (int i = 0; i < endOfCodeBlock; i++)
             {
-                string line = lines[i];
+                string line = input[i].Text;
                 // Remove four leading spaces, if present
                 if (line.Length > 3)
                 {
@@ -57,7 +56,7 @@ namespace MarkdownToHtml
                     );
                 }
                 // Clear original line from original data
-                lines[i] = "";
+                input[i].WasParsed();
             }
             Element codeBlock = new ElementFactory().New(
                 ElementType.CodeBlock,

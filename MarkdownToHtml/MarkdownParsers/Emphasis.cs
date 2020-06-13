@@ -13,18 +13,17 @@ namespace MarkdownToHtml
         public bool CanParseFrom(
             ParseInput input
         ) {
-            return regexParseable.Match(input.FirstLine).Success;
+            return regexParseable.Match(input[0].Text).Success;
         }
 
         public ParseResult ParseFrom(
             ParseInput input
         ) {
-            string line = input.FirstLine;
+            string line = input[0].Text;
             ParseResult result = new ParseResult();
             if (!CanParseFrom(input))
             {
                 // Return a failed result if cannot parse from this line
-                result.Line = line;
                 return result;
             }
             // Otherwise parse and return result
@@ -47,8 +46,9 @@ namespace MarkdownToHtml
                 )
             );
             result.AddContent(element);
-            input.FirstLine = line.Substring(
-                content.Length + 2
+            input[0].Text = regexParseable.Replace(
+                line,
+                ""
             );
             result.Success = true;
             return result;

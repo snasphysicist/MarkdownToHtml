@@ -21,7 +21,7 @@ namespace MarkdownToHtml
         public bool CanParseFrom(
             ParseInput input
         ) {
-            string line = input.FirstLine;
+            string line = input[0].Text;
             ReferencedUrl[] urls = input.Urls;
             if (
                 regexImageImmediateNoTitle.Match(line).Success
@@ -48,7 +48,7 @@ namespace MarkdownToHtml
         public ParseResult ParseFrom(
             ParseInput input
         ) {
-            string line = input.FirstLine;
+            string line = input[0].Text;
             ReferencedUrl[] urls = input.Urls;
             ParseResult result = new ParseResult();
             if (
@@ -80,7 +80,7 @@ namespace MarkdownToHtml
                         ""
                     )
                 );
-                input.FirstLine = regexImageImmediateNoTitle.Replace(
+                input[0].Text = regexImageImmediateNoTitle.Replace(
                     line,
                     ""
                 );
@@ -108,7 +108,7 @@ namespace MarkdownToHtml
                     )
                 );
                 result.Success = true;
-                input.FirstLine = regexImageImmediateWithTitle.Replace(
+                input[0].Text = regexImageImmediateWithTitle.Replace(
                     line,
                     ""
                 );
@@ -142,7 +142,7 @@ namespace MarkdownToHtml
                             )
                         );
                         result.Success = true;
-                        input.FirstLine = regexImageReference.Replace(
+                        input[0].Text = regexImageReference.Replace(
                             line,
                             ""
                         );

@@ -13,7 +13,7 @@ namespace MarkdownToHtml
         public bool CanParseFrom(
             ParseInput input
         ) {
-            return regexSingleLineHeading.Match(input.FirstLine).Success;
+            return regexSingleLineHeading.Match(input[0].Text).Success;
         }
 
         public ParseResult ParseFrom(
@@ -24,11 +24,10 @@ namespace MarkdownToHtml
             {
                 return result;
             }
-            ArraySegment<string> lines = input.Lines();
             ElementType headingLevel = level(
-                lines[0]
+                input[0].Text
             );
-            Match contentMatch = regexSingleLineHeading.Match(lines[0]);
+            Match contentMatch = regexSingleLineHeading.Match(input[0].Text);
             string content = Utils.StripLeadingCharacter(
                 Utils.StripTrailingCharacter(
                     contentMatch.Groups[1].Value,
@@ -36,7 +35,7 @@ namespace MarkdownToHtml
                 ),
                 ' '
             );
-            lines[0] = "";
+            input[0].WasParsed();
             result.Success = true;
             Element element = new ElementFactory().New(
                 headingLevel,
