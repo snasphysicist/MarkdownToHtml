@@ -16,8 +16,14 @@ namespace MarkdownToHtml
         public bool CanParseFrom(
             ParseInput input
         ) {
-            return regexOrderedListLine.Match(input[0].Text).Success
-                || regexUnorderedListLine.Match(input[0].Text).Success;
+            return IsListItemLine(input[0].Text);
+        }
+
+        public bool IsListItemLine(
+            string line
+        ) {
+            return regexOrderedListLine.Match(line).Success
+                || regexUnorderedListLine.Match(line).Success;            
         }
 
         public ParseResult ParseFrom(
@@ -28,50 +34,75 @@ namespace MarkdownToHtml
             {
                 return result;
             }
-            Match orderedListItemContent = regexOrderedListLine.Match(input.FirstLine);
-            string innerText = ;
-            if (orderedListItemContent.Success)
-            {
-
-            } else {
-
-            }
-            bool wrapInParagraph = WhitespaceLinePreceedsOrFollowsThisItem(
+            // Find end of ListItem
+            int endOfListItem = FindEndOfListItem(
                 input
             );
-            Element listItem;
-            if (
-                !input.AtLastLine()
-                && CanParseFrom(
-                    input.NextLine()
-                )
-            ) {
-                listItem = new ElementFactory().New(
-                    ElementType.ListItem,
-                    MarkdownParser.ParseInnerText(
+            // AdjacentToWhitespace?
+            // ContainsWhitespace?
+            // ParseAsParagraph
 
+            // Match orderedListItemContent = regexOrderedListLine.Match(input.FirstLine);
+            // string innerText = ;
+            // if (orderedListItemContent.Success)
+            // {
+
+            // } else {
+
+            // }
+            // bool wrapInParagraph = WhitespaceLinePreceedsOrFollowsThisItem(
+            //     input
+            // );
+            // Element listItem;
+            // if (
+            //     !input.AtLastLine()
+            //     && CanParseFrom(
+            //         input.NextLine()
+            //     )
+            // ) {
+            //     listItem = new ElementFactory().New(
+            //         ElementType.ListItem,
+            //         MarkdownParser.ParseInnerText(
+
+            //         )
+            //     )
+            // }
+
+            // if (wrapInParagraph)
+            // {
+            //     innerResult = MarkdownParagraph.ParseFrom(lines);
+            //     returnedElement = new MarkdownListItem(
+            //         innerResult.GetContent()
+            //     );
+            // } else 
+            // {
+            //     // line item content should not go in a paragraph
+            //     returnedElement = new MarkdownListItem(
+            //         MarkdownParser.ParseInnerText(lines)
+            //     );
+            // }
+            // result.Success = true;
+            // result.AddContent(
+            //     returnedElement
+            // );
+            // return result;
+        }
+
+        private int FindEndOfListItem(
+            ParseInput input
+        ) {
+            int i = 1;
+            while (
+                (i < input.Count)
+                && (
+                    !IsListItemLine(
+                        input[i].Text
                     )
                 )
+            ) {
+                i++;
             }
-
-            if (wrapInParagraph)
-            {
-                innerResult = MarkdownParagraph.ParseFrom(lines);
-                returnedElement = new MarkdownListItem(
-                    innerResult.GetContent()
-                );
-            } else 
-            {
-                // line item content should not go in a paragraph
-                returnedElement = new MarkdownListItem(
-                    MarkdownParser.ParseInnerText(lines)
-                );
-            }
-            result.Success = true;
-            result.AddContent(
-                returnedElement
-            );
-            return result;
+            return i;
         }
     }
 }
