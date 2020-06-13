@@ -35,22 +35,30 @@ namespace MarkdownToHtml
             {
                 return result;
             }
-            // Find end of ListItem
             int endOfListItem = FindEndOfListItem(
                 input
             );
-            // AdjacentToWhitespace?
             bool wrapInParagraph = IsWhitespaceLineAdjacent(
                 input
             );
-            // ContainsWhitespace?
             wrapInParagraph = wrapInParagraph
                 || ContainsWhitespaceLine(
                     input,
                     endOfListItem
             );
-            // ParseAsParagraph
-
+            // Remove list indicator from first line
+            input[0].Text = RemoveListIndicator(
+                input[0].Text
+            );
+            ParseResult paragraph = new Paragraph().ParseFrom(
+                input.LinesUpTo(
+                    endOfListItem
+                )
+            );
+            Element listItem = new ElementFactory().New(
+                ElementType.ListItem,
+                paragraph.GetContent()
+            );
             // Match orderedListItemContent = regexOrderedListLine.Match(input.FirstLine);
             // string innerText = ;
             // if (orderedListItemContent.Success)
@@ -90,11 +98,11 @@ namespace MarkdownToHtml
             //         MarkdownParser.ParseInnerText(lines)
             //     );
             // }
-            // result.Success = true;
-            // result.AddContent(
-            //     returnedElement
-            // );
-            // return result;
+            result.Success = true;
+            result.AddContent(
+                listItem
+            );
+            return result;
         }
 
         private int FindEndOfListItem(
@@ -149,6 +157,21 @@ namespace MarkdownToHtml
                 }
             }
             return false;
+        }
+
+        public string RemoveListIndicator(
+            string line
+        ) {
+            Match orderedListItemContent = regexOrderedListLine.Match(
+                line
+            );
+            Match unorderedListItemContent = regexUnorderedListLine.Match(
+                line
+            );
+            return (
+                orderedListItemContent.Groups[1].Value
+                + unorderedListItemContent.Groups[1].Value
+            );
         }
     }
 }
