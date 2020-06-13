@@ -54,7 +54,7 @@ namespace MarkdownToHtml
             return index;
         }
 
-        private static bool ContainsOnlyWhitespace(
+        public static bool ContainsOnlyWhitespace(
             string line
         ) {
             return line.Replace(
