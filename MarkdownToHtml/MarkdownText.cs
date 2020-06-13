@@ -74,7 +74,7 @@ namespace MarkdownToHtml
             ParseInput input,
             bool force
         ) {
-            string line = input.FirstLine;
+            string line = input[0].Text;
             ParseResult result = new ParseResult();
             int indexFirstSpecialCharacter = FindUnescapedSpecial(
                 line
