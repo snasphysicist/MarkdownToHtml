@@ -9,7 +9,7 @@ namespace MarkdownToHtml
 
         // Special characters that could start different element type
         private static Regex regexSpecialCharacter = new Regex(
-            @"[^\\][`|\*|_|\[|\]|#|!|~]"
+            @"[^\\]([`|\*|_|\[|\]|#|!|~])"
         );
         
         private static char[] specialCharacters = new char[]
