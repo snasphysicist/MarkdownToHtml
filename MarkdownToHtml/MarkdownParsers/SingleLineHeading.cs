@@ -28,24 +28,24 @@ namespace MarkdownToHtml
                 input[0].Text
             );
             Match contentMatch = regexSingleLineHeading.Match(input[0].Text);
-            string content = Utils.StripLeadingCharacter(
+            input[0].Text = Utils.StripLeadingCharacter(
                 Utils.StripTrailingCharacter(
                     contentMatch.Groups[1].Value,
                     '#'
                 ),
                 ' '
             );
-            input[0].WasParsed();
-            result.Success = true;
             Element element = new ElementFactory().New(
                 headingLevel,
                 MarkdownParser.ParseInnerText(
-                    new ParseInput(
-                        input,
-                        content
-                    )
+                    input
                 )
             );
+            result.Success = true;
+            result.AddContent(
+                element
+            );
+            input[0].WasParsed();
             return result;
         }
 
