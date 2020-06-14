@@ -140,7 +140,7 @@ namespace MarkdownToHtml
             // Store parsed content as we go
             LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
             // Until the whole string has been consumed
-            while (input[0].Text.Length > 0)
+            while (!input[0].HasBeenParsed())
             {
                 ParseResult result = new ParseResult();
                 foreach (IMarkdownParser parser in innerTextParsers)
@@ -173,6 +173,10 @@ namespace MarkdownToHtml
                             true
                         );
                     }
+                }
+                if (input[0].Text.Length == 0)
+                {
+                    input[0].WasParsed();
                 }
                 // Extract parsed content
                 foreach (IHtmlable entry in result.GetContent())
