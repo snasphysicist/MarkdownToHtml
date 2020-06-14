@@ -10,7 +10,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [Ignore]
         [DataRow("test1\ntest2", "<p>test1 test2</p>")]
-        public void ShouldParseTwoAdjacentLinesAsOneParagraphSuccess(
+        public void TwoAdjacentLinesAreParsedWithOneSpaceBetweenAsOneParagraph(
             string markdown,
             string targetHtml
         ) {
@@ -32,7 +32,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [Ignore]
         [DataRow("test1\n\ntest2", "<p>test1</p><p>test2</p>")]
-        public void ShouldParseTwoSeparatedLinesAsTwoParagraphsSuccess(
+        public void TwoLinesSeparatedByAWhitespaceLineAreParsedAsTwoParagraphs(
             string markdown,
             string targetHtml
         ) {
@@ -54,7 +54,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [Ignore]
         [DataRow("test1  \ntest2", "<p>test1<br>test2</p>")]
-        public void ShouldParseTwoAdjacentLinesWithTwoSpacesAsOneParagraphWithLineBreakSuccess(
+        public void TwoAdjacentLinesSeparatedByLinebreakWhenFirstEndsInTwoSpaces(
             string markdown,
             string targetHtml
         ) {
