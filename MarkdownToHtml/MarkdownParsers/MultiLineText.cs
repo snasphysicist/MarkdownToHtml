@@ -71,12 +71,6 @@ namespace MarkdownToHtml
                 }
                 // Clear the line just consumed
                 input[0].WasParsed();
-            }
-            // Move on to next un-parsed line
-            while (
-                (input.Count > 0)
-                && (input[0].HasBeenParsed())
-            ) {
                 input.NextLine();
             }
             result.Success = true;
