@@ -9,7 +9,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("test1\n=", "<h1>test1</h1>")]
         [DataRow("test1\n=====", "<h1>test1</h1>")]
         [DataRow("test1\n====================", "<h1>test1</h1>")]
@@ -32,7 +31,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("test1\n=1", "<p>test1 =1</p>")]
         public void ShouldNotParseEqualsHeadingLineFollowedByIncorrectCharacterSuccess(
             string markdown,
@@ -53,7 +51,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("test1\n-", "<h2>test1</h2>")]
         [DataRow("test1\n-----", "<h2>test1</h2>")]
         [DataRow("test1\n--------------------", "<h2>test1</h2>")]
@@ -76,7 +73,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("test1\n-1", "<p>test1 -1</p>")]
         public void ShouldNotParseDashHeadingLineFollowedByIncorrectCharacterSuccess(
             string markdown,
