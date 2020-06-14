@@ -117,12 +117,15 @@ namespace MarkdownToHtml
                         );
                         result.AddContent(
                             new ElementFactory().New(
-                                ElementType.Image,
+                                ElementType.Link,
                                 MarkdownParser.ParseInnerText(
                                     new ParseInput(
                                         input,
                                         linkMatch.Groups[1].Value
                                     )
+                                ),
+                                Utils.LinkedListToArray(
+                                    attributes
                                 )
                             )
                         );
