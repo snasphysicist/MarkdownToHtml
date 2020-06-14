@@ -57,8 +57,11 @@ namespace MarkdownToHtml
             // Remember to clear final line (closing backticks)
             input[i].WasParsed();
             Element element = new ElementFactory().New(
-                ElementType.CodeBlock,
-                Utils.LinkedListToArray(innerContent)
+                ElementType.Paragraph,
+                new ElementFactory().New(
+                    ElementType.CodeBlock,
+                    Utils.LinkedListToArray(innerContent)
+                )
             );
             result.Success = true;
             result.AddContent(element);
