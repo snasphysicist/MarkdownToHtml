@@ -45,7 +45,8 @@ namespace MarkdownToHtml
                     );
                 }
                 while (
-                    input[0].HasBeenParsed()
+                    (input.Count > 0)
+                    && input[0].HasBeenParsed()
                 ) {
                     input.NextLine();
                 }

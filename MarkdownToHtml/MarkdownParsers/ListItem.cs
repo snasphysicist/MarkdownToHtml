@@ -17,7 +17,8 @@ namespace MarkdownToHtml
         public bool CanParseFrom(
             ParseInput input
         ) {
-            return IsListItemLine(input[0].Text);
+            return (input.Count > 0)
+                && IsListItemLine(input[0].Text);
         }
 
         public bool IsListItemLine(
