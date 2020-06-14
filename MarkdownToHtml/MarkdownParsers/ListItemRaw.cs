@@ -1,7 +1,7 @@
 
 namespace MarkdownToHtml
 {
-    public class ListItemParagraph : IMarkdownParser
+    public class ListItemRaw : IMarkdownParser
     {
         private static IMarkdownParser innerParser = new ListItemInner();
         public bool CanParseFrom(
@@ -27,13 +27,9 @@ namespace MarkdownToHtml
             {
                 return result;
             }
-            Element paragraph = new ElementFactory().New(
-                ElementType.Paragraph,
-                innerContent.GetContent()
-            );
             Element listItem = new ElementFactory().New(
                 ElementType.ListItem,
-                paragraph
+                innerContent.GetContent()
             );
             result.Success = true;
             result.AddContent(
