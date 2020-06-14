@@ -9,7 +9,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("**test1**", "<p><strong>test1</strong></p>")]
         [DataRow("test1**test2**test3", "<p>test1<strong>test2</strong>test3</p>")]
         public void ShouldParseCorrectlyFormattedStarStrongSuccess(
