@@ -9,33 +9,23 @@ namespace MarkdownToHtml
         [DataTestMethod]
         [Timeout(500)]
         [Ignore]
-        [DataRow("Test1")]
-        public void ShouldParseCorrectlyFormattedPlainTextLineSuccess(
-            string markdown
+        [DataRow("Test1", "<p>Test1</p>")]
+        public void SinglePlainTextLineParsedAsParagraph(
+            string markdown,
+            string targetHtml
         ) {
             MarkdownParser parser = new MarkdownParser(
-                new string[] {
-                    markdown
-                }
+                markdown.Split(
+                    "\n"
+                )
             );
             Assert.IsTrue(
                 parser.Success
             );
             // Should produce exactly one piece of content
-            Assert.IsTrue(
-                parser.Content.Count == 1
-            );
-            string html = parser.ToHtml();
-            // HTML should contain the provided text
-            Assert.IsTrue(
-                html.Contains(markdown)
-            );
-            // HTML should contain open/close paragraph tags
-            Assert.IsTrue(
-                html.Contains("<p>")
-            );
-            Assert.IsTrue(
-                html.Contains("</p>")
+            Assert.AreEqual(
+                targetHtml,
+                parser.ToHtml()
             );
         }
         
