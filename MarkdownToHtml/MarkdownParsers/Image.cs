@@ -6,6 +6,10 @@ namespace MarkdownToHtml
 {
     public class Image : IMarkdownParser
     {
+        private static readonly string UrlAttributeName = "src";
+        private static readonly string AltTextAttributeName = "alt";
+        private static readonly string TitleAttributeName = "title";
+
         private static Regex regexImageImmediateNoTitle = new Regex(
             @"^!\[(.*[^\\])\]\((\S*[^\\])\)"
         );
@@ -64,19 +68,19 @@ namespace MarkdownToHtml
             {
                 attributes.AddLast(
                     new Attribute(
-                        "text",
-                        linkMatch.Groups[1].Value
-                    )
-                );
-                attributes.AddLast(
-                    new Attribute(
-                        "url",
+                        UrlAttributeName,
                         linkMatch.Groups[2].Value
                     )
                 );
                 attributes.AddLast(
                     new Attribute(
-                        "title",
+                        AltTextAttributeName,
+                        linkMatch.Groups[1].Value
+                    )
+                );
+                attributes.AddLast(
+                    new Attribute(
+                        TitleAttributeName,
                         ""
                     )
                 );
@@ -92,19 +96,19 @@ namespace MarkdownToHtml
             {
                 attributes.AddLast(
                     new Attribute(
-                        "text",
-                        linkMatch.Groups[1].Value
-                    )
-                );
-                attributes.AddLast(
-                    new Attribute(
-                        "url",
+                        UrlAttributeName,
                         linkMatch.Groups[2].Value
                     )
                 );
                 attributes.AddLast(
                     new Attribute(
-                        "title",
+                        AltTextAttributeName,
+                        linkMatch.Groups[1].Value
+                    )
+                );
+                attributes.AddLast(
+                    new Attribute(
+                        TitleAttributeName,
                         linkMatch.Groups[3].Value
                     )
                 );
@@ -118,12 +122,6 @@ namespace MarkdownToHtml
             linkMatch = regexImageReference.Match(line);
             if (linkMatch.Success)
             {
-                attributes.AddLast(
-                    new Attribute(
-                        "text",
-                        linkMatch.Groups[1].Value
-                    )
-                );
                 string text = linkMatch.Groups[1].Value;
                 string reference = linkMatch.Groups[2].Value;
                 foreach (ReferencedUrl url in urls)
@@ -132,13 +130,19 @@ namespace MarkdownToHtml
                     {
                         attributes.AddLast(
                             new Attribute(
-                                "url",
+                                UrlAttributeName,
                                 url.Url
                             )
                         );
                         attributes.AddLast(
                             new Attribute(
-                                "title",
+                                AltTextAttributeName,
+                                linkMatch.Groups[1].Value
+                            )
+                        );
+                        attributes.AddLast(
+                            new Attribute(
+                                TitleAttributeName,
                                 url.Title
                             )
                         );
