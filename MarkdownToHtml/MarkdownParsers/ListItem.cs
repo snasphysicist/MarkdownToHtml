@@ -55,13 +55,13 @@ namespace MarkdownToHtml
             if (wrapInParagraph)
             {
                 innerContent = new Paragraph().ParseFrom(
-                    input.LinesUpTo(
+                    input.LinesFromStart(
                         endOfListItem
                     )
                 );
             } else {
                 innerContent = new MultiLineText().ParseFrom(
-                    input.LinesUpTo(
+                    input.LinesFromStart(
                         endOfListItem
                     )
                 );
