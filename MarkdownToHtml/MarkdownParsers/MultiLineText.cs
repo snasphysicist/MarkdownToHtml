@@ -19,19 +19,9 @@ namespace MarkdownToHtml
             ParseInput input
         ) {
             ParseResult result = new ParseResult();
-            // The paragraph doesn't get parsed past the first blank line
-            int endIndex = 0;
             while (
-                (endIndex < input.Count)
-                && (
-                    !input[endIndex].ContainsOnlyWhitespace()
-                )
+                !input[0].ContainsOnlyWhitespace()
             ) {
-                endIndex++;
-            }
-            int i = 0;
-            while (i < endIndex)
-            {
                 if (new CodeBlock().CanParseFrom(input))
                 {
                     ParseResult innerResult = new CodeBlock().ParseFrom(input);
@@ -81,9 +71,13 @@ namespace MarkdownToHtml
                         * we need to add a space at the end
                         */
                         if (
-                            (i < (endIndex - 1))
+                            !AtParagraphLastLine(
+                                input
+                            )
                             && (line.Length > 0)
-                            && (line[^1] != ' ')
+                            && !line.EndsWith(
+                                ' '
+                            )
                         ) {
                             result.AddContent(
                                 new MarkdownText(" ")
@@ -93,20 +87,23 @@ namespace MarkdownToHtml
                     // Clear the line just consumed
                     input[0].WasParsed();
                 }
-                // Move on to next non-empty line
-                int j = 0;
+                // Move on to next un-parsed line
                 while (
-                    (j < input.Count)
-                    && (input[j].ContainsOnlyWhitespace())
+                    (input.Count > 0)
+                    && (input[0].HasBeenParsed())
                 ) {
-                    j++;
+                    input.NextLine();
                 }
-                i += j;
-                // Move array slice to next non-empty line
-                input = input.JumpLines(j);
             }
             result.Success = true;
             return result;
+        }
+
+        private bool AtParagraphLastLine(
+            ParseInput input
+        ) {
+            return (input.Count > 1)
+                && (!input[1].ContainsOnlyWhitespace());
         }
 
         private static bool endsWithAtLeastTwoSpaces (
