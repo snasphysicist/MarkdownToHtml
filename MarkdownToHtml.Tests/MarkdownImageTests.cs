@@ -33,7 +33,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow(
             "![alttext](url \"title\")", 
             "<p><img src=\"url\" alt=\"alttext\" title=\"title\"></img></p>"
@@ -58,7 +57,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow(
             "![alttext][ref]\n\n\n[ref]: url", 
             "<p><img src=\"url\" alt=\"alttext\" title=\"\"></img></p>"
