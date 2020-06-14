@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class Emphasis
+    public class Emphasis : IMarkdownParser
     {
         private static Regex regexParseable = new Regex(
             @"^\*(.*?[^\\])\*"
