@@ -15,6 +15,7 @@ namespace MarkdownToHtml
                 new SingleLineHeading(),
                 new HorizontalRule(),
                 new Quote(),
+                new CodeBlock(),
                 new List(),
                 new Paragraph()
             };
