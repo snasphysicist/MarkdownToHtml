@@ -9,8 +9,6 @@ namespace MarkdownToHtml
         private static IMarkdownParser listItemRawParser = new ListItem();
         private static IMarkdownParser listItemParagraphParser = new ListItemParagraph();
 
-        private static IMarkdownParser emphasisParser = new Emphasis();
-
         private static Regex regexOrderedListLine = new Regex(
             @"^[\s]{0,3}\d+\.(\s+?.*)"
         );
