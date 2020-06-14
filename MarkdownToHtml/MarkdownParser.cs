@@ -110,25 +110,22 @@ namespace MarkdownToHtml
         private void ParseLineGroup(
             ParseInput input
         ) {
-            ParseResult result;
-            if (MarkdownPreformattedCodeBlock.CanParseFrom(input))
+            ParseResult result = new ParseResult();
+            foreach (IMarkdownParser parser in multilineElementParsers)
             {
-                result = MarkdownPreformattedCodeBlock.ParseFrom(input);
-            } else if (MarkdownHeading.CanParseFrom(input))
-            {
-                result = MarkdownHeading.ParseFrom(input);
-            } else if (MarkdownHorizontalRule.CanParseFrom(input))
-            {
-                result = MarkdownHorizontalRule.ParseFrom(input);
-            } else if (MarkdownQuote.CanParseFrom(input))
-            {
-                result = MarkdownQuote.ParseFrom(input);
-            } else if (MarkdownList.CanParseFrom(input))
-            {
-                result = MarkdownList.ParseFrom(input);
-            } else 
-            {
-                result = MarkdownParagraph.ParseFrom(input);
+                if (
+                    parser.CanParseFrom(
+                        input
+                    )
+                ) {
+                    result = parser.ParseFrom(
+                        input
+                    );
+                    if (result.Success)
+                    {
+                        break;
+                    }
+                }
             }
             foreach (IHtmlable entry in result.GetContent())
             {
@@ -143,51 +140,45 @@ namespace MarkdownToHtml
             // Store parsed content as we go
             LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
             // Until the whole string has been consumed
-            while (input.FirstLine.Length > 0)
+            while (input[0].Text.Length > 0)
             {
-                ParseResult result;
-                if (MarkdownStrong.CanParseFrom(input))
+                ParseResult result = new ParseResult();
+                foreach (IMarkdownParser parser in innerTextParsers)
                 {
-                    result = MarkdownStrong.ParseFrom(input);
-                } else if (MarkdownStrikethrough.CanParseFrom(input))
-                {
-                    result = MarkdownStrikethrough.ParseFrom(input);
-                } else if (MarkdownEmphasis.CanParseFrom(input))
-                {
-                    result = MarkdownEmphasis.ParseFrom(input);
-                } else if (MarkdownCodeInline.CanParseFrom(input))
-                {
-                    result = MarkdownCodeInline.ParseFrom(input);
-                } else if (MarkdownLink.CanParseFrom(input))
-                {
-                    result = MarkdownLink.ParseFrom(input);
-                } else if (MarkdownImage.CanParseFrom(input))
-                {
-                    result = MarkdownImage.ParseFrom(input);
-                } else {
-                    result = MarkdownText.ParseFrom(
-                        input,
-                        false
-                    );
+                    if (
+                        parser.CanParseFrom(
+                            input
+                        )
+                    ) {
+                        result = parser.ParseFrom(
+                            input
+                        );
+                        if (result.Success)
+                        {
+                            break;
+                        }
+                    }
                 }
-                /*
-                 * If no parsing method suceeded
-                 * for once character to be parsed as text
-                 */
                 if (!result.Success)
                 {
                     result = MarkdownText.ParseFrom(
                         input,
-                        true
+                        false
                     );
+                    if (!result.Success)
+                    {
+                        // Ensure at least one character gets parsed
+                        result = MarkdownText.ParseFrom(
+                            input,
+                            true
+                        );
+                    }
                 }
                 // Extract parsed content
                 foreach (IHtmlable entry in result.GetContent())
                 {
                     content.AddLast(entry);
                 }
-                // Update text to be parsed
-                input.FirstLine = result.Line;
             }
             IHtmlable[] contentArray = new IHtmlable[content.Count];
             content.CopyTo(
