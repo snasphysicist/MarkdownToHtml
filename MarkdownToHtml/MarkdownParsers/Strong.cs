@@ -6,8 +6,8 @@ namespace MarkdownToHtml
     public class Strong : IMarkdownParser
     {
         private static Regex regexStrongText = new Regex(
-            @"^\*{2}(.+)\*{2}.*"
-            + @"|^_{2}(.+)_{2}.*"
+            @"^\*{2}(.+)\*{2}"
+            + @"|^_{2}(.+)_{2}"
         );
 
         public bool CanParseFrom(
