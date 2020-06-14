@@ -10,11 +10,11 @@ namespace MarkdownToHtml
         [DataTestMethod]
         [Timeout(500)]
         [DataRow("#test", "<h1>test</h1>")]
-        // [DataRow("##test", "<h2>test</h2>")]
-        // [DataRow("###test", "<h3>test</h3>")]
-        // [DataRow("####test", "<h4>test</h4>")]
-        // [DataRow("#####test", "<h5>test</h5>")]
-        // [DataRow("######test", "<h6>test</h6>")]
+        [DataRow("##test", "<h2>test</h2>")]
+        [DataRow("###test", "<h3>test</h3>")]
+        [DataRow("####test", "<h4>test</h4>")]
+        [DataRow("#####test", "<h5>test</h5>")]
+        [DataRow("######test", "<h6>test</h6>")]
         public void ShouldParseCorrectlyFormattedNoSpaceSingleLineHeadingSuccess(
             string markdown,
             string targetHtml
