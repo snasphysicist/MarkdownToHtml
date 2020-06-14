@@ -160,6 +160,9 @@ namespace MarkdownToHtml
                                         input,
                                         innerText
                                     )
+                                ),
+                                Utils.LinkedListToArray(
+                                    attributes
                                 )
                             )
                         );
