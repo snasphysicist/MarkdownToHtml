@@ -8,7 +8,6 @@ namespace MarkdownToHtml
     {
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("test1\ntest2", "<p>test1 test2</p>")]
         public void TwoAdjacentLinesAreParsedWithOneSpaceBetweenAsOneParagraph(
             string markdown,
@@ -30,7 +29,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("test1\n\ntest2", "<p>test1</p><p>test2</p>")]
         public void TwoLinesSeparatedByAWhitespaceLineAreParsedAsTwoParagraphs(
             string markdown,
@@ -52,7 +50,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("test1  \ntest2", "<p>test1<br>test2</p>")]
         public void TwoAdjacentLinesSeparatedByLinebreakWhenFirstEndsInTwoSpaces(
             string markdown,
