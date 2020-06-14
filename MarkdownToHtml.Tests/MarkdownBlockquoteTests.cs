@@ -8,7 +8,6 @@ namespace MarkdownToHtml
     {
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow(">test", "<blockquote><p>test</p></blockquote>")]
         [DataRow("> test", "<blockquote><p>test</p></blockquote>")]
         [DataRow(">  test", "<blockquote><p>test</p></blockquote>")]
