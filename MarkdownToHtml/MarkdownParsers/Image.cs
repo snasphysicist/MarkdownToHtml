@@ -80,6 +80,7 @@ namespace MarkdownToHtml
                         ""
                     )
                 );
+                result.Success = true;
                 input[0].Text = regexImageImmediateNoTitle.Replace(
                     line,
                     ""
