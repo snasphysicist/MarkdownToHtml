@@ -137,7 +137,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("test1\n2. test2", "<p>test1 2. test2</p>")]
         public void ShouldParseOrderedListLineAfterParagraphAsParagraphSuccess(
             string markdown,
