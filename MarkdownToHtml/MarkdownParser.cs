@@ -69,30 +69,30 @@ namespace MarkdownToHtml
             // Urls potentially referenced by anchors/images
             Urls = new LinkedList<ReferencedUrl>();
             // Extract all 'footnote' style urls
-            ParseReferencedUrls(lines);
+            ParseReferencedUrls(
+                lines
+            );
             // Create new parse input to pass to parsers
             ParseInput input = new ParseInput(
-                Utils.LinkedListToArray(Urls),
+                Utils.LinkedListToArray(
+                    Urls
+                ),
                 lines,
                 0,
                 lines.Length
             );
             // Parsing printed content
-            int currentIndex = 0;
-            while (currentIndex < lines.Length) {
+            while (input.Count > 0) {
                 // Parse some lines
                 ParseLineGroup(
-                    input.Slice(
-                        currentIndex,
-                        lines.Length - currentIndex
-                    )
+                    input
                 );
                 // Move to the next non-empty line
                 while (
-                    (currentIndex < lines.Length)
-                    && ContainsOnlyWhitespace(lines[currentIndex])
+                    (input.Count > 0)
+                    && (input[0].HasBeenParsed())
                 ) {
-                    currentIndex++;
+                    input.NextLine();
                 }
             }
         }
