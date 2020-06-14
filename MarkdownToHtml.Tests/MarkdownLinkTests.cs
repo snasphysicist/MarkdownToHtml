@@ -72,7 +72,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("[text]", "<p>[text]</p>")]
         public void ShouldParseIncorrectlyFormattedLinkAsParagraphSuccess(
             string markdown,
@@ -94,7 +93,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow(
             "test1 [test2](test3) test4", 
             "<p>test1 <a href=\"test3\">test2</a> test4</p>"
