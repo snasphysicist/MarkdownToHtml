@@ -9,12 +9,14 @@ namespace MarkdownToHtml
         private static IMarkdownParser listItemRawParser = new ListItem();
         private static IMarkdownParser listItemParagraphParser = new ListItemParagraph();
 
+        private static IMarkdownParser emphasisParser = new Emphasis();
+
         private static Regex regexOrderedListLine = new Regex(
             @"^[\s]{0,3}\d+\.(\s+?.*)"
         );
 
         private static Regex regexUnorderedListLine = new Regex(
-            @"^[\s]{0,3}[\*|\+|-].*"
+            @"^[\s]{0,3}[\*|\+|-](\s+?.*)"
         );
         public bool CanParseFrom(
             ParseInput input
@@ -115,11 +117,11 @@ namespace MarkdownToHtml
                 input
             );
             // Step back to ignore trailing whitespace lines
-            while (
-                input[endOfListSection].ContainsOnlyWhitespace()
-            ) {
-                endOfListSection--;
-            }
+            // while (
+            //     input[endOfListSection].ContainsOnlyWhitespace()
+            // ) {
+            //     endOfListSection--;
+            // }
             return ContainsWhitespaceLine(
                 input,
                 endOfListSection
