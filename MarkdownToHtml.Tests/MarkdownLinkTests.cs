@@ -9,6 +9,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
+        [Ignore]
         [DataRow("[text](url)", "<p><a href=\"url\">text</a></p>")]
         public void ShouldParseCorrectlyFormattedLinkAdjacentSuccess(
             string markdown,
@@ -30,6 +31,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
+        [Ignore]
         [DataRow("[text][ref]\n\n\n[ref]: url", "<p><a href=\"url\">text</a></p>")]
         public void ShouldParseCorrectlyFormattedLinkReferenceSuccess(
             string markdown,
@@ -51,6 +53,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
+        [Ignore]
         [DataRow("[text]\n\n\n[text]: url", "<p><a href=\"url\">text</a></p>")]
         public void ShouldParseCorrectlyFormattedLinkSelfReferenceSuccess(
             string markdown,
@@ -72,6 +75,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
+        [Ignore]
         [DataRow("[text]", "<p>[text]</p>")]
         public void ShouldParseIncorrectlyFormattedLinkAsParagraphSuccess(
             string markdown,
@@ -93,6 +97,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
+        [Ignore]
         [DataRow(
             "test1 [test2](test3) test4", 
             "<p>test1 <a href=\"test3\">test2</a> test4</p>"

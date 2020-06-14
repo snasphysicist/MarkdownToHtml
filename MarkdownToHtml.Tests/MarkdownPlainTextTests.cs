@@ -8,6 +8,7 @@ namespace MarkdownToHtml
     {
         [DataTestMethod]
         [Timeout(500)]
+        [Ignore]
         [DataRow("Test1")]
         public void ShouldParseCorrectlyFormattedPlainTextLineSuccess(
             string markdown
