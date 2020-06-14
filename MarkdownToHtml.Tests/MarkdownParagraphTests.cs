@@ -6,18 +6,18 @@ namespace MarkdownToHtml
     [TestClass]
     public class MarkdownParagraphTests
     {
-        [TestMethod]
+        [DataTestMethod]
         [Timeout(500)]
         [Ignore]
-        public void ShouldParseTwoAdjacentLinesAsOneParagraphSuccess() {
-            string[] testData = new string[]
-            {
-                "test1",
-                "test2"
-            };
-            string targetHtml = "<p>test1 test2</p>";
+        [DataRow("test1\ntest2", "<p>test1 test2</p>")]
+        public void ShouldParseTwoAdjacentLinesAsOneParagraphSuccess(
+            string markdown,
+            string targetHtml
+        ) {
             MarkdownParser parser = new MarkdownParser(
-                testData
+                markdown.Split(
+                    "\n"
+                )
             );
             Assert.IsTrue(
                 parser.Success
@@ -28,19 +28,18 @@ namespace MarkdownToHtml
             );
         }
 
-        [TestMethod]
+        [DataTestMethod]
         [Timeout(500)]
         [Ignore]
-        public void ShouldParseTwoSeparatedLinesAsTwoParagraphsSuccess() {
-            string[] testData = new string[]
-            {
-                "test1",
-                " ",
-                "test2"
-            };
-            string targetHtml = "<p>test1</p><p>test2</p>";
+        [DataRow("test1\n\ntest2", "<p>test1</p><p>test2</p>")]
+        public void ShouldParseTwoSeparatedLinesAsTwoParagraphsSuccess(
+            string markdown,
+            string targetHtml
+        ) {
             MarkdownParser parser = new MarkdownParser(
-                testData
+                markdown.Split(
+                    "\n"
+                )
             );
             Assert.IsTrue(
                 parser.Success
@@ -51,18 +50,18 @@ namespace MarkdownToHtml
             );
         }
 
-        [TestMethod]
+        [DataTestMethod]
         [Timeout(500)]
         [Ignore]
-        public void ShouldParseTwoAdjacentLinesWithTwoSpacesAsOneParagraphWithLineBreakSuccess() {
-            string[] testData = new string[]
-            {
-                "test1  ",
-                "test2"
-            };
-            string targetHtml = "<p>test1<br>test2</p>";
+        [DataRow("test1  \ntest2", "<p>test1<br>test2</p>")]
+        public void ShouldParseTwoAdjacentLinesWithTwoSpacesAsOneParagraphWithLineBreakSuccess(
+            string markdown,
+            string targetHtml
+        ) {
             MarkdownParser parser = new MarkdownParser(
-                testData
+                markdown.Split(
+                    "\n"
+                )
             );
             Assert.IsTrue(
                 parser.Success
