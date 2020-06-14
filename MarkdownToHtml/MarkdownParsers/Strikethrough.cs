@@ -6,7 +6,7 @@ namespace MarkdownToHtml
     public class Strikethrough : IMarkdownParser
     {
         private static Regex regexStruckthroughText = new Regex(
-            @"^~{2}(.+)~{2}.*"
+            @"^~{2}(.+)~{2}"
         );
 
         public bool CanParseFrom(
