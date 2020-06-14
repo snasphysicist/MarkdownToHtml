@@ -7,16 +7,28 @@ namespace MarkdownToHtml
 {
     public class MarkdownParser
     {
-        
-        Regex regexOrderedListItem = new Regex(
-            @"^\s*\d+\."        // Format 1. (ordered list)
-        );
+        private static IMarkdownParser[] multilineElementParsers
+            = new IMarkdownParser[]
+            {
+                new PreformattedCodeBlock(),
+                new DoubleLineHeading(),
+                new SingleLineHeading(),
+                new HorizontalRule(),
+                new Quote(),
+                new List(),
+                new Paragraph()
+            };
 
-        Regex regexUnorderedListItem = new Regex(
-            @"^\s*\+\s+|"       // Format +  (unordered list)
-            + @"^\s*\*\s+|"     // Format *  (unordered list)
-            + @"^\s*-\s+"       // Format -  (unordered list)
-        );
+        private static IMarkdownParser[] innerTextParsers
+            = new IMarkdownParser[]
+            {
+                new Strong(),
+                new Strikethrough(),
+                new Emphasis(),
+                new InlineCode(),
+                new Link(),
+                new Image()
+            };
 
         public bool Success
         { get; private set; }
