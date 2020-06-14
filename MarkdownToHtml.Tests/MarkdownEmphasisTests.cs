@@ -9,7 +9,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("*test1*", "<p><em>test1</em></p>")]
         [DataRow("test1*test2*test3", "<p>test1<em>test2</em>test3</p>")]
         public void ShouldParseCorrectlyFormattedStarEmphasisLineSuccess(
@@ -34,7 +33,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("_test1_", "<p><em>test1</em></p>")]
         [DataRow("test1_test2_test3", "<p>test1<em>test2</em>test3</p>")]
         public void ShouldParseCorrectlyFormattedUnderscoreEmphasisLineSuccess(
@@ -59,7 +57,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("*te\\*st1*", "<p><em>te*st1</em></p>")]
         [DataRow("_te\\_st1_", "<p><em>te_st1</em></p>")]
         public void ShouldParseCorrectlyEscapedEmphasisCharactersSuccess(
@@ -84,7 +81,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("*test1", "<p>*test1</p>")]
         [DataRow("_test1", "<p>_test1</p>")]
         public void ShouldNotParseIncorrectlyDelimitedEmphasisFail(
