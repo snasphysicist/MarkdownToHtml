@@ -20,7 +20,8 @@ namespace MarkdownToHtml
         ) {
             ParseResult result = new ParseResult();
             while (
-                !input[0].ContainsOnlyWhitespace()
+                (input.Count > 0)
+                && !input[0].ContainsOnlyWhitespace()
             ) {
                 if (new CodeBlock().CanParseFrom(input))
                 {
@@ -102,8 +103,11 @@ namespace MarkdownToHtml
         private bool AtParagraphLastLine(
             ParseInput input
         ) {
-            return (input.Count > 1)
-                && (!input[1].ContainsOnlyWhitespace());
+            return (input.Count == 1)
+                || (
+                    (input.Count > 1)
+                    && (!input[1].ContainsOnlyWhitespace())
+                );
         }
 
         private static bool endsWithAtLeastTwoSpaces (
