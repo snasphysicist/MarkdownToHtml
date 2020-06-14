@@ -33,7 +33,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("19274. test1", "<ol><li>test1</li></ol>")]
         public void ShouldParseOrderedListNotStartAtOneSuccess(
             string markdown,
@@ -56,7 +55,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("1. test1\n2. test2", "<ol><li>test1</li><li>test2</li></ol>")]
         public void ShouldParseOrderedListLinesNotSeparatedByWhitespaceAscendingSuccess(
             string markdown,
