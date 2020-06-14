@@ -12,7 +12,13 @@ namespace MarkdownToHtml
             string text
         ) {
             Text = text;
-            hasBeenParsed = false;
+            if (text == "")
+            {
+                hasBeenParsed = true;
+            } else {
+                hasBeenParsed = false;
+            }
+            
         }
 
         public bool ContainsOnlyWhitespace()
