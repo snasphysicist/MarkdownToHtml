@@ -83,7 +83,7 @@ namespace MarkdownToHtml
             return (input.Count < 2)
                 || (
                     (input.Count > 1)
-                    && (!input[1].ContainsOnlyWhitespace())
+                    && (input[1].ContainsOnlyWhitespace())
                 );
         }
 
