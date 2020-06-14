@@ -51,7 +51,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow("[text]\n\n\n[text]: url", "<p><a href=\"url\">text</a></p>")]
         public void ShouldParseCorrectlyFormattedLinkSelfReferenceSuccess(
             string markdown,
