@@ -39,5 +39,13 @@ namespace MarkdownToHtml
                 startText
             );
         }
+
+        public bool EndsWith(
+            string startText
+        ) {
+            return Text.EndsWith(
+                startText
+            );
+        }
     }
 }
