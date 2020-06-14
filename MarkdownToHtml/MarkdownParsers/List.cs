@@ -6,7 +6,7 @@ namespace MarkdownToHtml
 {
     public class List : IMarkdownParser
     {
-        private static IMarkdownParser listItemRawParser = new ListItem();
+        private static IMarkdownParser listItemRawParser = new ListItemRaw();
         private static IMarkdownParser listItemParagraphParser = new ListItemParagraph();
 
         private static Regex regexOrderedListLine = new Regex(
@@ -114,12 +114,17 @@ namespace MarkdownToHtml
             int endOfListSection = FindEndOfListSection(
                 input
             );
+            // Step back one line if at end of input
+            if (endOfListSection == input.Count)
+            {
+                endOfListSection--;
+            }
             // Step back to ignore trailing whitespace lines
-            // while (
-            //     input[endOfListSection].ContainsOnlyWhitespace()
-            // ) {
-            //     endOfListSection--;
-            // }
+            while (
+                input[endOfListSection].ContainsOnlyWhitespace()
+            ) {
+                endOfListSection--;
+            }
             return ContainsWhitespaceLine(
                 input,
                 endOfListSection
@@ -143,7 +148,7 @@ namespace MarkdownToHtml
         private int FindEndOfListSection(
             ParseInput input
         ) {
-            int currentIndex = 1;
+            int currentIndex = 0;
             while (
                 (currentIndex < input.Count)
                 && (
@@ -157,6 +162,14 @@ namespace MarkdownToHtml
                     currentIndex
                 );
                 currentIndex += endOfThisListItem;
+                if (
+                    currentIndex + 1 < input.Count
+                    && IsListItemLine(
+                        input[currentIndex + 1].Text
+                    )
+                ) {
+                    currentIndex++;
+                }
             }
             return currentIndex;
         }
