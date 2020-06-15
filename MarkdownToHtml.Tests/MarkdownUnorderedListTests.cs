@@ -142,7 +142,6 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [Ignore]
         [DataRow(
             "* test1\ntest2\n\n* test3", 
             "<ul><li><p>test1 test2</p></li><li><p>test3</p></li></ul>"
