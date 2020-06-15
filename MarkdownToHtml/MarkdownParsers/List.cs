@@ -151,34 +151,58 @@ namespace MarkdownToHtml
             int currentIndex = 0;
             while (
                 (currentIndex < input.Count)
-                && (
-                    IsListItemLine(
-                        input[currentIndex].Text
-                    )
+                && ExistsSubsequentListItem(
+                    input,
+                    currentIndex
                 )
             ) {
-                int endOfThisListItem = FindEndOfListItem(
+                currentIndex = FindStartOfNextListItem(
                     input,
                     currentIndex
                 );
-                currentIndex += endOfThisListItem;
-                if (
-                    currentIndex + 1 < input.Count
-                    && IsListItemLine(
-                        input[currentIndex + 1].Text
-                    )
-                ) {
-                    currentIndex++;
-                }
+                currentIndex = FindEndOfListItem(
+                    input,
+                    currentIndex
+                );
             }
             return currentIndex;
+        }
+
+        private bool ExistsSubsequentListItem(
+            ParseInput input,
+            int checkFrom
+        ) {
+            return FindStartOfNextListItem(
+                input,
+                checkFrom
+            ) < input.Count;
+        }
+
+        private int FindStartOfNextListItem(
+            ParseInput input,
+            int startSearchFrom
+        ) {
+            int index = startSearchFrom;
+            while (
+                index < input.Count
+            ) {
+                if (
+                    IsListItemLine(
+                        input[index].Text
+                    )
+                ) {
+                    break;
+                }
+                index++;
+            }
+            return index;
         }
 
         private int FindEndOfListItem(
             ParseInput input,
             int startIndex
         ) {
-            int currentLine = 1;
+            int currentLine = startIndex + 1;
             while (
                 (currentLine < input.Count)
                 && !input[currentLine].ContainsOnlyWhitespace()
