@@ -151,7 +151,7 @@ namespace MarkdownToHtml
             int currentIndex = 0;
             while (
                 (currentIndex < input.Count)
-                && ExistsSubsequentListItem(
+                && ExistsSubsequentItemInList(
                     input,
                     currentIndex
                 )
@@ -168,14 +168,28 @@ namespace MarkdownToHtml
             return currentIndex;
         }
 
-        private bool ExistsSubsequentListItem(
+        private bool ExistsSubsequentItemInList(
             ParseInput input,
             int checkFrom
         ) {
-            return FindStartOfNextListItem(
-                input,
-                checkFrom
-            ) < input.Count;
+            int index = checkFrom;
+            while (
+                index < input.Count
+            ) {
+                if (
+                    IsListItemLine(
+                        input[index].Text
+                    )
+                ) {
+                    break;
+                }
+                if (!input[index].ContainsOnlyWhitespace())
+                {
+                    return false;
+                }
+                index++;
+            }
+            return index < input.Count;
         }
 
         private int FindStartOfNextListItem(
