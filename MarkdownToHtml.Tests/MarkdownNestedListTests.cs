@@ -12,7 +12,7 @@ namespace MarkdownToHtml
         [DataRow("1. test1\n     1. test2", "<ol><li>test1<ol><li>test2</li></ol></li></ol>")]
         [DataRow("1. test1\n      1. test2", "<ol><li>test1<ol><li>test2</li></ol></li></ol>")]
         [DataRow("1. test1\n       1. test2", "<ol><li>test1<ol><li>test2</li></ol></li></ol>")]
-        public void OrderedListItemOneIdentationLevelInFromListItemCreatesNestedOrderedList(
+        public void OrderedListItemOneIdentationLevelInFromOrderedListItemCreatesNestedOrderedList(
             string markdown,
             string targetHtml
         ) {
@@ -30,5 +30,28 @@ namespace MarkdownToHtml
             );
         }
 
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow("1. test1\n    * test2", "<ol><li>test1<ol><li>test2</li></ol></li></ol>")]
+        [DataRow("1. test1\n     + test2", "<ol><li>test1<ol><li>test2</li></ol></li></ol>")]
+        [DataRow("1. test1\n      - test2", "<ol><li>test1<ol><li>test2</li></ol></li></ol>")]
+        [DataRow("1. test1\n       * test2", "<ol><li>test1<ol><li>test2</li></ol></li></ol>")]
+        public void UnorderedListItemOneIdentationLevelInFromOrderedListItemCreatesNestedOrderedList(
+            string markdown,
+            string targetHtml
+        ) {
+            MarkdownParser parser = new MarkdownParser(
+                markdown.Split(
+                    "\n"
+                )
+            );
+            Assert.IsTrue(
+                parser.Success
+            );
+            Assert.AreEqual(
+                targetHtml,
+                parser.ToHtml()
+            );
+        }
     }
 }
