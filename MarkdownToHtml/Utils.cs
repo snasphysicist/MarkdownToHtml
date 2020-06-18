@@ -21,7 +21,7 @@ namespace MarkdownToHtml
          * start of the line to indicate the section
          */
         public static int FindEndOfSection(
-            ArraySegment<String> lines,
+            ParseInput input,
             string sectionIndicator
         )
         {
@@ -36,14 +36,16 @@ namespace MarkdownToHtml
              * which is not a line of given section type !lines[index].StartsWith
              */
             while (
-                index < lines.Count
+                index < input.Count
                 && !(
                     previousLineWasWhitespace
-                    && !ContainsOnlyWhitespace(lines[index])
-                    && !lines[index].StartsWith(sectionIndicator)
+                    && !input[index].ContainsOnlyWhitespace()
+                    && !input[index].StartsWith(
+                        sectionIndicator
+                    )
                 )
             ) {
-                if (ContainsOnlyWhitespace(lines[index]))
+                if (input[index].ContainsOnlyWhitespace())
                 {
                     previousLineWasWhitespace = true;
                 } else {
@@ -54,7 +56,7 @@ namespace MarkdownToHtml
             return index;
         }
 
-        private static bool ContainsOnlyWhitespace(
+        public static bool ContainsOnlyWhitespace(
             string line
         ) {
             return line.Replace(
@@ -72,6 +74,22 @@ namespace MarkdownToHtml
                 && (line[0] == character)
             ) {
                 line = line.Substring(1);
+            }
+            return line;
+        }
+
+        public static string StripTrailingCharacter(
+            string line,
+            char character
+        ) {
+            while (
+                (line.Length > 0)
+                && (line[^1] == character)
+            ) {
+                line = line.Substring(
+                    0,
+                    line.Length - 1 
+                );
             }
             return line;
         }

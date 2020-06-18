@@ -9,7 +9,7 @@ namespace MarkdownToHtml
 
         // Special characters that could start different element type
         private static Regex regexSpecialCharacter = new Regex(
-            @"[^\\][`|\*|_|\[|\]|#|!|~]"
+            @"[^\\]([`|\*|_|\[|\]|#|!|~])"
         );
         
         private static char[] specialCharacters = new char[]
@@ -34,13 +34,13 @@ namespace MarkdownToHtml
 
         string content;
 
-        public MarkdownElementType Type
+        public ElementType Type
         { get; private set; }
 
         public MarkdownText(
             string content
         ) {
-            Type = MarkdownElementType.Text;
+            Type = ElementType.Text;
             this.content = ReplaceEscapeCharacters(
                 content
             );
@@ -74,7 +74,7 @@ namespace MarkdownToHtml
             ParseInput input,
             bool force
         ) {
-            string line = input.FirstLine;
+            string line = input[0].Text;
             ParseResult result = new ParseResult();
             int indexFirstSpecialCharacter = FindUnescapedSpecial(
                 line
@@ -89,7 +89,6 @@ namespace MarkdownToHtml
             // If an empty string is `parsed` then fail
             if (indexFirstSpecialCharacter == 0)
             {
-                result.Line = line;
                 return result;
             } else if (indexFirstSpecialCharacter != line.Length)
             {
@@ -99,7 +98,7 @@ namespace MarkdownToHtml
                     line.Substring(0, indexFirstSpecialCharacter)
                 );
                 result.AddContent(element);
-                result.Line = line.Substring(indexFirstSpecialCharacter);
+                input[0].Text = line.Substring(indexFirstSpecialCharacter);
                 result.Success = true;
             } else {
                 // If there are no special sections, everything is plain text
@@ -107,7 +106,7 @@ namespace MarkdownToHtml
                     line
                 );
                 result.AddContent(element);
-                result.Line = "";
+                input[0].WasParsed();
                 result.Success = true;
             }
             return result;

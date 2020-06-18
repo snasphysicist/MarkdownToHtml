@@ -3,36 +3,27 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownEmphasis : MarkdownElementWithContent, IHtmlable
+    public class Emphasis : IMarkdownParser
     {
-
         private static Regex regexParseable = new Regex(
             @"^\*(.*?[^\\])\*"
             + @"|^_(.*?[^\\])_"
         );
 
-        public MarkdownEmphasis(
-            IHtmlable[] content
-        ) {
-            Type = MarkdownElementType.Emphasis;
-            this.content = content;
-        }
-
-        public static bool CanParseFrom(
+        public bool CanParseFrom(
             ParseInput input
         ) {
-            return regexParseable.Match(input.FirstLine).Success;
+            return regexParseable.Match(input[0].Text).Success;
         }
 
-        public static ParseResult ParseFrom(
+        public ParseResult ParseFrom(
             ParseInput input
         ) {
-            string line = input.FirstLine;
+            string line = input[0].Text;
             ParseResult result = new ParseResult();
             if (!CanParseFrom(input))
             {
                 // Return a failed result if cannot parse from this line
-                result.Line = line;
                 return result;
             }
             // Otherwise parse and return result
@@ -45,7 +36,8 @@ namespace MarkdownToHtml
                 content = contentMatch.Groups[2].Value;
             }
             // Parse everything inside the stars
-            MarkdownEmphasis element = new MarkdownEmphasis(
+            Element element = new ElementFactory().New(
+                ElementType.Emphasis,
                 MarkdownParser.ParseInnerText(
                     new ParseInput(
                         input,
@@ -54,12 +46,12 @@ namespace MarkdownToHtml
                 )
             );
             result.AddContent(element);
-            result.Line = line.Substring(
-                content.Length + 2
+            input[0].Text = regexParseable.Replace(
+                line,
+                ""
             );
             result.Success = true;
             return result;
         }
-
     }
 }

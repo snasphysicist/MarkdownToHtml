@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownPreformattedCodeBlock : MarkdownElementWithContent, IHtmlable
+    public class PreformattedCodeBlock : IMarkdownParser
     {
         private static MarkdownText newLine = new MarkdownText(
             "\n"
@@ -15,20 +15,13 @@ namespace MarkdownToHtml
             @"^ {4}.*"
         );
 
-        public MarkdownPreformattedCodeBlock(
-            IHtmlable[] content
-        ) {
-            Type = MarkdownElementType.CodeBlock;
-            this.content = content;
-        }
-
-        public static bool CanParseFrom(
+        public bool CanParseFrom(
             ParseInput input
         ) {
-            return regexIndentedLineStart.Match(input.FirstLine).Success;
+            return regexIndentedLineStart.Match(input[0].Text).Success;
         }
 
-        public static ParseResult ParseFrom(
+        public ParseResult ParseFrom(
             ParseInput input
         ) {
 
@@ -37,15 +30,14 @@ namespace MarkdownToHtml
             {
                 return result;
             }
-            ArraySegment<string> lines = input.Lines();
             int endOfCodeBlock = Utils.FindEndOfSection(
-                lines,
+                input,
                 "    "
             );
             LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
             for (int i = 0; i < endOfCodeBlock; i++)
             {
-                string line = lines[i];
+                string line = input[i].Text;
                 // Remove four leading spaces, if present
                 if (line.Length > 3)
                 {
@@ -64,30 +56,19 @@ namespace MarkdownToHtml
                     );
                 }
                 // Clear original line from original data
-                lines[i] = "";
+                input[i].WasParsed();
             }
-            MarkdownPreformatted codeBlock = new MarkdownPreformatted(
-                new MarkdownCodeBlock(
-                    Utils.LinkedListToArray(innerContent)
-                )
+            Element codeBlock = new ElementFactory().New(
+                ElementType.CodeBlock,
+                Utils.LinkedListToArray(innerContent)
+            );
+            Element preformatted = new ElementFactory().New(
+                ElementType.Preformatted,
+                codeBlock
             );
             result.Success = true;
-            result.AddContent(codeBlock);
+            result.AddContent(preformatted);
             return result;
         }
-
-        class MarkdownPreformatted : MarkdownElementWithContent, IHtmlable
-        {
-            public MarkdownPreformatted(
-                IHtmlable content
-            ) {
-                Type = MarkdownElementType.Preformatted;
-                this.content = new IHtmlable[]
-                {
-                    content
-                };
-            }
-        }
-
     }
 }

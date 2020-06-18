@@ -153,29 +153,5 @@ namespace MarkdownToHtml
                 parser.ToHtml()
             );
         }
-
-        [DataTestMethod]
-        [Timeout(500)]
-        [DataRow(
-            "1. test1\n\n2. test2\n3. test3\n4. test4\n\n5. test5", 
-            "<ol><li><p>test1</p></li><li><p>test2</p></li><li>test3</li>"
-            + "<li><p>test4</p></li><li><p>test5</p></li></ol>"
-        )]
-        public void ShouldParseOrderedListLinesAdjacentToWhitespaceLineWithParagraphsSuccess(
-            string markdown,
-            string targetHtml
-        ) {
-            MarkdownParser parser = new MarkdownParser(
-                markdown.Split("\n")
-            );
-            Assert.IsTrue(
-                parser.Success
-            );
-            Assert.AreEqual(
-                targetHtml,
-                parser.ToHtml()
-            );
-        }
-
     }
 }

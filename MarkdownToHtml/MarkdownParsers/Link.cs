@@ -4,9 +4,8 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownLink : MarkdownElementFull, IHtmlable
+    public class Link : IMarkdownParser
     {
-
         private static Regex regexLinkImmediate = new Regex(
             @"^\[(.*[^\\])\]\((.*[^\\])\)"
         );
@@ -15,27 +14,14 @@ namespace MarkdownToHtml
             @"^\[(.*[^\\])\]\[(.*[^\\])\]"
         );
 
-        private static Regex regexLinkSelfReference = new Regex(
+        private Regex regexLinkSelfReference = new Regex(
             @"^\[(.*[^\\])\]"
         );
 
-        public MarkdownLink(
-            IHtmlable[] content,
-            string href
-        ) {
-            Type = MarkdownElementType.Link;
-            this.content = content;
-            attributes = new Dictionary<string, string>();
-            attributes.Add(
-                "href",
-                href
-            );
-        }
-
-        public static bool CanParseFrom(
+        public bool CanParseFrom(
             ParseInput input
         ) {
-            string line = input.FirstLine;
+            string line = input[0].Text;
             ReferencedUrl[] urls = input.Urls;
             if (regexLinkImmediate.Match(line).Success)
             {
@@ -68,10 +54,10 @@ namespace MarkdownToHtml
             return false;
         }
 
-        public static ParseResult ParseFrom(
+        public ParseResult ParseFrom(
             ParseInput input
         ) {
-            string line = input.FirstLine;
+            string line = input[0].Text;
             ReferencedUrl[] urls = input.Urls;
             ParseResult result = new ParseResult();
             if (
@@ -79,27 +65,33 @@ namespace MarkdownToHtml
             ) {
                 return result;
             }
+            LinkedList<Attribute> attributes = new LinkedList<Attribute>();
             Match linkMatch;
             // Format: [text](url)
             linkMatch = regexLinkImmediate.Match(line);
             if (linkMatch.Success)
             {
-                string text = linkMatch.Groups[1].Value;
-                string url = linkMatch.Groups[2].Value;
+                attributes.AddLast(
+                    new Attribute(
+                        "href",
+                        linkMatch.Groups[2].Value
+                    )
+                );
                 result.Success = true;
-                result.Line = regexLinkImmediate.Replace(
+                input[0].Text = regexLinkImmediate.Replace(
                     line,
                     ""
                 );
                 result.AddContent(
-                    new MarkdownLink(
+                    new ElementFactory().New(
+                        ElementType.Link,
                         MarkdownParser.ParseInnerText(
                             new ParseInput(
                                 input,
-                                text
+                                linkMatch.Groups[1].Value
                             )
                         ),
-                        url
+                        Utils.LinkedListToArray(attributes)
                     )
                 );
             }
@@ -107,26 +99,34 @@ namespace MarkdownToHtml
             linkMatch = regexLinkReference.Match(line);
             if (linkMatch.Success)
             {
-                string text = linkMatch.Groups[1].Value;
                 string reference = linkMatch.Groups[2].Value;
                 foreach (ReferencedUrl url in urls)
                 {
                     if (url.Reference == reference)
                     {
+                        attributes.AddLast(
+                            new Attribute(
+                                "href",
+                                url.Url
+                            )
+                        );
                         result.Success = true;
-                        result.Line = regexLinkReference.Replace(
+                        input[0].Text = regexLinkReference.Replace(
                             line,
                             ""
                         );
                         result.AddContent(
-                            new MarkdownLink(
+                            new ElementFactory().New(
+                                ElementType.Link,
                                 MarkdownParser.ParseInnerText(
                                     new ParseInput(
                                         input,
-                                        text
+                                        linkMatch.Groups[1].Value
                                     )
                                 ),
-                                url.Url
+                                Utils.LinkedListToArray(
+                                    attributes
+                                )
                             )
                         );
                     }
@@ -136,25 +136,34 @@ namespace MarkdownToHtml
             linkMatch = regexLinkSelfReference.Match(line);
             if (linkMatch.Success)
             {
-                string text = linkMatch.Groups[1].Value;
+                string innerText = linkMatch.Groups[1].Value;
                 foreach (ReferencedUrl url in urls)
                 {
-                    if (url.Reference == text)
+                    if (url.Reference == innerText)
                     {
+                        attributes.AddLast(
+                            new Attribute(
+                                "href",
+                                url.Url
+                            )
+                        );
                         result.Success = true;
-                        result.Line = regexLinkSelfReference.Replace(
+                        input[0].Text = regexLinkSelfReference.Replace(
                             line,
                             ""
                         );
                         result.AddContent(
-                            new MarkdownLink(
+                            new ElementFactory().New(
+                                ElementType.Link,
                                 MarkdownParser.ParseInnerText(
                                     new ParseInput(
                                         input,
-                                        text
+                                        innerText
                                     )
                                 ),
-                                url.Url
+                                Utils.LinkedListToArray(
+                                    attributes
+                                )
                             )
                         );
                     }
@@ -162,6 +171,5 @@ namespace MarkdownToHtml
             }
             return result;
         }
-
     }
 }

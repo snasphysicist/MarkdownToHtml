@@ -7,16 +7,29 @@ namespace MarkdownToHtml
 {
     public class MarkdownParser
     {
-        
-        Regex regexOrderedListItem = new Regex(
-            @"^\s*\d+\."        // Format 1. (ordered list)
-        );
+        private static IMarkdownParser[] multilineElementParsers
+            = new IMarkdownParser[]
+            {
+                new PreformattedCodeBlock(),
+                new DoubleLineHeading(),
+                new SingleLineHeading(),
+                new HorizontalRule(),
+                new Quote(),
+                new CodeBlock(),
+                new List(),
+                new Paragraph()
+            };
 
-        Regex regexUnorderedListItem = new Regex(
-            @"^\s*\+\s+|"       // Format +  (unordered list)
-            + @"^\s*\*\s+|"     // Format *  (unordered list)
-            + @"^\s*-\s+"       // Format -  (unordered list)
-        );
+        private static IMarkdownParser[] innerTextParsers
+            = new IMarkdownParser[]
+            {
+                new Strong(),
+                new Strikethrough(),
+                new Emphasis(),
+                new InlineCode(),
+                new Link(),
+                new Image()
+            };
 
         public bool Success
         { get; private set; }
@@ -57,30 +70,30 @@ namespace MarkdownToHtml
             // Urls potentially referenced by anchors/images
             Urls = new LinkedList<ReferencedUrl>();
             // Extract all 'footnote' style urls
-            ParseReferencedUrls(lines);
+            ParseReferencedUrls(
+                lines
+            );
             // Create new parse input to pass to parsers
             ParseInput input = new ParseInput(
-                Utils.LinkedListToArray(Urls),
+                Utils.LinkedListToArray(
+                    Urls
+                ),
                 lines,
                 0,
                 lines.Length
             );
             // Parsing printed content
-            int currentIndex = 0;
-            while (currentIndex < lines.Length) {
+            while (input.Count > 0) {
                 // Parse some lines
                 ParseLineGroup(
-                    input.Slice(
-                        currentIndex,
-                        lines.Length - currentIndex
-                    )
+                    input
                 );
                 // Move to the next non-empty line
                 while (
-                    (currentIndex < lines.Length)
-                    && ContainsOnlyWhitespace(lines[currentIndex])
+                    (input.Count > 0)
+                    && (input[0].HasBeenParsed())
                 ) {
-                    currentIndex++;
+                    input.NextLine();
                 }
             }
         }
@@ -98,25 +111,22 @@ namespace MarkdownToHtml
         private void ParseLineGroup(
             ParseInput input
         ) {
-            ParseResult result;
-            if (MarkdownPreformattedCodeBlock.CanParseFrom(input))
+            ParseResult result = new ParseResult();
+            foreach (IMarkdownParser parser in multilineElementParsers)
             {
-                result = MarkdownPreformattedCodeBlock.ParseFrom(input);
-            } else if (MarkdownHeading.CanParseFrom(input))
-            {
-                result = MarkdownHeading.ParseFrom(input);
-            } else if (MarkdownHorizontalRule.CanParseFrom(input))
-            {
-                result = MarkdownHorizontalRule.ParseFrom(input);
-            } else if (MarkdownQuote.CanParseFrom(input))
-            {
-                result = MarkdownQuote.ParseFrom(input);
-            } else if (MarkdownList.CanParseFrom(input))
-            {
-                result = MarkdownList.ParseFrom(input);
-            } else 
-            {
-                result = MarkdownParagraph.ParseFrom(input);
+                if (
+                    parser.CanParseFrom(
+                        input
+                    )
+                ) {
+                    result = parser.ParseFrom(
+                        input
+                    );
+                    if (result.Success)
+                    {
+                        break;
+                    }
+                }
             }
             foreach (IHtmlable entry in result.GetContent())
             {
@@ -131,51 +141,49 @@ namespace MarkdownToHtml
             // Store parsed content as we go
             LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
             // Until the whole string has been consumed
-            while (input.FirstLine.Length > 0)
+            while (!input[0].HasBeenParsed())
             {
-                ParseResult result;
-                if (MarkdownStrong.CanParseFrom(input))
+                ParseResult result = new ParseResult();
+                foreach (IMarkdownParser parser in innerTextParsers)
                 {
-                    result = MarkdownStrong.ParseFrom(input);
-                } else if (MarkdownStrikethrough.CanParseFrom(input))
-                {
-                    result = MarkdownStrikethrough.ParseFrom(input);
-                } else if (MarkdownEmphasis.CanParseFrom(input))
-                {
-                    result = MarkdownEmphasis.ParseFrom(input);
-                } else if (MarkdownCodeInline.CanParseFrom(input))
-                {
-                    result = MarkdownCodeInline.ParseFrom(input);
-                } else if (MarkdownLink.CanParseFrom(input))
-                {
-                    result = MarkdownLink.ParseFrom(input);
-                } else if (MarkdownImage.CanParseFrom(input))
-                {
-                    result = MarkdownImage.ParseFrom(input);
-                } else {
-                    result = MarkdownText.ParseFrom(
-                        input,
-                        false
-                    );
+                    if (
+                        parser.CanParseFrom(
+                            input
+                        )
+                    ) {
+                        result = parser.ParseFrom(
+                            input
+                        );
+                        if (result.Success)
+                        {
+                            break;
+                        }
+                    }
                 }
-                /*
-                 * If no parsing method suceeded
-                 * for once character to be parsed as text
-                 */
                 if (!result.Success)
                 {
                     result = MarkdownText.ParseFrom(
                         input,
-                        true
+                        false
                     );
+                    if (!result.Success)
+                    {
+                        // Ensure at least one character gets parsed
+                        result = MarkdownText.ParseFrom(
+                            input,
+                            true
+                        );
+                    }
+                }
+                if (input[0].Text.Length == 0)
+                {
+                    input[0].WasParsed();
                 }
                 // Extract parsed content
                 foreach (IHtmlable entry in result.GetContent())
                 {
                     content.AddLast(entry);
                 }
-                // Update text to be parsed
-                input.FirstLine = result.Line;
             }
             IHtmlable[] contentArray = new IHtmlable[content.Count];
             content.CopyTo(

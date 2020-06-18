@@ -8,17 +8,13 @@ namespace MarkdownToHtml
         public ReferencedUrl[] Urls
         { get; }
 
-        private string[] lines;
+        private Line[] lines;
 
-        public string FirstLine
+        public Line FirstLine
         {
             get
             {
                 return lines[startIndex];
-            }
-            set
-            {
-                lines[startIndex] = value;
             }
         }
 
@@ -26,9 +22,43 @@ namespace MarkdownToHtml
 
         private int elements;
 
+        public Line this[int index]
+        {
+            get
+            {
+                return lines[startIndex + index];
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                return elements;
+            }
+        }
+
         public ParseInput(
             ReferencedUrl[] urls,
             string[] lines,
+            int startIndex,
+            int elements
+        ) {
+            Urls = urls;
+            this.lines = new Line[lines.Length];
+            for (int i = 0; i < lines.Length; i++)
+            {
+                this.lines[i] = new Line(
+                    lines[i]
+                );
+            }
+            this.startIndex = startIndex;
+            this.elements = elements;
+        }
+
+        private ParseInput(
+            ReferencedUrl[] urls,
+            Line[] lines,
             int startIndex,
             int elements
         ) {
@@ -43,17 +73,41 @@ namespace MarkdownToHtml
             string line
         ) {
             Urls = toCopy.Urls;
-            lines = new string[]
+            lines = new Line[]
             {
-                line
+                new Line(
+                    line
+                )
             };
             startIndex = 0;
             elements = 1;
         }
 
-        public ArraySegment<string> Lines()
+        public ParseInput LinesFromStart(
+            int numberOfLines
+        ) {
+            return new ParseInput(
+                Urls,
+                lines,
+                startIndex,
+                numberOfLines
+            );
+        }
+
+        public ParseInput LinesUpTo(
+            int endIndex
+        ) {
+            return new ParseInput(
+                Urls,
+                lines,
+                startIndex,
+                endIndex - startIndex
+            );
+        }
+
+        public ArraySegment<Line> Lines()
         {
-            return new ArraySegment<string>(
+            return new ArraySegment<Line>(
                 lines,
                 startIndex,
                 elements
@@ -69,11 +123,10 @@ namespace MarkdownToHtml
             return this;
         }
 
-        public ParseInput NextLine()
+        public void NextLine()
         {
-            this.startIndex++;
-            this.elements--;
-            return this;
+            startIndex++;
+            elements--;
         }
 
         public ParseInput JumpLines(

@@ -3,31 +3,23 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MarkdownCodeInline : MarkdownElementWithContent, IHtmlable
+    public class InlineCode : IMarkdownParser
     {
-
         private static Regex regexParseable = new Regex(
             @"^`.*([^`])`.*"
         );
 
-        public MarkdownCodeInline(
-            IHtmlable[] content
-        ) {
-            Type = MarkdownElementType.CodeInline;
-            this.content = content;
-        }
-
-        public static bool CanParseFrom(
+        public bool CanParseFrom(
             ParseInput input
         ) {
-            return regexParseable.Match(input.FirstLine).Success;
+            return regexParseable.Match(input[0].Text).Success;
         }
 
         // Shared code for parsing emphasis sections
-        public static ParseResult ParseFrom(
+        public ParseResult ParseFrom(
             ParseInput input
         ) {
-            string line = input.FirstLine;
+            string line = input[0].Text;
             ParseResult result = new ParseResult();
             if (!CanParseFrom(input))
             {
@@ -53,7 +45,8 @@ namespace MarkdownToHtml
                 return result;
             }
             // Parse everything inside the backticks
-            MarkdownCodeInline element = new MarkdownCodeInline(
+            Element element = new ElementFactory().New(
+                ElementType.CodeInline,
                 MarkdownParser.ParseInnerText(
                     new ParseInput(
                         input,
@@ -62,10 +55,9 @@ namespace MarkdownToHtml
                 )
             );
             result.AddContent(element);
-            result.Line = line.Substring(j + 1);
+            input[0].Text = line.Substring(j + 1);
             result.Success = true;
             return result;
         }
-
     }
 }
