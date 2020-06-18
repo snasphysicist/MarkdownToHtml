@@ -17,10 +17,9 @@ namespace MarkdownToHtml
             string targetHtml
         ) {
             MarkdownParser parser = new MarkdownParser(
-                new string[] 
-                {
-                    markdown
-                }
+                markdown.Split(
+                    "\n"
+                )
             );
             Assert.IsTrue(
                 parser.Success
