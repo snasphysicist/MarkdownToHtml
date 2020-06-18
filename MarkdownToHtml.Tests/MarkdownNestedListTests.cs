@@ -150,5 +150,29 @@ namespace MarkdownToHtml
                 parser.ToHtml()
             );
         }
+
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow(
+            "1. test1\ntest2\n    2. test3", 
+            "<ol><li>test1 test2<ol><li>test3</li></ol></li></ol>"
+        )]
+        public void AllTextInListItemBeforeNestedListIncludedInSameStructure(
+            string markdown,
+            string targetHtml
+        ) {
+            MarkdownParser parser = new MarkdownParser(
+                markdown.Split(
+                    "\n"
+                )
+            );
+            Assert.IsTrue(
+                parser.Success
+            );
+            Assert.AreEqual(
+                targetHtml,
+                parser.ToHtml()
+            );
+        }
     }
 }
