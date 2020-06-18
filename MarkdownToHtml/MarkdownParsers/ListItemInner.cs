@@ -36,35 +36,121 @@ namespace MarkdownToHtml
             {
                 return result;
             }
-            int endOfListItem = FindEndOfListItem(
-                input
+            int listItemIdentationLevel = CalculateIndentationLevel(
+                input[0].Text
             );
-            // Remove list indicator from first line
+            int endOfListItem = FindEndOfListItem(
+                input,
+                listItemIdentationLevel
+            );
+            int startOfNestedList = FindStartOfNestedList(
+                input,
+                listItemIdentationLevel
+            );
             input[0].Text = RemoveListIndicator(
                 input[0].Text
             );
-            return new MultiLineText().ParseFrom(
-                input.LinesFromStart(
-                    endOfListItem
-                )
-            );
+            if (startOfNestedList < endOfListItem) 
+            {
+                ParseResult innerText = new MultiLineText().ParseFrom(
+                    input.LinesFromStart(
+                        startOfNestedList
+                    )
+                );
+                ParseResult nestedList = new List().ParseFrom(
+                    input.JumpLines(
+                        startOfNestedList
+                    ).LinesFromStart(
+                        endOfListItem - startOfNestedList
+                    )
+                );
+                foreach (IHtmlable item in innerText.GetContent())
+                {
+                    result.AddContent(
+                        item
+                    );
+                }
+                foreach (IHtmlable item in nestedList.GetContent())
+                {
+                    result.AddContent(
+                        item
+                    );
+                }
+            } else {
+                ParseResult innerText = new MultiLineText().ParseFrom(
+                    input.LinesFromStart(
+                        endOfListItem
+                    )
+                );
+                foreach (IHtmlable item in innerText.GetContent())
+                {
+                    result.AddContent(
+                        item
+                    );
+                }
+            }
+            result.Success = true;
+            return result;
+        }
+
+        private int CalculateIndentationLevel(
+            string listItemLine
+        ) {
+            return (
+                listItemLine.Length - Utils.StripLeadingCharacter(
+                    listItemLine,
+                    ' '
+                ).Length
+            ) / 4;
         }
 
         private int FindEndOfListItem(
-            ParseInput input
+            ParseInput input,
+            int outerListIndentationLevel
         ) {
             int i = 1;
             while (
                 (i < input.Count)
                 && (
-                    !IsListItemLine(
-                        input[i].Text
+                    !IsListItemLineAtIndentationLevel(
+                        input[i].Text,
+                        outerListIndentationLevel
                     )
                 )
             ) {
                 i++;
             }
             return i;
+        }
+
+        private bool IsListItemLineAtIndentationLevel(
+            string line,
+            int indentationLevel
+        ) {
+            return IsListItemLine(
+                line
+            ) && (
+                indentationLevel == CalculateIndentationLevel(
+                    line
+                )
+            );
+        }
+
+        private int FindStartOfNestedList(
+            ParseInput input,
+            int containingListItemIdentationLevel
+        ) {
+            int lineNumber = 0;
+            while(
+                lineNumber < input.Count
+                && !IsListItemLineAtIndentationLevel(
+                    input[lineNumber].Text,
+                    containingListItemIdentationLevel + 1
+                )
+            ) {
+                lineNumber++;
+            }
+            return lineNumber;
         }
 
         private bool IsWhitespaceLineAdjacent(
