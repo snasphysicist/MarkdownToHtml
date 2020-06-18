@@ -58,10 +58,12 @@ namespace MarkdownToHtml
                     )
                 );
                 ParseResult nestedList = new List().ParseFrom(
-                    input.JumpLines(
-                        startOfNestedList
-                    ).LinesFromStart(
-                        endOfListItem - startOfNestedList
+                    RemoveIndentLevel(
+                        input.JumpLines(
+                            startOfNestedList
+                        ).LinesFromStart(
+                            endOfListItem - startOfNestedList
+                        )
                     )
                 );
                 foreach (IHtmlable item in innerText.GetContent())
@@ -203,6 +205,20 @@ namespace MarkdownToHtml
                 orderedListItemContent.Groups[1].Value
                 + unorderedListItemContent.Groups[1].Value
             );
+        }
+
+        private ParseInput RemoveIndentLevel(
+            ParseInput input
+        ) {
+            for (int i = 0; i < input.Count; i++)
+            {
+                input[i].Text = Utils.StripLeadingCharacterUpTo(
+                    input[i].Text,
+                    ' ',
+                    4
+                );
+            }
+            return input;
         }
     }
 }
