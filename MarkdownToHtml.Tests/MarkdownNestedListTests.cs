@@ -77,5 +77,29 @@ namespace MarkdownToHtml
                 parser.ToHtml()
             );
         }
+
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow("* test1\n    + test2", "<ul><li>test1<ul><li>test2</li></ul></li></ul>")]
+        [DataRow("+ test1\n     - test2", "<ul><li>test1<ul><li>test2</li></ul></li></ul>")]
+        [DataRow("- test1\n      * test2", "<ul><li>test1<ul><li>test2</li></ul></li></ul>")]
+        [DataRow("* test1\n       + test2", "<ul><li>test1<ul><li>test2</li></ul></li></ul>")]
+        public void UnorderedListItemOneIdentationLevelInFromUnorderedListItemCreatesNestedOrderedList(
+            string markdown,
+            string targetHtml
+        ) {
+            MarkdownParser parser = new MarkdownParser(
+                markdown.Split(
+                    "\n"
+                )
+            );
+            Assert.IsTrue(
+                parser.Success
+            );
+            Assert.AreEqual(
+                targetHtml,
+                parser.ToHtml()
+            );
+        }
     }
 }
