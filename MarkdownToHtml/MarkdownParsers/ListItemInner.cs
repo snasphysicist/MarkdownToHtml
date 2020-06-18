@@ -7,11 +7,11 @@ namespace MarkdownToHtml
     public class ListItemInner : IMarkdownParser
     {
         private static Regex regexOrderedListLine = new Regex(
-            @"^[\s]{0,3}\d+\.(\s+?.*)"
+            @"^\s*\d+\.(\s+?.*)"
         );
 
         private static Regex regexUnorderedListLine = new Regex(
-            @"^[\s]{0,3}[\*|\+|-](\s+?.*)"
+            @"^\s*[\*|\+|-](\s+?.*)"
         );
 
         public bool CanParseFrom(
