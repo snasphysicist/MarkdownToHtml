@@ -126,12 +126,29 @@ namespace MarkdownToHtml
             );
         }
 
-//         <ol>
-// <li>test1</li>
-// <li>test2
-// <ol><li>test3</li>
-// <li>test4</li></ol></li>
-// </ol>
-
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow(
+            "1. test1\n2. test2\n    1. test3\n    2. test4\n3. test5", 
+            "<ol><li>test1</li><li>test2<ol><li>test3</li><li>test4</li></ol></li>" 
+            + "<li>test5</li></ol>"
+        )]
+        public void UnindentedListItemAfterNestedListAddedToOuterList(
+            string markdown,
+            string targetHtml
+        ) {
+            MarkdownParser parser = new MarkdownParser(
+                markdown.Split(
+                    "\n"
+                )
+            );
+            Assert.IsTrue(
+                parser.Success
+            );
+            Assert.AreEqual(
+                targetHtml,
+                parser.ToHtml()
+            );
+        }
     }
 }
