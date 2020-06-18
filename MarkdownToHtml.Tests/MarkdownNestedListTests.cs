@@ -105,7 +105,7 @@ namespace MarkdownToHtml
         [DataTestMethod]
         [Timeout(500)]
         [DataRow(
-            "1. test1\n2. test2\n    1. test3\n    2.test4", 
+            "1. test1\n2. test2\n    1. test3\n    2. test4", 
             "<ol><li>test1</li><li>test2<ol><li>test3</li><li>test4</li></ol></li></ol>"
         )]
         public void MultilineListNestedInMultilineListItemsParsedIntoInnerList(
