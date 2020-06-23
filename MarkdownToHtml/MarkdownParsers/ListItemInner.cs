@@ -49,7 +49,7 @@ namespace MarkdownToHtml
                     indentationLevel
                 )
             ) {
-                ParseResult innerResult = new MultiLineText(
+                ParseResult innerResult = new ListItemMultiLineText(
                     indentationLevel
                 ).ParseFrom(
                     input
