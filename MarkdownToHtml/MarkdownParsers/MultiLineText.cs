@@ -5,9 +5,17 @@ namespace MarkdownToHtml
 {
     public class MultiLineText : IMarkdownParser
     {
+        private int indentationLevel;
+
         private static Element linebreak = new ElementFactory().New(
             ElementType.Linebreak
         );
+
+        public MultiLineText(
+            int indentationLevel
+        ) {
+            this.indentationLevel = indentationLevel;
+        }
 
         public bool CanParseFrom(
             ParseInput input
