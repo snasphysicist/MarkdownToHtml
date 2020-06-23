@@ -20,7 +20,12 @@ namespace MarkdownToHtml
         public bool CanParseFrom(
             ParseInput input
         ) {
-            return true;
+            int indentationSpaces 
+                = input[0].Text.Length - Utils.StripLeadingCharacter(
+                    input[0].Text,
+                    ' '
+                ).Length;
+            return indentationLevel == (indentationSpaces / 4);
         }
 
         public ParseResult ParseFrom(
