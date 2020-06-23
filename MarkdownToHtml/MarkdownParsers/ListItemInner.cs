@@ -52,7 +52,9 @@ namespace MarkdownToHtml
             );
             if (startOfNestedList < endOfListItem) 
             {
-                ParseResult innerText = new MultiLineText().ParseFrom(
+                ParseResult innerText = new MultiLineText(
+                    0
+                ).ParseFrom(
                     input.LinesFromStart(
                         startOfNestedList
                     )
@@ -79,7 +81,9 @@ namespace MarkdownToHtml
                     );
                 }
             } else {
-                ParseResult innerText = new MultiLineText().ParseFrom(
+                ParseResult innerText = new MultiLineText(
+                    0
+                ).ParseFrom(
                     input.LinesFromStart(
                         endOfListItem
                     )
