@@ -7,11 +7,11 @@ namespace MarkdownToHtml
     public class ListItemInner : IMarkdownParser
     {
         private static Regex regexOrderedListLine = new Regex(
-            @"^\s*\d+\.(\s+?.*)"
+            @"^(\s*)(\d+\.)(\s+?.*)"
         );
 
         private static Regex regexUnorderedListLine = new Regex(
-            @"^\s*[\*|\+|-](\s+?.*)"
+            @"^(\s*)([\*|\+|-])(\s+?.*)"
         );
 
         public bool CanParseFrom(
@@ -43,7 +43,7 @@ namespace MarkdownToHtml
                 input[0].Text
             );
             while(
-                input.Count < 0
+                input.Count > 0
                 && IsPartOfListItem(
                     input,
                     indentationLevel
@@ -151,16 +151,22 @@ namespace MarkdownToHtml
         public string RemoveListIndicator(
             string line
         ) {
-            Match orderedListItemContent = regexOrderedListLine.Match(
-                line
-            );
-            Match unorderedListItemContent = regexUnorderedListLine.Match(
-                line
-            );
-            return (
-                orderedListItemContent.Groups[1].Value
-                + unorderedListItemContent.Groups[1].Value
-            );
+            if (
+                regexOrderedListLine.Match(
+                    line
+                ).Success
+            ) {
+                return regexOrderedListLine.Replace(
+                    line,
+                    "$1$3"
+                );
+            } else 
+            {
+                return regexUnorderedListLine.Replace(
+                    line,
+                    "$1$3"
+                );
+            }
         }
 
         private ParseInput RemoveIndentLevel(
