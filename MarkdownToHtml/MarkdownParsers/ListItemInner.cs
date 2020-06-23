@@ -36,63 +36,38 @@ namespace MarkdownToHtml
             {
                 return result;
             }
-            int listItemIdentationLevel = CalculateIndentationLevel(
+            int indentationLevel = CalculateIndentationLevel(
                 input[0].Text
-            );
-            int endOfListItem = FindEndOfListItem(
-                input,
-                listItemIdentationLevel
-            );
-            int startOfNestedList = FindStartOfNestedList(
-                input,
-                listItemIdentationLevel
             );
             input[0].Text = RemoveListIndicator(
                 input[0].Text
             );
-            if (startOfNestedList < endOfListItem) 
-            {
-                ParseResult innerText = new MultiLineText(
-                    0
+            while(
+                input.Count < 0
+                && IsPartOfListItem(
+                    input,
+                    indentationLevel
+                )
+            ) {
+                ParseResult innerResult = new MultiLineText(
+                    indentationLevel
                 ).ParseFrom(
-                    input.LinesFromStart(
-                        startOfNestedList
-                    )
+                    input
                 );
-                ParseResult nestedList = new List().ParseFrom(
-                    RemoveIndentLevel(
-                        input.JumpLines(
-                            startOfNestedList
-                        ).LinesFromStart(
-                            endOfListItem - startOfNestedList
-                        )
-                    )
-                );
-                foreach (IHtmlable item in innerText.GetContent())
+                foreach (IHtmlable entry in innerResult.GetContent())
                 {
                     result.AddContent(
-                        item
+                        entry
                     );
                 }
-                foreach (IHtmlable item in nestedList.GetContent())
-                {
-                    result.AddContent(
-                        item
-                    );
-                }
-            } else {
-                ParseResult innerText = new MultiLineText(
-                    0
-                ).ParseFrom(
-                    input.LinesFromStart(
-                        endOfListItem
+                while(
+                    input.Count > 0
+                    && (
+                        input[0].ContainsOnlyWhitespace()
+                        || input[0].HasBeenParsed()
                     )
-                );
-                foreach (IHtmlable item in innerText.GetContent())
-                {
-                    result.AddContent(
-                        item
-                    );
+                ) {
+                    input.NextLine();
                 }
             }
             result.Success = true;
@@ -110,23 +85,17 @@ namespace MarkdownToHtml
             ) / 4;
         }
 
-        private int FindEndOfListItem(
+        private bool IsPartOfListItem(
             ParseInput input,
-            int outerListIndentationLevel
+            int level
         ) {
-            int i = 1;
-            while (
-                (i < input.Count)
-                && (
-                    !IsListItemLineAtIndentationLevel(
-                        input[i].Text,
-                        outerListIndentationLevel
-                    )
-                )
-            ) {
-                i++;
-            }
-            return i;
+            return (
+                CalculateIndentationLevel(
+                    input[0].Text
+                ) >= level
+            ) && !IsListItemLine(
+                input[0].Text
+            );
         }
 
         private bool IsListItemLineAtIndentationLevel(
@@ -140,23 +109,6 @@ namespace MarkdownToHtml
                     line
                 )
             );
-        }
-
-        private int FindStartOfNestedList(
-            ParseInput input,
-            int containingListItemIdentationLevel
-        ) {
-            int lineNumber = 0;
-            while(
-                lineNumber < input.Count
-                && !IsListItemLineAtIndentationLevel(
-                    input[lineNumber].Text,
-                    containingListItemIdentationLevel + 1
-                )
-            ) {
-                lineNumber++;
-            }
-            return lineNumber;
         }
 
         private bool IsWhitespaceLineAdjacent(
