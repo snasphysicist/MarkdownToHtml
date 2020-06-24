@@ -42,13 +42,8 @@ namespace MarkdownToHtml
             input[0].Text = RemoveListIndicator(
                 input[0].Text
             );
-            while(
-                input.Count > 0
-                && IsPartOfListItem(
-                    input,
-                    indentationLevel
-                )
-            ) {
+            do 
+            {
                 ParseResult innerResult = new ListItemMultiLineText(
                     indentationLevel
                 ).ParseFrom(
@@ -69,7 +64,13 @@ namespace MarkdownToHtml
                 ) {
                     input.NextLine();
                 }
-            }
+            } while (
+                input.Count > 0
+                && IsPartOfListItem(
+                    input,
+                    indentationLevel + 1
+                )
+            );
             result.Success = true;
             return result;
         }
