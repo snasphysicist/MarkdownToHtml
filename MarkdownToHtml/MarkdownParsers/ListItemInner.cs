@@ -14,11 +14,24 @@ namespace MarkdownToHtml
             @"^(\s*)([\*|\+|-])(\s+?.*)"
         );
 
+        int indentationLevel;
+
+        public ListItemInner(
+            int indentationLevel
+        ) {
+            this.indentationLevel = indentationLevel;
+        }
+
         public bool CanParseFrom(
             ParseInput input
         ) {
             return (input.Count > 0)
-                && IsListItemLine(input[0].Text);
+                && IsListItemLine(input[0].Text)
+                && (
+                    CalculateIndentationLevel(
+                        input[0].Text
+                    ) == indentationLevel
+                );
         }
 
         public bool IsListItemLine(

@@ -3,7 +3,19 @@ namespace MarkdownToHtml
 {
     public class ListItemRaw : IMarkdownParser
     {
-        private static IMarkdownParser innerParser = new ListItemInner();
+        private IMarkdownParser innerParser;
+
+        private int indentationLevel;
+
+        public ListItemRaw(
+            int indentationLevel
+        ) {
+            this.indentationLevel = indentationLevel;
+            innerParser = new ListItemInner(
+                indentationLevel
+            );
+        }
+
         public bool CanParseFrom(
             ParseInput input
         ) {

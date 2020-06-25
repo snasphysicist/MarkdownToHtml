@@ -6,8 +6,8 @@ namespace MarkdownToHtml
 {
     public class List : IMarkdownParser
     {
-        private static IMarkdownParser listItemRawParser = new ListItemRaw();
-        private static IMarkdownParser listItemParagraphParser = new ListItemParagraph();
+        private IMarkdownParser listItemRawParser;
+        private IMarkdownParser listItemParagraphParser;
 
         private static Regex regexOrderedListLine = new Regex(
             @"^\s*\d+\.(\s+?.*)"
@@ -23,6 +23,12 @@ namespace MarkdownToHtml
             int indentationLevel
         ) {
             this.indentationLevel = indentationLevel;
+            listItemRawParser = new ListItemRaw(
+                indentationLevel
+            );
+            listItemParagraphParser = new ListItemParagraph(
+                indentationLevel
+            );
         }
 
         public bool CanParseFrom(
