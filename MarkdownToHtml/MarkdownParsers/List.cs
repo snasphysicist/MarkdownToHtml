@@ -10,11 +10,11 @@ namespace MarkdownToHtml
         private static IMarkdownParser listItemParagraphParser = new ListItemParagraph();
 
         private static Regex regexOrderedListLine = new Regex(
-            @"^[\s]\d+\.(\s+?.*)"
+            @"^\s*\d+\.(\s+?.*)"
         );
 
         private static Regex regexUnorderedListLine = new Regex(
-            @"^[\s][\*|\+|-](\s+?.*)"
+            @"^\s*[\*|\+|-](\s+?.*)"
         );
 
         private int indentationLevel;
