@@ -10,11 +10,11 @@ namespace MarkdownToHtml
         private static IMarkdownParser listItemParagraphParser = new ListItemParagraph();
 
         private static Regex regexOrderedListLine = new Regex(
-            @"^[\s]{0,3}\d+\.(\s+?.*)"
+            @"^[\s]\d+\.(\s+?.*)"
         );
 
         private static Regex regexUnorderedListLine = new Regex(
-            @"^[\s]{0,3}[\*|\+|-](\s+?.*)"
+            @"^[\s][\*|\+|-](\s+?.*)"
         );
 
         private int indentationLevel;
@@ -30,7 +30,11 @@ namespace MarkdownToHtml
         ) {
             return IsListItemLine(
                 input[0].Text
-            );
+            ) && (
+                CalculateIndentationLevel(
+                    input[0].Text
+                )
+            ) == indentationLevel;
         }
 
         public ParseResult ParseFrom(
@@ -77,6 +81,17 @@ namespace MarkdownToHtml
                 list
             );
             return result;
+        }
+
+        private int CalculateIndentationLevel(
+            string line
+        ) {
+            return (
+                line.Length - Utils.StripLeadingCharacter(
+                    line,
+                    ' '
+                ).Length
+            ) / 4;
         }
 
         private bool IsListItemLine(
