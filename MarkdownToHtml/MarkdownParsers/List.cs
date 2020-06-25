@@ -16,6 +16,15 @@ namespace MarkdownToHtml
         private static Regex regexUnorderedListLine = new Regex(
             @"^[\s]{0,3}[\*|\+|-](\s+?.*)"
         );
+
+        private int indentationLevel;
+
+        public List(
+            int indentationLevel
+        ) {
+            this.indentationLevel = indentationLevel;
+        }
+
         public bool CanParseFrom(
             ParseInput input
         ) {
