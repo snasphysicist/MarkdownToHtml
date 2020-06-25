@@ -42,13 +42,28 @@ namespace MarkdownToHtml
             input[0].Text = RemoveListIndicator(
                 input[0].Text
             );
+            IMarkdownParser listParser = new List(
+                indentationLevel + 1
+            );
             do 
             {
-                ParseResult innerResult = new ListItemMultiLineText(
-                    indentationLevel
-                ).ParseFrom(
-                    input
-                );
+                ParseResult innerResult;
+                if (
+                    listParser.CanParseFrom(
+                        input
+                    )
+                ) {
+                    innerResult = listParser.ParseFrom(
+                        input
+                    );
+                } else 
+                {
+                    innerResult = new ListItemMultiLineText(
+                        indentationLevel
+                    ).ParseFrom(
+                        input
+                    );
+                }
                 foreach (IHtmlable entry in innerResult.GetContent())
                 {
                     result.AddContent(
@@ -94,6 +109,10 @@ namespace MarkdownToHtml
                 CalculateIndentationLevel(
                     input[0].Text
                 ) >= level
+            ) || (
+                CalculateIndentationLevel(
+                    input[0].Text
+                ) == level
             ) && !IsListItemLine(
                 input[0].Text
             );
