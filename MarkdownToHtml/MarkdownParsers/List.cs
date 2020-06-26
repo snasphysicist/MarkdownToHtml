@@ -6,8 +6,6 @@ namespace MarkdownToHtml
 {
     public class List : IMarkdownParser
     {
-        private IMarkdownParser listItemParser;
-
         private static Regex regexOrderedListLine = new Regex(
             @"^\s*\d+\.(\s+?.*)"
         );
@@ -22,9 +20,6 @@ namespace MarkdownToHtml
             int indentationLevel
         ) {
             this.indentationLevel = indentationLevel;
-            listItemParser = new ListItemInner(
-                indentationLevel
-            );
         }
 
         public bool CanParseFrom(
@@ -51,11 +46,14 @@ namespace MarkdownToHtml
             // Track whether list item contents should be in a paragraph
             bool whitespaceLineBefore = false;
             bool whitespaceLineAfter = false;
+            ListItemInner listItemParser = new ListItemInner(
+                indentationLevel
+            );
             while (
                 listItemParser.CanParseFrom(
                     input
                 )
-            ) {
+            ) {  
                 parsedListItem = listItemParser.ParseFrom(
                     input
                 );
@@ -75,12 +73,18 @@ namespace MarkdownToHtml
                     && listItemParser.CanParseFrom(
                         input
                     );
-                if (!whitespaceLineBefore && !whitespaceLineAfter)
+                if (
+                    !whitespaceLineBefore 
+                    && !whitespaceLineAfter
+                    && !listItemParser.ContainsInnerWhitespace)
                 {
                     // Remove paragraphs
                 }
                 // Whitespace after previous entry becomes before next entry
                 whitespaceLineBefore = whitespaceLineAfter;
+                listItemParser = new ListItemInner(
+                    indentationLevel
+                );
             }
             Element list = new ElementFactory().New(
                 listType,
