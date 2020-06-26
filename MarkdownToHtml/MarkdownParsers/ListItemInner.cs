@@ -16,13 +16,14 @@ namespace MarkdownToHtml
 
         private int indentationLevel;
 
-        private bool containsInnerWhitespace;
+        public bool ContainsInnerWhitespace
+        { get; private set; }
 
         public ListItemInner(
             int indentationLevel
         ) {
             this.indentationLevel = indentationLevel;
-            containsInnerWhitespace = false;
+            ContainsInnerWhitespace = false;
         }
 
         public bool CanParseFrom(
@@ -99,7 +100,7 @@ namespace MarkdownToHtml
                 }
                 // Whitespace after previous entry becomes before next entry
                 whitespaceLineBefore = whitespaceLineAfter;
-                containsInnerWhitespace = containsInnerWhitespace || whitespaceLineBefore;
+                ContainsInnerWhitespace = ContainsInnerWhitespace || whitespaceLineBefore;
                 if (input[-1].ContainsOnlyWhitespace())
                 {
                     whitespaceLineAfter = true;
