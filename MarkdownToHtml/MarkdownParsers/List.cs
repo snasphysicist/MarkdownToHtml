@@ -57,12 +57,6 @@ namespace MarkdownToHtml
                 parsedListItem = listItemParser.ParseFrom(
                     input
                 );
-                foreach (IHtmlable item in parsedListItem.GetContent())
-                {
-                    listItems.AddLast(
-                        item
-                    );
-                }
                 while (
                     (input.Count > 0)
                     && input[0].HasBeenParsed()
@@ -73,12 +67,21 @@ namespace MarkdownToHtml
                     && listItemParser.CanParseFrom(
                         input
                     );
+                IHtmlable[] listItemContent = parsedListItem.GetContent();
                 if (
                     !whitespaceLineBefore 
                     && !whitespaceLineAfter
-                    && !listItemParser.ContainsInnerWhitespace)
+                    && !listItemParser.ContainsInnerWhitespace
+                ) {
+                    listItemContent = StripOuterParagraphs(
+                        listItemContent
+                    );
+                }
+                foreach (IHtmlable item in listItemContent)
                 {
-                    // Remove paragraphs
+                    listItems.AddLast(
+                        item
+                    );
                 }
                 // Whitespace after previous entry becomes before next entry
                 whitespaceLineBefore = whitespaceLineAfter;
