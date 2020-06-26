@@ -55,6 +55,9 @@ namespace MarkdownToHtml
             );
             ParseResult parsedListItem;
             LinkedList<IHtmlable> listItems = new LinkedList<IHtmlable>();
+            // Track whether list item contents should be in a paragraph
+            bool whitespaceLineBefore = false;
+            bool whitespaceLineAfter = false;
             while (
                 listItemParser.CanParseFrom(
                     input
@@ -73,8 +76,21 @@ namespace MarkdownToHtml
                     (input.Count > 0)
                     && input[0].HasBeenParsed()
                 ) {
+                    if (input[0].ContainsOnlyWhitespace())
+                    {
+                        whitespaceLineAfter = true;
+                    }
                     input.NextLine();
                 }
+                if (
+                    !listItemParser.CanParseFrom(
+                        input
+                    )
+                ) {
+                    whitespaceLineAfter = false;
+                }
+                // Whitespace after previous entry becomes before next entry
+                whitespaceLineBefore = whitespaceLineAfter;
             }
             Element list = new ElementFactory().New(
                 listType,
