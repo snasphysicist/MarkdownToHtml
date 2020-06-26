@@ -6,8 +6,7 @@ namespace MarkdownToHtml
 {
     public class List : IMarkdownParser
     {
-        private IMarkdownParser listItemRawParser;
-        private IMarkdownParser listItemParagraphParser;
+        private IMarkdownParser listItemParser;
 
         private static Regex regexOrderedListLine = new Regex(
             @"^\s*\d+\.(\s+?.*)"
@@ -23,10 +22,7 @@ namespace MarkdownToHtml
             int indentationLevel
         ) {
             this.indentationLevel = indentationLevel;
-            listItemRawParser = new ListItemRaw(
-                indentationLevel
-            );
-            listItemParagraphParser = new ListItemParagraph(
+            listItemParser = new ListItemInner(
                 indentationLevel
             );
         }
@@ -48,9 +44,6 @@ namespace MarkdownToHtml
         ) {
             ParseResult result = new ParseResult();
             ElementType listType = DetermineListType(
-                input
-            );
-            IMarkdownParser listItemParser = DetermineListItemParserType(
                 input
             );
             ParseResult parsedListItem;
@@ -76,18 +69,15 @@ namespace MarkdownToHtml
                     (input.Count > 0)
                     && input[0].HasBeenParsed()
                 ) {
-                    if (input[0].ContainsOnlyWhitespace())
-                    {
-                        whitespaceLineAfter = true;
-                    }
                     input.NextLine();
                 }
-                if (
-                    !listItemParser.CanParseFrom(
+                whitespaceLineAfter = input[-1].ContainsOnlyWhitespace() 
+                    && listItemParser.CanParseFrom(
                         input
-                    )
-                ) {
-                    whitespaceLineAfter = false;
+                    );
+                if (!whitespaceLineBefore && !whitespaceLineAfter)
+                {
+                    // Remove paragraphs
                 }
                 // Whitespace after previous entry becomes before next entry
                 whitespaceLineBefore = whitespaceLineAfter;
@@ -136,20 +126,6 @@ namespace MarkdownToHtml
                 return ElementType.UnorderedList;
             } else {
                 return ElementType.OrderedList;
-            }
-        }
-
-        private IMarkdownParser DetermineListItemParserType(
-            ParseInput input
-        ) {
-            if (
-                ListItemsWrappedInParagraphs(
-                    input
-                )
-            ) {
-                return listItemParagraphParser;
-            } else {
-                return listItemRawParser;
             }
         }
 
