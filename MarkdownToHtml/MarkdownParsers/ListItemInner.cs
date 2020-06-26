@@ -14,7 +14,9 @@ namespace MarkdownToHtml
             @"^(\s*)([\*|\+|-])(\s+?.*)"
         );
 
-        int indentationLevel;
+        private int indentationLevel;
+
+
 
         public ListItemInner(
             int indentationLevel
