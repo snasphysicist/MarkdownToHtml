@@ -213,19 +213,5 @@ namespace MarkdownToHtml
                 );
             }
         }
-
-        private ParseInput RemoveIndentLevel(
-            ParseInput input
-        ) {
-            for (int i = 0; i < input.Count; i++)
-            {
-                input[i].Text = Utils.StripLeadingCharacterUpTo(
-                    input[i].Text,
-                    ' ',
-                    4
-                );
-            }
-            return input;
-        }
     }
 }
