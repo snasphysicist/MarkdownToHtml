@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 // TODO
@@ -20,6 +21,12 @@ namespace MarkdownToHtml
 
         private int indentationLevel;
 
+        private Dictionary<int, IHtmlable[]> paragraphable;
+
+        private Dictionary<int, IHtmlable[]> notParagraphable;
+
+        int numberOfElements;
+
         public bool ContainsInnerWhitespace
         { get; private set; }
 
@@ -28,6 +35,9 @@ namespace MarkdownToHtml
         ) {
             this.indentationLevel = indentationLevel;
             ContainsInnerWhitespace = false;
+            paragraphable = new Dictionary<int, IHtmlable[]>();
+            notParagraphable = new Dictionary<int, IHtmlable[]>();
+            numberOfElements = 0;
         }
 
         public bool CanParseFrom(
