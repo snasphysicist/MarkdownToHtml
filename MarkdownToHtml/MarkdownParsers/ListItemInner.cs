@@ -161,26 +161,35 @@ namespace MarkdownToHtml
         public ParseResult ContentWithoutParagraphs()
         {
             ParseResult result = new ParseResult();
+            LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
             for (int i = 0; i < numberOfElements; i++)
             {
                 if (paragraphable.ContainsKey(i))
                 {
-                    result.AddContent(
-                        new ElementFactory().New(
-                            ElementType.ListItem,
-                            paragraphable[i]
-                        )
-                    );
+                    foreach (IHtmlable item in paragraphable[i])
+                    {
+                        content.AddLast(
+                            item
+                        );
+                    }
                 } else
                 {
                     foreach (IHtmlable item in notParagraphable[i])
                     {
-                        result.AddContent(
+                        content.AddLast(
                             item
                         );
                     }
                 }
             }
+            result.AddContent(
+                new ElementFactory().New(
+                    ElementType.ListItem,
+                    Utils.LinkedListToArray(
+                        content
+                    )
+                )
+            );
             result.Success = true;
             return result;
         }
@@ -188,29 +197,35 @@ namespace MarkdownToHtml
         public ParseResult ContentWithParagraphs()
         {
             ParseResult result = new ParseResult();
+            LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
             for (int i = 0; i < numberOfElements; i++)
             {
                 if (paragraphable.ContainsKey(i))
                 {
-                    result.AddContent(
+                    content.AddLast(
                         new ElementFactory().New(
-                            ElementType.ListItem,
-                            new ElementFactory().New(
-                                ElementType.Paragraph,
-                                paragraphable[i]
-                            )
+                            ElementType.Paragraph,
+                            paragraphable[i]
                         )
                     );
                 } else
                 {
                     foreach (IHtmlable item in notParagraphable[i])
                     {
-                        result.AddContent(
+                        content.AddLast(
                             item
                         );
                     }
                 }
             }
+            result.AddContent(
+                new ElementFactory().New(
+                    ElementType.ListItem,
+                    Utils.LinkedListToArray(
+                        content
+                    )
+                )
+            );
             result.Success = true;
             return result;
         }
