@@ -41,7 +41,6 @@ namespace MarkdownToHtml
             ElementType listType = DetermineListType(
                 input
             );
-            ParseResult parsedListItem;
             LinkedList<IHtmlable> listItems = new LinkedList<IHtmlable>();
             // Track whether list item contents should be in a paragraph
             bool whitespaceLineBefore = false;
@@ -54,7 +53,7 @@ namespace MarkdownToHtml
                     input
                 )
             ) {  
-                parsedListItem = listItemParser.ParseFrom(
+                listItemParser.ParseFrom(
                     input
                 );
                 while (
@@ -67,15 +66,17 @@ namespace MarkdownToHtml
                     && listItemParser.CanParseFrom(
                         input
                     );
-                IHtmlable[] listItemContent = parsedListItem.GetContent();
+                ParseResult listItemResult;
                 if (
                     !whitespaceLineBefore 
                     && !whitespaceLineAfter
                     && !listItemParser.ContainsInnerWhitespace
                 ) {
-                    // Strip outer paragraphs
+                    listItemResult = listItemParser.ContentWithoutParagraphs();
+                } else {
+                    listItemResult = listItemParser.ContentWithParagraphs();
                 }
-                foreach (IHtmlable item in listItemContent)
+                foreach (IHtmlable item in listItemResult.GetContent())
                 {
                     listItems.AddLast(
                         item
