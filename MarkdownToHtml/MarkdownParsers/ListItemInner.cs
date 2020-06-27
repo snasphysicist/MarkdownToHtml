@@ -2,9 +2,13 @@
 using System;
 using System.Text.RegularExpressions;
 
+// TODO
+// Record which subitems are multiline text and which are not
+// Offer method to get content with/without paragraphs around multiline text
+
 namespace MarkdownToHtml
 {
-    public class ListItemInner : IMarkdownParser
+    public class ListItemInner
     {
         private static Regex regexOrderedListLine = new Regex(
             @"^(\s*)(\d+\.)(\s+?.*)"

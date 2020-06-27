@@ -73,9 +73,7 @@ namespace MarkdownToHtml
                     && !whitespaceLineAfter
                     && !listItemParser.ContainsInnerWhitespace
                 ) {
-                    listItemContent = StripOuterParagraphs(
-                        listItemContent
-                    );
+                    // Strip outer paragraphs
                 }
                 foreach (IHtmlable item in listItemContent)
                 {
