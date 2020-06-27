@@ -228,29 +228,6 @@ namespace MarkdownToHtml
             );
         }
 
-        private bool IsWhitespaceLineAdjacent(
-            ParseInput input
-        ) {
-            bool foundAdjacentWhitespaceLine = false;
-            try
-            {
-                foundAdjacentWhitespaceLine =
-                    foundAdjacentWhitespaceLine || input[-1].ContainsOnlyWhitespace();
-            } catch (IndexOutOfRangeException)
-            {
-                // We were at the start of the input, so can't be preceded by whitespace
-            }
-            try
-            {
-                foundAdjacentWhitespaceLine =
-                    foundAdjacentWhitespaceLine || input[1].ContainsOnlyWhitespace();
-            } catch (IndexOutOfRangeException)
-            {
-                // We were at the end of the input, so can't be followed by whitespace
-            }
-            return foundAdjacentWhitespaceLine;
-        }
-
         public string RemoveListIndicator(
             string line
         ) {
