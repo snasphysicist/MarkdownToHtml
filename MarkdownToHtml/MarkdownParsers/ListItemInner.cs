@@ -162,6 +162,63 @@ namespace MarkdownToHtml
             );
         }
 
+        public ParseResult ContentWithoutParagraphs()
+        {
+            ParseResult result = new ParseResult();
+            for (int i = 0; i < numberOfElements; i++)
+            {
+                if (paragraphable.ContainsKey(i))
+                {
+                    result.AddContent(
+                        new ElementFactory().New(
+                            ElementType.ListItem,
+                            paragraphable[i]
+                        )
+                    );
+                } else
+                {
+                    foreach (IHtmlable item in notParagraphable[i])
+                    {
+                        result.AddContent(
+                            item
+                        );
+                    }
+                }
+            }
+            result.Success = true;
+            return result;
+        }
+
+        public ParseResult ContentWithParagraphs()
+        {
+            ParseResult result = new ParseResult();
+            for (int i = 0; i < numberOfElements; i++)
+            {
+                if (paragraphable.ContainsKey(i))
+                {
+                    result.AddContent(
+                        new ElementFactory().New(
+                            ElementType.ListItem,
+                            new ElementFactory().New(
+                                ElementType.Paragraph,
+                                paragraphable[i]
+                            )
+                        )
+                    );
+                } else
+                {
+                    foreach (IHtmlable item in notParagraphable[i])
+                    {
+                        result.AddContent(
+                            item
+                        );
+                    }
+                }
+            }
+            result.Success = true;
+            return result;
+        }
+
         private bool IsListItemLineAtIndentationLevel(
             string line,
             int indentationLevel
