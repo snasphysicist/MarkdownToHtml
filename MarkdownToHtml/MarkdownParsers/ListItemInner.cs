@@ -3,10 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-// TODO
-// Record which subitems are multiline text and which are not
-// Offer method to get content with/without paragraphs around multiline text
-
 namespace MarkdownToHtml
 {
     public class ListItemInner
@@ -253,20 +249,6 @@ namespace MarkdownToHtml
                 // We were at the end of the input, so can't be followed by whitespace
             }
             return foundAdjacentWhitespaceLine;
-        }
-
-        private bool ContainsWhitespaceLine(
-            ParseInput input,
-            int endIndex
-        ) {
-            for (int i = 0; i  < endIndex; i++)
-            {
-                if (input[i].ContainsOnlyWhitespace())
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         public string RemoveListIndicator(
