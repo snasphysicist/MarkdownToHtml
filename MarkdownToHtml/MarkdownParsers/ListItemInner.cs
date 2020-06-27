@@ -89,6 +89,11 @@ namespace MarkdownToHtml
                     innerResult = listParser.ParseFrom(
                         input
                     );
+                    notParagraphable.Add(
+                        numberOfElements,
+                        innerResult.GetContent()
+                    );
+                    numberOfElements++;
                 } else 
                 {
                     innerResult = new ListItemMultiLineText(
@@ -96,12 +101,11 @@ namespace MarkdownToHtml
                     ).ParseFrom(
                         input
                     );
-                }
-                foreach (IHtmlable entry in innerResult.GetContent())
-                {
-                    result.AddContent(
-                        entry
+                    paragraphable.Add(
+                        numberOfElements,
+                        innerResult.GetContent()
                     );
+                    numberOfElements++;
                 }
                 while(
                     input.Count > 0
