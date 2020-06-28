@@ -14,7 +14,9 @@ namespace MarkdownToHtml
                 new DoubleLineHeading(),
                 new SingleLineHeading(),
                 new HorizontalRule(),
-                new Quote(),
+                new Quote(
+                    0
+                ),
                 new CodeBlock(),
                 new List(
                     0
