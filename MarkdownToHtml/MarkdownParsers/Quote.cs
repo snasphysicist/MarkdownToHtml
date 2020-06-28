@@ -1,10 +1,14 @@
 
-using System;
+using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
     public class Quote : IMarkdownParser
     {
+        private Regex regexQuoteOpening = new Regex(
+            @"^(\s*)(>)(\s+?.*)"
+        );
+
         private int indentationLevel;
 
         public Quote(
@@ -17,7 +21,7 @@ namespace MarkdownToHtml
             ParseInput input
         ) {
             return (
-                input[0].StartsWith(">")
+                regexQuoteOpening.Match(input[0].Text).Success
                 && 
                 (
                     CalculateIndentationLevel(
@@ -43,13 +47,12 @@ namespace MarkdownToHtml
             for (int i = 0; i < endQuoteSection; i++)
             {
                 string truncated = input[i].Text;
-                if (
-                    input[i].StartsWith(
-                        ">"
-                    )
-                )
+                if (regexQuoteOpening.Match(input[i].Text).Success)
                 {
-                    truncated = truncated.Substring(1);
+                    truncated = regexQuoteOpening.Replace(
+                        input[i].Text,
+                        "$3"
+                    );
                     int spaces = 0;
                     // Count spaces
                     while(
