@@ -5,6 +5,14 @@ namespace MarkdownToHtml
 {
     public class Quote : IMarkdownParser
     {
+        private int indentationLevel;
+
+        public Quote(
+            int indentationLevel
+        ) {
+            this.indentationLevel = indentationLevel;
+        }
+
         public bool CanParseFrom(
             ParseInput input
         ) {
