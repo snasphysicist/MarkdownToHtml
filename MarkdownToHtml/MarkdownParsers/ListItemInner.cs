@@ -92,7 +92,6 @@ namespace MarkdownToHtml
                         numberOfElements,
                         innerResult.GetContent()
                     );
-                    numberOfElements++;
                 } else if (
                     blockquoteParser.CanParseFrom(
                         input
@@ -116,8 +115,9 @@ namespace MarkdownToHtml
                         numberOfElements,
                         innerResult.GetContent()
                     );
-                    numberOfElements++;
+                    
                 }
+                numberOfElements++;
                 while(
                     input.Count > 0
                     && (
