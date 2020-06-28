@@ -97,7 +97,7 @@ namespace MarkdownToHtml
                         input
                     )
                 ) {
-                    innerResult = listParser.ParseFrom(
+                    innerResult = blockquoteParser.ParseFrom(
                         input
                     );
                     notParagraphable.Add(
