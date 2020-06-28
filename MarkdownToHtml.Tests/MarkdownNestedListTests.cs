@@ -174,33 +174,5 @@ namespace MarkdownToHtml
                 parser.ToHtml()
             );
         }
-
-        [DataTestMethod]
-        [Timeout(500)]
-        [DataRow(
-            "1. test1\n\n    test2\ntest3", 
-            "<ol><li><p>test1</p><p>test2 test3</p></li></ol>"
-        )]
-        [DataRow(
-            "1. test1\n\n    test2\n    test3", 
-            "<ol><li><p>test1</p><p>test2 test3</p></li></ol>"
-        )]
-        public void IndentedFollowingParagraphParsedAsPartOfListItem(
-            string markdown,
-            string targetHtml
-        ) {
-            MarkdownParser parser = new MarkdownParser(
-                markdown.Split(
-                    "\n"
-                )
-            );
-            Assert.IsTrue(
-                parser.Success
-            );
-            Assert.AreEqual(
-                targetHtml,
-                parser.ToHtml()
-            );
-        }
     }
 }
