@@ -72,6 +72,9 @@ namespace MarkdownToHtml
             IMarkdownParser listParser = new List(
                 indentationLevel + 1
             );
+            IMarkdownParser blockquoteParser = new Quote(
+                indentationLevel + 1
+            );
             bool whitespaceLineBefore = false;
             bool whitespaceLineAfter = false;
             do 
@@ -90,6 +93,18 @@ namespace MarkdownToHtml
                         innerResult.GetContent()
                     );
                     numberOfElements++;
+                } else if (
+                    blockquoteParser.CanParseFrom(
+                        input
+                    )
+                ) {
+                    innerResult = listParser.ParseFrom(
+                        input
+                    );
+                    notParagraphable.Add(
+                        numberOfElements,
+                        innerResult.GetContent()
+                    );
                 } else 
                 {
                     innerResult = new ListItemMultiLineText(
