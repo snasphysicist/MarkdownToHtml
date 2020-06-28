@@ -16,7 +16,15 @@ namespace MarkdownToHtml
         public bool CanParseFrom(
             ParseInput input
         ) {
-            return input[0].StartsWith(">");
+            return (
+                input[0].StartsWith(">")
+                && 
+                (
+                    CalculateIndentationLevel(
+                        input[0].Text
+                    ) == indentationLevel
+                )
+            );
         }
 
         public ParseResult ParseFrom(
@@ -89,6 +97,17 @@ namespace MarkdownToHtml
                 input,
                 ">"
             );
+        }
+
+        private int CalculateIndentationLevel(
+            string listItemLine
+        ) {
+            return (
+                listItemLine.Length - Utils.StripLeadingCharacter(
+                    listItemLine,
+                    ' '
+                ).Length
+            ) / 4;
         }
     }
 }
