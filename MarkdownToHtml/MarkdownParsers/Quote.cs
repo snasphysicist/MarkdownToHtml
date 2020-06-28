@@ -6,7 +6,7 @@ namespace MarkdownToHtml
     public class Quote : IMarkdownParser
     {
         private Regex regexQuoteOpening = new Regex(
-            @"^(\s*)(>)(\s+?.*)"
+            @"^(\s*)(>)(\s*?.*)"
         );
 
         private int indentationLevel;
