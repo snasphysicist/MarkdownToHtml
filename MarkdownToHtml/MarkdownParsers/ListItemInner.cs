@@ -1,24 +1,51 @@
 
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class ListItemInner : IMarkdownParser
+    public class ListItemInner
     {
         private static Regex regexOrderedListLine = new Regex(
-            @"^[\s]{0,3}\d+\.(\s+?.*)"
+            @"^(\s*)(\d+\.)(\s+?.*)"
         );
 
         private static Regex regexUnorderedListLine = new Regex(
-            @"^[\s]{0,3}[\*|\+|-](\s+?.*)"
+            @"^(\s*)([\*|\+|-])(\s+?.*)"
         );
+
+        private int indentationLevel;
+
+        private Dictionary<int, IHtmlable[]> paragraphable;
+
+        private Dictionary<int, IHtmlable[]> notParagraphable;
+
+        int numberOfElements;
+
+        public bool ContainsInnerWhitespace
+        { get; private set; }
+
+        public ListItemInner(
+            int indentationLevel
+        ) {
+            this.indentationLevel = indentationLevel;
+            ContainsInnerWhitespace = false;
+            paragraphable = new Dictionary<int, IHtmlable[]>();
+            notParagraphable = new Dictionary<int, IHtmlable[]>();
+            numberOfElements = 0;
+        }
 
         public bool CanParseFrom(
             ParseInput input
         ) {
             return (input.Count > 0)
-                && IsListItemLine(input[0].Text);
+                && IsListItemLine(input[0].Text)
+                && (
+                    CalculateIndentationLevel(
+                        input[0].Text
+                    ) == indentationLevel
+                );
         }
 
         public bool IsListItemLine(
@@ -36,87 +63,220 @@ namespace MarkdownToHtml
             {
                 return result;
             }
-            int endOfListItem = FindEndOfListItem(
-                input
+            int indentationLevel = CalculateIndentationLevel(
+                input[0].Text
             );
-            // Remove list indicator from first line
             input[0].Text = RemoveListIndicator(
                 input[0].Text
             );
-            return new MultiLineText().ParseFrom(
-                input.LinesFromStart(
-                    endOfListItem
+            IMarkdownParser listParser = new List(
+                indentationLevel + 1
+            );
+            IMarkdownParser blockquoteParser = new Quote(
+                indentationLevel + 1
+            );
+            bool whitespaceLineBefore = false;
+            bool whitespaceLineAfter = false;
+            do 
+            {
+                ParseResult innerResult;
+                if (
+                    listParser.CanParseFrom(
+                        input
+                    )
+                ) {
+                    innerResult = listParser.ParseFrom(
+                        input
+                    );
+                    notParagraphable.Add(
+                        numberOfElements,
+                        innerResult.GetContent()
+                    );
+                } else if (
+                    blockquoteParser.CanParseFrom(
+                        input
+                    )
+                ) {
+                    innerResult = blockquoteParser.ParseFrom(
+                        input
+                    );
+                    notParagraphable.Add(
+                        numberOfElements,
+                        innerResult.GetContent()
+                    );
+                } else 
+                {
+                    innerResult = new ListItemMultiLineText(
+                        indentationLevel
+                    ).ParseFrom(
+                        input
+                    );
+                    paragraphable.Add(
+                        numberOfElements,
+                        innerResult.GetContent()
+                    );
+                    
+                }
+                numberOfElements++;
+                while(
+                    input.Count > 0
+                    && (
+                        input[0].ContainsOnlyWhitespace()
+                        || input[0].HasBeenParsed()
+                    )
+                ) {
+                    input.NextLine();
+                }
+                // Whitespace after previous entry becomes before next entry
+                whitespaceLineBefore = whitespaceLineAfter;
+                ContainsInnerWhitespace = ContainsInnerWhitespace || whitespaceLineBefore;
+                if (input[-1].ContainsOnlyWhitespace())
+                {
+                    whitespaceLineAfter = true;
+                }
+            } while (
+                input.Count > 0
+                && IsPartOfListItem(
+                    input,
+                    indentationLevel + 1
                 )
+            );
+            result.Success = true;
+            return result;
+        }
+
+        private int CalculateIndentationLevel(
+            string listItemLine
+        ) {
+            return (
+                listItemLine.Length - Utils.StripLeadingCharacter(
+                    listItemLine,
+                    ' '
+                ).Length
+            ) / 4;
+        }
+
+        private bool IsPartOfListItem(
+            ParseInput input,
+            int level
+        ) {
+            return (
+                CalculateIndentationLevel(
+                    input[0].Text
+                ) >= level
+            ) || (
+                CalculateIndentationLevel(
+                    input[0].Text
+                ) == level
+            ) && !IsListItemLine(
+                input[0].Text
             );
         }
 
-        private int FindEndOfListItem(
-            ParseInput input
-        ) {
-            int i = 1;
-            while (
-                (i < input.Count)
-                && (
-                    !IsListItemLine(
-                        input[i].Text
-                    )
-                )
-            ) {
-                i++;
-            }
-            return i;
-        }
-
-        private bool IsWhitespaceLineAdjacent(
-            ParseInput input
-        ) {
-            bool foundAdjacentWhitespaceLine = false;
-            try
+        public ParseResult ContentWithoutParagraphs()
+        {
+            ParseResult result = new ParseResult();
+            LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
+            for (int i = 0; i < numberOfElements; i++)
             {
-                foundAdjacentWhitespaceLine =
-                    foundAdjacentWhitespaceLine || input[-1].ContainsOnlyWhitespace();
-            } catch (IndexOutOfRangeException)
-            {
-                // We were at the start of the input, so can't be preceded by whitespace
-            }
-            try
-            {
-                foundAdjacentWhitespaceLine =
-                    foundAdjacentWhitespaceLine || input[1].ContainsOnlyWhitespace();
-            } catch (IndexOutOfRangeException)
-            {
-                // We were at the end of the input, so can't be followed by whitespace
-            }
-            return foundAdjacentWhitespaceLine;
-        }
-
-        private bool ContainsWhitespaceLine(
-            ParseInput input,
-            int endIndex
-        ) {
-            for (int i = 0; i  < endIndex; i++)
-            {
-                if (input[i].ContainsOnlyWhitespace())
+                if (paragraphable.ContainsKey(i))
                 {
-                    return true;
+                    foreach (IHtmlable item in paragraphable[i])
+                    {
+                        content.AddLast(
+                            item
+                        );
+                    }
+                } else
+                {
+                    foreach (IHtmlable item in notParagraphable[i])
+                    {
+                        content.AddLast(
+                            item
+                        );
+                    }
                 }
             }
-            return false;
+            result.AddContent(
+                new ElementFactory().New(
+                    ElementType.ListItem,
+                    Utils.LinkedListToArray(
+                        content
+                    )
+                )
+            );
+            result.Success = true;
+            return result;
+        }
+
+        public ParseResult ContentWithParagraphs()
+        {
+            ParseResult result = new ParseResult();
+            LinkedList<IHtmlable> content = new LinkedList<IHtmlable>();
+            for (int i = 0; i < numberOfElements; i++)
+            {
+                if (paragraphable.ContainsKey(i))
+                {
+                    content.AddLast(
+                        new ElementFactory().New(
+                            ElementType.Paragraph,
+                            paragraphable[i]
+                        )
+                    );
+                } else
+                {
+                    foreach (IHtmlable item in notParagraphable[i])
+                    {
+                        content.AddLast(
+                            item
+                        );
+                    }
+                }
+            }
+            result.AddContent(
+                new ElementFactory().New(
+                    ElementType.ListItem,
+                    Utils.LinkedListToArray(
+                        content
+                    )
+                )
+            );
+            result.Success = true;
+            return result;
+        }
+
+        private bool IsListItemLineAtIndentationLevel(
+            string line,
+            int indentationLevel
+        ) {
+            return IsListItemLine(
+                line
+            ) && (
+                indentationLevel == CalculateIndentationLevel(
+                    line
+                )
+            );
         }
 
         public string RemoveListIndicator(
             string line
         ) {
-            Match orderedListItemContent = regexOrderedListLine.Match(
-                line
-            );
-            Match unorderedListItemContent = regexUnorderedListLine.Match(
-                line
-            );
-            return (
-                orderedListItemContent.Groups[1].Value
-                + unorderedListItemContent.Groups[1].Value
-            );
+            if (
+                regexOrderedListLine.Match(
+                    line
+                ).Success
+            ) {
+                return regexOrderedListLine.Replace(
+                    line,
+                    "$1$3"
+                );
+            } else 
+            {
+                return regexUnorderedListLine.Replace(
+                    line,
+                    "$1$3"
+                );
+            }
         }
     }
 }

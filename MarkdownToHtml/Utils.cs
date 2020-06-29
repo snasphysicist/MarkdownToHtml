@@ -69,11 +69,26 @@ namespace MarkdownToHtml
             string line,
             char character
         ) {
+            return StripLeadingCharacterUpTo(
+                line,
+                character,
+                line.Length
+            );
+        }
+
+        public static string StripLeadingCharacterUpTo(
+            string line,
+            char character,
+            int maximumNumberToRemove
+        ) {
+            int removed = 0;
             while (
                 (line.Length > 0)
                 && (line[0] == character)
+                && (removed < maximumNumberToRemove)
             ) {
                 line = line.Substring(1);
+                removed++;
             }
             return line;
         }

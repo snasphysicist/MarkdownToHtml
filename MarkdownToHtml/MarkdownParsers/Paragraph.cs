@@ -20,7 +20,9 @@ namespace MarkdownToHtml
             ParseInput input
         ) {
             ParseResult result = new ParseResult();
-            ParseResult innerContent = new MultiLineText().ParseFrom(
+            ParseResult innerContent = new MultiLineText(
+                0
+            ).ParseFrom(
                 input
             );
             Element paragraph = new ElementFactory().New(

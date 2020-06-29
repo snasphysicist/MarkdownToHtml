@@ -1,17 +1,25 @@
 
-using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class MultiLineText : IMarkdownParser
+    public class ListItemMultiLineText : IMarkdownParser
     {
+        private static Regex regexOrderedListLine = new Regex(
+            @"^(\s*)(\d+\.)(\s+?.*)"
+        );
+
+        private static Regex regexUnorderedListLine = new Regex(
+            @"^(\s*)([\*|\+|-])(\s+?.*)"
+        );
+
         private int indentationLevel;
 
         private static Element linebreak = new ElementFactory().New(
             ElementType.Linebreak
         );
 
-        public MultiLineText(
+        public ListItemMultiLineText(
             int indentationLevel
         ) {
             this.indentationLevel = indentationLevel;
@@ -32,10 +40,7 @@ namespace MarkdownToHtml
             ParseInput input
         ) {
             ParseResult result = new ParseResult();
-            while (
-                (input.Count > 0)
-                && !input[0].ContainsOnlyWhitespace()
-            ) {
+            while (input.Count > 0) {
                 input[0].Text = Utils.StripLeadingCharacter(
                     input[0].Text,
                     ' '
@@ -85,6 +90,17 @@ namespace MarkdownToHtml
                 // Clear the line just consumed
                 input[0].WasParsed();
                 input.NextLine();
+                if (
+                    input.Count > 0
+                    && (
+                        input[0].ContainsOnlyWhitespace()
+                        || IsListItemLine(
+                            input[0].Text
+                        )
+                    )
+                ) {
+                    break;
+                }
             }
             result.Success = true;
             return result;
@@ -107,7 +123,10 @@ namespace MarkdownToHtml
                 input
             ) && !input[0].EndsWith(
                 " "
-            ) && !input[0].ContainsOnlyWhitespace();
+            ) && !input[0].ContainsOnlyWhitespace()
+            && !IsListItemLine(
+                input[1].Text
+            );
         }
 
         private static bool endsWithAtLeastTwoSpaces (
@@ -148,6 +167,13 @@ namespace MarkdownToHtml
                 );
             }
             return line;
+        }
+
+        public bool IsListItemLine(
+            string line
+        ) {
+            return regexOrderedListLine.Match(line).Success
+                || regexUnorderedListLine.Match(line).Success;            
         }
     }
 }
