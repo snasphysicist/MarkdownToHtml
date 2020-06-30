@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace MarkdownToHtml
 {
-    static class ToArray
+    static class LinkedListToArray
     {
-        public static T[] LinkedListToArray<T>(
+        public static T[] ToArray<T>(
             this LinkedList<T> linkedList
         ) {
             T[] array = new T[linkedList.Count];
