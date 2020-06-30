@@ -79,9 +79,7 @@ namespace MarkdownToHtml
             );
             // Create new parse input to pass to parsers
             ParseInput input = new ParseInput(
-                Utils.LinkedListToArray(
-                    Urls
-                ),
+                Urls.ToArray(),
                 lines,
                 0,
                 lines.Length

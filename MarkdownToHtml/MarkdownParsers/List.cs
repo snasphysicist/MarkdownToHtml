@@ -90,9 +90,7 @@ namespace MarkdownToHtml
             }
             Element list = new ElementFactory().New(
                 listType,
-                Utils.LinkedListToArray(
-                    listItems
-                )
+                listItems.ToArray()
             );
             result.Success = true;
             result.AddContent(

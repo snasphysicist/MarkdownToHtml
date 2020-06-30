@@ -200,9 +200,7 @@ namespace MarkdownToHtml
             result.AddContent(
                 new ElementFactory().New(
                     ElementType.ListItem,
-                    Utils.LinkedListToArray(
-                        content
-                    )
+                    content.ToArray()
                 )
             );
             result.Success = true;
@@ -236,9 +234,7 @@ namespace MarkdownToHtml
             result.AddContent(
                 new ElementFactory().New(
                     ElementType.ListItem,
-                    Utils.LinkedListToArray(
-                        content
-                    )
+                    content.ToArray()
                 )
             );
             result.Success = true;

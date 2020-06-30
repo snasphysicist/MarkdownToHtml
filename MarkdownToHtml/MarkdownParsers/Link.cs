@@ -91,7 +91,7 @@ namespace MarkdownToHtml
                                 linkMatch.Groups[1].Value
                             )
                         ),
-                        Utils.LinkedListToArray(attributes)
+                        attributes.ToArray()
                     )
                 );
             }
@@ -124,9 +124,7 @@ namespace MarkdownToHtml
                                         linkMatch.Groups[1].Value
                                     )
                                 ),
-                                Utils.LinkedListToArray(
-                                    attributes
-                                )
+                                attributes.ToArray()
                             )
                         );
                     }
@@ -161,9 +159,7 @@ namespace MarkdownToHtml
                                         innerText
                                     )
                                 ),
-                                Utils.LinkedListToArray(
-                                    attributes
-                                )
+                                attributes.ToArray()
                             )
                         );
                     }
