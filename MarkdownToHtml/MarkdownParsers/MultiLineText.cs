@@ -21,8 +21,7 @@ namespace MarkdownToHtml
             ParseInput input
         ) {
             int indentationSpaces 
-                = input[0].Text.Length - Utils.StripLeadingCharacter(
-                    input[0].Text,
+                = input[0].Text.Length - input[0].Text.StripLeadingCharacters(
                     ' '
                 ).Length;
             return indentationLevel == (indentationSpaces / 4);
@@ -36,8 +35,7 @@ namespace MarkdownToHtml
                 (input.Count > 0)
                 && !input[0].ContainsOnlyWhitespace()
             ) {
-                input[0].Text = Utils.StripLeadingCharacter(
-                    input[0].Text,
+                input[0].Text = input[0].Text.StripLeadingCharacters(
                     ' '
                 );
                 if (endsWithAtLeastTwoSpaces(input[0].Text))

@@ -60,7 +60,7 @@ namespace MarkdownToHtml
                 ElementType.Paragraph,
                 new ElementFactory().New(
                     ElementType.CodeBlock,
-                    Utils.LinkedListToArray(innerContent)
+                    innerContent.ToArray()
                 )
             );
             result.Success = true;

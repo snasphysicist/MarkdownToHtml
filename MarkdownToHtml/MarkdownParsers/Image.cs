@@ -158,7 +158,7 @@ namespace MarkdownToHtml
             result.AddContent(
                 new ElementFactory().New(
                     ElementType.Image,
-                    Utils.LinkedListToArray(attributes)
+                    attributes.ToArray()
                 )
             );
             return result;

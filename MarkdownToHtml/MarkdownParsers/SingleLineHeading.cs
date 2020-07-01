@@ -28,11 +28,9 @@ namespace MarkdownToHtml
                 input[0].Text
             );
             Match contentMatch = regexSingleLineHeading.Match(input[0].Text);
-            input[0].Text = Utils.StripLeadingCharacter(
-                Utils.StripTrailingCharacter(
-                    contentMatch.Groups[1].Value,
-                    '#'
-                ),
+            input[0].Text = contentMatch.Groups[1].Value.StripTrailingCharacters(
+                '#'
+            ).StripLeadingCharacters(
                 ' '
             );
             Element element = new ElementFactory().New(

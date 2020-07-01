@@ -90,9 +90,7 @@ namespace MarkdownToHtml
             }
             Element list = new ElementFactory().New(
                 listType,
-                Utils.LinkedListToArray(
-                    listItems
-                )
+                listItems.ToArray()
             );
             result.Success = true;
             result.AddContent(
@@ -105,8 +103,7 @@ namespace MarkdownToHtml
             string line
         ) {
             return (
-                line.Length - Utils.StripLeadingCharacter(
-                    line,
+                line.Length - line.StripLeadingCharacters(
                     ' '
                 ).Length
             ) / 4;

@@ -60,7 +60,7 @@ namespace MarkdownToHtml
             }
             Element codeBlock = new ElementFactory().New(
                 ElementType.CodeBlock,
-                Utils.LinkedListToArray(innerContent)
+                innerContent.ToArray()
             );
             Element preformatted = new ElementFactory().New(
                 ElementType.Preformatted,

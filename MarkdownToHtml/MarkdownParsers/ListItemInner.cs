@@ -149,8 +149,7 @@ namespace MarkdownToHtml
             string listItemLine
         ) {
             return (
-                listItemLine.Length - Utils.StripLeadingCharacter(
-                    listItemLine,
+                listItemLine.Length - listItemLine.StripLeadingCharacters(
                     ' '
                 ).Length
             ) / 4;
@@ -200,9 +199,7 @@ namespace MarkdownToHtml
             result.AddContent(
                 new ElementFactory().New(
                     ElementType.ListItem,
-                    Utils.LinkedListToArray(
-                        content
-                    )
+                    content.ToArray()
                 )
             );
             result.Success = true;
@@ -236,9 +233,7 @@ namespace MarkdownToHtml
             result.AddContent(
                 new ElementFactory().New(
                     ElementType.ListItem,
-                    Utils.LinkedListToArray(
-                        content
-                    )
+                    content.ToArray()
                 )
             );
             result.Success = true;
