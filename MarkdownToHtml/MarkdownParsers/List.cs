@@ -103,8 +103,7 @@ namespace MarkdownToHtml
             string line
         ) {
             return (
-                line.Length - Utils.StripLeadingCharacter(
-                    line,
+                line.Length - line.StripLeadingCharacters(
                     ' '
                 ).Length
             ) / 4;

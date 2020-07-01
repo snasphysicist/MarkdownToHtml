@@ -149,8 +149,7 @@ namespace MarkdownToHtml
             string listItemLine
         ) {
             return (
-                listItemLine.Length - Utils.StripLeadingCharacter(
-                    listItemLine,
+                listItemLine.Length - listItemLine.StripLeadingCharacters(
                     ' '
                 ).Length
             ) / 4;
