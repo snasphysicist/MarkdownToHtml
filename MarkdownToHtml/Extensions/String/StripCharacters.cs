@@ -32,5 +32,22 @@ namespace MarkdownToHtml
             }
             return stripFrom.Substring(removed);
         }
+
+        public static string StripTrailingCharacters(
+            this string stripFrom,
+            char toStrip
+        ) {
+            int keepUpTo = stripFrom.Length - 1;
+            while (
+                (keepUpTo >= 0)
+                && (stripFrom[keepUpTo] == toStrip)
+            ) {
+                keepUpTo--;
+            }
+            return stripFrom.Substring(
+                0,
+                keepUpTo + 1
+            );
+        }
     }
 }

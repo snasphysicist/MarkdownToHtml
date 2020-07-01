@@ -47,21 +47,5 @@ namespace MarkdownToHtml
             }
             return index;
         }
-        
-        public static string StripTrailingCharacter(
-            string line,
-            char character
-        ) {
-            while (
-                (line.Length > 0)
-                && (line[^1] == character)
-            ) {
-                line = line.Substring(
-                    0,
-                    line.Length - 1 
-                );
-            }
-            return line;
-        }
     }
 }
