@@ -23,9 +23,10 @@ namespace MarkdownToHtml
 
         public bool ContainsOnlyWhitespace()
         {
-            return Utils.ContainsOnlyWhitespace(
-                Text
-            );
+            return Text.Replace(
+                " ",
+                ""
+            ).Length == 0;
         }
 
         public bool HasBeenParsed(){

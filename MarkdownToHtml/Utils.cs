@@ -47,16 +47,7 @@ namespace MarkdownToHtml
             }
             return index;
         }
-
-        public static bool ContainsOnlyWhitespace(
-            string line
-        ) {
-            return line.Replace(
-                " ",
-                ""
-            ).Length == 0;
-        }
-
+        
         public static string StripTrailingCharacter(
             string line,
             char character
