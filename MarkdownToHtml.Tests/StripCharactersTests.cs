@@ -94,7 +94,7 @@ namespace MarkdownToHtml
         [DataRow("test", "test", ' ')]
         [DataRow("test   ", "test", ' ')]
         public void StripTrailingCharactersRemovesAllCharactersFromEnd(
-            string orignal,
+            string original,
             string expected,
             char toStrip
         )
