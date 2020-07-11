@@ -1,7 +1,7 @@
 
 namespace MarkdownToHtml
 {
-    static class StripCharacters
+    public static class StripCharacters
     {
         public static string StripLeadingCharacters(
             this string stripFrom,
@@ -17,7 +17,7 @@ namespace MarkdownToHtml
             return stripFrom.Substring(removed);
         }
 
-        public static string StripLeadingCharacterUpTo(
+        public static string StripLeadingCharactersUpTo(
             this string stripFrom,
             char toStrip,
             int maximumNumberToRemove
