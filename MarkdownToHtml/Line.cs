@@ -3,7 +3,7 @@ namespace MarkdownToHtml
 {
     public class Line
     {
-        private static int SPACES_PER_INDENTATION_LEVEL;
+        private static int SPACES_PER_INDENTATION_LEVEL = 4;
 
         private bool hasBeenParsed;
 
