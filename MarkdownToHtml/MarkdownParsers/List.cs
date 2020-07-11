@@ -27,11 +27,7 @@ namespace MarkdownToHtml
         ) {
             return IsListItemLine(
                 input[0].Text
-            ) && (
-                CalculateIndentationLevel(
-                    input[0].Text
-                )
-            ) == indentationLevel;
+            ) && (input[0].IndentationLevel() == indentationLevel);
         }
 
         public ParseResult ParseFrom(
@@ -97,16 +93,6 @@ namespace MarkdownToHtml
                 list
             );
             return result;
-        }
-
-        private int CalculateIndentationLevel(
-            string line
-        ) {
-            return (
-                line.Length - line.StripLeadingCharacters(
-                    ' '
-                ).Length
-            ) / 4;
         }
 
         private bool IsListItemLine(

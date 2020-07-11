@@ -22,12 +22,7 @@ namespace MarkdownToHtml
         ) {
             return (
                 regexQuoteOpening.Match(input[0].Text).Success
-                && 
-                (
-                    CalculateIndentationLevel(
-                        input[0].Text
-                    ) == indentationLevel
-                )
+                && (input[0].IndentationLevel() == indentationLevel)
             );
         }
 
@@ -100,16 +95,6 @@ namespace MarkdownToHtml
                 input,
                 ">"
             );
-        }
-
-        private int CalculateIndentationLevel(
-            string listItemLine
-        ) {
-            return (
-                listItemLine.Length - listItemLine.StripLeadingCharacters(
-                    ' '
-                ).Length
-            ) / 4;
         }
     }
 }
