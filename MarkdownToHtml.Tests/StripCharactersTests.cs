@@ -78,5 +78,40 @@ namespace MarkdownToHtml
             string stripped = original.StripLeadingCharacters(toStrip, limit);
             Assert.AreEqual(expected, stripped);
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void StripTrailingCharactersOnEmptyStringReturnsEmptyString()
+        {
+            string original = "";
+            char toStrip = ' ';
+            string stripped = original.StripTrailingCharacters(toStrip);
+            Assert.AreEqual(original, stripped);
+        }
+
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow("test", "test", ' ')]
+        [DataRow("test   ", "test", ' ')]
+        public void StripTrailingCharactersRemovesAllCharactersFromEnd(
+            string orignal,
+            string expected,
+            char toStrip
+        )
+        {
+            string stripped = original.StripTrailingCharacters(toStrip);
+            Assert.AreEqual(expected, stripped);
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void StripTrailingCharactersOnlyRemovesCharactersFromEnd()
+        {
+            string original = " t e s t    ";
+            string expected = " t e s t";
+            char toStrip = ' ';
+            string stripped = original.StripTrailingCharacters(toStrip);
+            Assert.AreEqual(expected, stripped);
+        }
     }
 }
