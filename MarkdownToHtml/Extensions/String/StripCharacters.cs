@@ -17,7 +17,7 @@ namespace MarkdownToHtml
             return stripFrom.Substring(removed);
         }
 
-        public static string StripLeadingCharacterUpTo(
+        public static string StripLeadingCharactersUpTo(
             this string stripFrom,
             char toStrip,
             int maximumNumberToRemove

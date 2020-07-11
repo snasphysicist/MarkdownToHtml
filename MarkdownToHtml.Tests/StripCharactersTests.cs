@@ -23,7 +23,7 @@ namespace MarkdownToHtml
             string original = "";
             char toStrip = ' ';
             int limit = 10;
-            string stripped = original.StripLeadingCharacters(toStrip, limit);
+            string stripped = original.StripLeadingCharactersUpTo(toStrip, limit);
             Assert.AreEqual(original, stripped);
         }
 
@@ -52,7 +52,7 @@ namespace MarkdownToHtml
             char toStrip,
             int limit
         ) {   
-            string stripped = original.StripLeadingCharacters(toStrip, limit);
+            string stripped = original.StripLeadingCharactersUpTo(toStrip, limit);
             Assert.AreEqual(expected, stripped);
         }
 
@@ -75,7 +75,7 @@ namespace MarkdownToHtml
             string expected = "t e s t ";
             char toStrip = ' ';
             int limit = 10;
-            string stripped = original.StripLeadingCharacters(toStrip, limit);
+            string stripped = original.StripLeadingCharactersUpTo(toStrip, limit);
             Assert.AreEqual(expected, stripped);
         }
 
