@@ -1,7 +1,7 @@
 
 namespace MarkdownToHtml
 {
-    static class StripCharacters
+    public static class StripCharacters
     {
         public static string StripLeadingCharacters(
             this string stripFrom,
