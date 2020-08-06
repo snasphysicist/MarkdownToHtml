@@ -3,6 +3,8 @@ namespace MarkdownToHtml
 {
     public class Line
     {
+        private static int SPACES_PER_INDENTATION_LEVEL = 4;
+
         private bool hasBeenParsed;
 
         public string Text
@@ -19,6 +21,11 @@ namespace MarkdownToHtml
                 hasBeenParsed = false;
             }
             
+        }
+
+        public int IndentationLevel() {
+            return (Text.Length - Text.StripLeadingCharacters(' ').Length) 
+                / SPACES_PER_INDENTATION_LEVEL;
         }
 
         public bool ContainsOnlyWhitespace()

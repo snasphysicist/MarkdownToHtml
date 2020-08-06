@@ -41,11 +41,7 @@ namespace MarkdownToHtml
         ) {
             return (input.Count > 0)
                 && IsListItemLine(input[0].Text)
-                && (
-                    CalculateIndentationLevel(
-                        input[0].Text
-                    ) == indentationLevel
-                );
+                && (input[0].IndentationLevel() == indentationLevel);
         }
 
         public bool IsListItemLine(
@@ -63,9 +59,7 @@ namespace MarkdownToHtml
             {
                 return result;
             }
-            int indentationLevel = CalculateIndentationLevel(
-                input[0].Text
-            );
+            int indentationLevel = input[0].IndentationLevel();
             input[0].Text = RemoveListIndicator(
                 input[0].Text
             );
@@ -145,31 +139,17 @@ namespace MarkdownToHtml
             return result;
         }
 
-        private int CalculateIndentationLevel(
-            string listItemLine
-        ) {
-            return (
-                listItemLine.Length - listItemLine.StripLeadingCharacters(
-                    ' '
-                ).Length
-            ) / 4;
-        }
-
         private bool IsPartOfListItem(
             ParseInput input,
             int level
         ) {
-            return (
-                CalculateIndentationLevel(
-                    input[0].Text
-                ) >= level
-            ) || (
-                CalculateIndentationLevel(
-                    input[0].Text
-                ) == level
-            ) && !IsListItemLine(
-                input[0].Text
-            );
+            return (input[0].IndentationLevel() >= level) 
+                || (
+                        (input[0].IndentationLevel() == level) 
+                            && !IsListItemLine(
+                                input[0].Text
+                            )
+                );
         }
 
         public ParseResult ContentWithoutParagraphs()
@@ -238,19 +218,6 @@ namespace MarkdownToHtml
             );
             result.Success = true;
             return result;
-        }
-
-        private bool IsListItemLineAtIndentationLevel(
-            string line,
-            int indentationLevel
-        ) {
-            return IsListItemLine(
-                line
-            ) && (
-                indentationLevel == CalculateIndentationLevel(
-                    line
-                )
-            );
         }
 
         public string RemoveListIndicator(
