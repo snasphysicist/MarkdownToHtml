@@ -7,7 +7,11 @@ namespace MarkdownToHtml
     public class HtmlTokeniser
     {
         private static Regex TEXT = new Regex(
-            "^([\\w|!|@|#|\\$|%|^|&|\\*|\\(|\\)|_|\\+|=|\\[|\\]|'|;|:|\\.|\\,|\\?|\\\\]*).*"
+            "^([\\w|!|@|#|\\$|%|^|&|\\*|\\(|\\)|_|\\+|=|\\[|\\]|'|;|:|\\.|\\,|\\?|\\\\]+).*"
+        );
+
+        private static Regex WHITESPACE = new Regex(
+            "^(\\s+).*"
         );
 
         private string content;
@@ -31,11 +35,21 @@ namespace MarkdownToHtml
         private HtmlToken nextToken()
         {
             HtmlToken next;
-            next = new HtmlToken(
-                HtmlTokenType.Text,
-                TEXT.Match(content).Groups[1].Captures[0].ToString()
-            );
-            content = content.Substring(TEXT.Match(content).Groups[1].Captures[0].Length);
+            if (TEXT.Match(content).Success) 
+            {
+                next = new HtmlToken(
+                    HtmlTokenType.Text,
+                    TEXT.Match(content).Groups[1].Captures[0].ToString()
+                );
+                content = content.Substring(TEXT.Match(content).Groups[1].Captures[0].Length);
+            } else // (WHITESPACE.Match(content).Success)
+            {
+                next = new HtmlToken(
+                    HtmlTokenType.Whitespace,
+                    WHITESPACE.Match(content).Groups[1].Captures[0].ToString()
+                );
+                content = content.Substring(WHITESPACE.Match(content).Groups[1].Captures[0].Length);
+            }
             return next;
         }
     }

@@ -26,5 +26,27 @@ namespace MarkdownToHtml
                 token.Type
             );
         }
+
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow(" ")]
+        [DataRow("\n")]
+        [DataRow("\r")]
+        [DataRow("\t")]
+        public void IndividualWhitespaceCharactersAreAWhitespaceToken(
+            string character
+        ) {
+            HtmlTokeniser tokeniser = new HtmlTokeniser(character);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                1,
+                tokens.Count
+            );
+            HtmlToken token = tokens.First.Value;
+            Assert.AreEqual(
+                HtmlTokenType.Whitespace,
+                token.Type
+            );
+        }
     }
 }
