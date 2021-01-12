@@ -11,7 +11,7 @@ namespace MarkdownToHtml
         );
 
         private static Regex WHITESPACE = new Regex(
-            "^(\\s+).*"
+            "^([\\t+|\\n+|\\r+]).*"
         );
 
         private string content;
@@ -44,12 +44,36 @@ namespace MarkdownToHtml
                 content = content.Substring(TEXT.Match(content).Groups[1].Captures[0].Length);
             } else // (WHITESPACE.Match(content).Success)
             {
-                next = new HtmlToken(
-                    HtmlTokenType.Whitespace,
-                    WHITESPACE.Match(content).Groups[1].Captures[0].ToString()
-                );
-                content = content.Substring(WHITESPACE.Match(content).Groups[1].Captures[0].Length);
+                next = GetWhitespaceFromStart();
             }
+            return next;
+        }
+
+        private bool WhitespaceAtStart()
+        {
+            if (content.Length == 0) {
+                return false;
+            }
+            char firstCharacter = content[0];
+            return firstCharacter == ' '
+                || firstCharacter == '\t'
+                || firstCharacter == '\n'
+                || firstCharacter == '\r';
+        }
+
+        private HtmlToken GetWhitespaceFromStart()
+        {
+            char firstCharacter = content[0];
+            int currentCharacter = 0;
+            while (currentCharacter < content.Length && content[currentCharacter] == firstCharacter)
+            {
+                currentCharacter++;
+            }
+            HtmlToken next = new HtmlToken(
+                HtmlTokenType.Whitespace,
+                content.Substring(0, currentCharacter)
+            );
+            content = content.Substring(currentCharacter);
             return next;
         }
     }

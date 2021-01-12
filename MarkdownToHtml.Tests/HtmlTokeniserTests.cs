@@ -70,5 +70,37 @@ namespace MarkdownToHtml
                 token.Type
             );
         }
+
+        [DataTestMethod]
+        [Timeout(500)]
+        public void SeriesOfMixedWhitespaceCharactersAreGroupedIntoWhitespaceTokensForContiguousIdenticalCharacters() {
+            string content = "    \n\n\n\n\n\t\t\t\r\t";
+            string[] expectedTokenContents = new string[]{
+                "    ",
+                "\n\n\n\n\n",
+                "\t\t\t",
+                "\r",
+                "\t"
+            };
+            HtmlTokeniser tokeniser = new HtmlTokeniser(content);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                expectedTokenContents.Length,
+                tokens.Count
+            );
+            LinkedListNode<HtmlToken> checking = tokens.First;
+            for (int i = 0; i < expectedTokenContents.Length; i++)
+            {
+                Assert.AreEqual(
+                    HtmlTokenType.Whitespace,
+                    checking.Value.Type
+                );
+                Assert.AreEqual(
+                    expectedTokenContents[i],
+                    checking.Value.Content
+                );
+                checking = checking.Next;
+            }
+        }
     }
 }
