@@ -6,7 +6,9 @@ namespace MarkdownToHtml
 {
     public class HtmlTokeniser
     {
-        private static Regex TEXT = new Regex("^(\\w*).*");
+        private static Regex TEXT = new Regex(
+            "^([\\w|!|@|#|\\$|%|^|&|\\*|\\(|\\)|_|\\+|=|\\[|\\]|'|;|:|\\.|\\,|\\?|\\\\]*).*"
+        );
 
         private string content;
 

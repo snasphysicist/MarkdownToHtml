@@ -10,6 +10,7 @@ namespace MarkdownToHtml
         [DataTestMethod]
         [Timeout(500)]
         [DataRow("jdf394AHk29MSD")]
+        [DataRow("j!d@f#3_94A$H%k^2?9*M(SD)8:;3jh+u=j[FD]3'2jh7,3H.J\\F|D")]
         public void GroupOfContiguousNonWhitespaceCharactersExcludingKeyHtmlCharactersAreATextToken(
             string content
         ) {
