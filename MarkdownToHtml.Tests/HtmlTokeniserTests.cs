@@ -197,5 +197,27 @@ namespace MarkdownToHtml
                 );
             }
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void ForwardSlashCharacterIsRecognisedAsGForwardSlashHtmlToken() 
+        {
+            string content = "/";
+            HtmlTokeniser tokeniser = new HtmlTokeniser(content);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                content.Length,
+                tokens.Count
+            );
+            HtmlToken checking = tokens.First.Value;
+            Assert.AreEqual(
+                HtmlTokenType.ForwardSlash,
+                checking.Type
+            );
+            Assert.AreEqual(
+                content,
+                checking.Content
+            );
+        }
     }
 }

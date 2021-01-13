@@ -48,9 +48,11 @@ namespace MarkdownToHtml
             } else if (LessThanAtStart()) 
             {
                 next = LessThanFromStart();
-            } else 
+            } else if (GreaterThanAtStart())
             {
                 next = GreaterThanFromStart();
+            } else {
+                next = ForwardSlashFromStart();
             }
             return next;
         }
@@ -108,6 +110,21 @@ namespace MarkdownToHtml
             HtmlToken next = new HtmlToken(
                 HtmlTokenType.GreaterThan,
                 ">"
+            );
+            content = content.Substring(1);
+            return next;
+        }
+
+        private bool ForwardSlashAtStart()
+        {
+            return content.Length > 0 && content[0] == '/';
+        }
+
+        private HtmlToken ForwardSlashFromStart()
+        {
+            HtmlToken next = new HtmlToken(
+                HtmlTokenType.ForwardSlash,
+                "/"
             );
             content = content.Substring(1);
             return next;
