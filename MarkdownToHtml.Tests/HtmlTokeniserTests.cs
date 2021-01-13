@@ -112,7 +112,7 @@ namespace MarkdownToHtml
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
             LinkedList<HtmlToken> tokens = tokeniser.tokenise();
             Assert.AreEqual(
-                1,
+                content.Length,
                 tokens.Count
             );
             HtmlToken checking = tokens.First.Value;
@@ -134,7 +134,7 @@ namespace MarkdownToHtml
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
             LinkedList<HtmlToken> tokens = tokeniser.tokenise();
             Assert.AreEqual(
-                6,
+                content.Length,
                 tokens.Count
             );
             LinkedListNode<HtmlToken> checking = tokens.First;
@@ -159,7 +159,7 @@ namespace MarkdownToHtml
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
             LinkedList<HtmlToken> tokens = tokeniser.tokenise();
             Assert.AreEqual(
-                1,
+                content.Length,
                 tokens.Count
             );
             HtmlToken checking = tokens.First.Value;
@@ -171,6 +171,31 @@ namespace MarkdownToHtml
                 content,
                 checking.Content
             );
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void MultipleContiguousGreaterThanCharactersAreSeparatedIntoOneTokenPerCharacter() 
+        {
+            string content = ">>>>>>";
+            HtmlTokeniser tokeniser = new HtmlTokeniser(content);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                content.Length,
+                tokens.Count
+            );
+            LinkedListNode<HtmlToken> checking = tokens.First;
+            for (int i = 0; i < content.Length; i++)
+            {
+                Assert.AreEqual(
+                    HtmlTokenType.GreaterThan,
+                    checking.Value.Type
+                );
+                Assert.AreEqual(
+                    ">",
+                    checking.Value.Content
+                );
+            }
         }
     }
 }
