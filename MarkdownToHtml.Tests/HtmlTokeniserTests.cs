@@ -200,7 +200,7 @@ namespace MarkdownToHtml
 
         [TestMethod]
         [Timeout(500)]
-        public void ForwardSlashCharacterIsRecognisedAsGForwardSlashHtmlToken() 
+        public void ForwardSlashCharacterIsRecognisedAsForwardSlashHtmlToken() 
         {
             string content = "/";
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
@@ -243,6 +243,28 @@ namespace MarkdownToHtml
                     checking.Value.Content
                 );
             }
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void DoubleQuoteCharacterIsRecognisedAsDoubleQuoteHtmlToken() 
+        {
+            string content = "\"";
+            HtmlTokeniser tokeniser = new HtmlTokeniser(content);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                content.Length,
+                tokens.Count
+            );
+            HtmlToken checking = tokens.First.Value;
+            Assert.AreEqual(
+                HtmlTokenType.DoubleQuote,
+                checking.Type
+            );
+            Assert.AreEqual(
+                content,
+                checking.Content
+            );
         }
     }
 }
