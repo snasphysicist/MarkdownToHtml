@@ -47,14 +47,14 @@ namespace MarkdownToHtml
                 next = GetWhitespaceFromStart();
             } else if (CharacterAtStartOfContent('<')) 
             {
-                next = LessThanFromStart();
+                next = CharacterFromStartOfContent(HtmlTokenType.LessThan);
             } else if (CharacterAtStartOfContent('>'))
             {
-                next = GreaterThanFromStart();
+                next = CharacterFromStartOfContent(HtmlTokenType.GreaterThan);
             } else if (CharacterAtStartOfContent('/')) {
-                next = ForwardSlashFromStart();
+                next = CharacterFromStartOfContent(HtmlTokenType.ForwardSlash);
             } else {
-                next = DoubleQuoteFromStart();
+                next = CharacterFromStartOfContent(HtmlTokenType.DoubleQuote);
             }
             return next;
         }
@@ -93,41 +93,11 @@ namespace MarkdownToHtml
             return content.Length > 0 && content[0] == checkFor;
         }
 
-        private HtmlToken LessThanFromStart()
+        private HtmlToken CharacterFromStartOfContent(HtmlTokenType characterType)
         {
             HtmlToken next = new HtmlToken(
-                HtmlTokenType.LessThan,
-                "<"
-            );
-            content = content.Substring(1);
-            return next;
-        }
-
-        private HtmlToken GreaterThanFromStart()
-        {
-            HtmlToken next = new HtmlToken(
-                HtmlTokenType.GreaterThan,
-                ">"
-            );
-            content = content.Substring(1);
-            return next;
-        }
-
-        private HtmlToken ForwardSlashFromStart()
-        {
-            HtmlToken next = new HtmlToken(
-                HtmlTokenType.ForwardSlash,
-                "/"
-            );
-            content = content.Substring(1);
-            return next;
-        }
-
-        private HtmlToken DoubleQuoteFromStart()
-        {
-            HtmlToken next = new HtmlToken(
-                HtmlTokenType.DoubleQuote,
-                "\""
+                characterType,
+                content.Substring(0, 1)
             );
             content = content.Substring(1);
             return next;
