@@ -45,13 +45,13 @@ namespace MarkdownToHtml
             } else if (WhitespaceAtStart())
             {
                 next = GetWhitespaceFromStart();
-            } else if (LessThanAtStart()) 
+            } else if (CharacterAtStartOfContent('<')) 
             {
                 next = LessThanFromStart();
-            } else if (GreaterThanAtStart())
+            } else if (CharacterAtStartOfContent('>'))
             {
                 next = GreaterThanFromStart();
-            } else if (ForwardSlashAtStart()) {
+            } else if (CharacterAtStartOfContent('/')) {
                 next = ForwardSlashFromStart();
             } else {
                 next = DoubleQuoteFromStart();
@@ -87,9 +87,10 @@ namespace MarkdownToHtml
             return next;
         }
 
-        private bool LessThanAtStart()
-        {
-            return content.Length > 0 && content[0] == '<';
+        private bool CharacterAtStartOfContent(
+            char checkFor
+        ) {
+            return content.Length > 0 && content[0] == checkFor;
         }
 
         private HtmlToken LessThanFromStart()
@@ -102,11 +103,6 @@ namespace MarkdownToHtml
             return next;
         }
 
-        private bool GreaterThanAtStart()
-        {
-            return content.Length > 0 && content[0] == '>';
-        }
-
         private HtmlToken GreaterThanFromStart()
         {
             HtmlToken next = new HtmlToken(
@@ -117,11 +113,6 @@ namespace MarkdownToHtml
             return next;
         }
 
-        private bool ForwardSlashAtStart()
-        {
-            return content.Length > 0 && content[0] == '/';
-        }
-
         private HtmlToken ForwardSlashFromStart()
         {
             HtmlToken next = new HtmlToken(
@@ -130,11 +121,6 @@ namespace MarkdownToHtml
             );
             content = content.Substring(1);
             return next;
-        }
-
-        private bool DoubleQuoteAtStart()
-        {
-            return content.Length > 0 && content[0] == '"';
         }
 
         private HtmlToken DoubleQuoteFromStart()
