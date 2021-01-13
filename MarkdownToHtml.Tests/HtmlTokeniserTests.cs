@@ -219,5 +219,30 @@ namespace MarkdownToHtml
                 checking.Content
             );
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void MultipleContiguousFowardSlashCharactersAreSeparatedIntoOneTokenPerCharacter() 
+        {
+            string content = "//////";
+            HtmlTokeniser tokeniser = new HtmlTokeniser(content);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                content.Length,
+                tokens.Count
+            );
+            LinkedListNode<HtmlToken> checking = tokens.First;
+            for (int i = 0; i < content.Length; i++)
+            {
+                Assert.AreEqual(
+                    HtmlTokenType.ForwardSlash,
+                    checking.Value.Type
+                );
+                Assert.AreEqual(
+                    "/",
+                    checking.Value.Content
+                );
+            }
+        }
     }
 }
