@@ -222,7 +222,7 @@ namespace MarkdownToHtml
 
         [TestMethod]
         [Timeout(500)]
-        public void MultipleContiguousFowardSlashCharactersAreSeparatedIntoOneTokenPerCharacter() 
+        public void MultipleContiguousForwardSlashCharactersAreSeparatedIntoOneTokenPerCharacter() 
         {
             string content = "//////";
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
@@ -265,6 +265,31 @@ namespace MarkdownToHtml
                 content,
                 checking.Content
             );
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void MultipleContiguousDoubleQuoteCharactersAreSeparatedIntoOneTokenPerCharacter() 
+        {
+            string content = "\"\"\"\"\"\"";
+            HtmlTokeniser tokeniser = new HtmlTokeniser(content);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                content.Length,
+                tokens.Count
+            );
+            LinkedListNode<HtmlToken> checking = tokens.First;
+            for (int i = 0; i < content.Length; i++)
+            {
+                Assert.AreEqual(
+                    HtmlTokenType.DoubleQuote,
+                    checking.Value.Type
+                );
+                Assert.AreEqual(
+                    "\"",
+                    checking.Value.Content
+                );
+            }
         }
     }
 }
