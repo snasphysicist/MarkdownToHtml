@@ -10,10 +10,6 @@ namespace MarkdownToHtml
             "^([\\w|!|@|#|\\$|%|^|&|\\*|\\(|\\)|_|\\+|=|\\[|\\]|'|;|:|\\.|\\,|\\?|\\\\]+).*"
         );
 
-        private static Regex WHITESPACE = new Regex(
-            "^([\\t+|\\n+|\\r+]).*"
-        );
-
         private string content;
 
         public HtmlTokeniser(
