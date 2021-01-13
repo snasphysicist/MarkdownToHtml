@@ -42,9 +42,12 @@ namespace MarkdownToHtml
                     TEXT.Match(content).Groups[1].Captures[0].ToString()
                 );
                 content = content.Substring(TEXT.Match(content).Groups[1].Captures[0].Length);
-            } else // (WHITESPACE.Match(content).Success)
+            } else if (WhitespaceAtStart())
             {
                 next = GetWhitespaceFromStart();
+            } else 
+            {
+                next = LessThanFromStart();
             }
             return next;
         }
@@ -74,6 +77,21 @@ namespace MarkdownToHtml
                 content.Substring(0, currentCharacter)
             );
             content = content.Substring(currentCharacter);
+            return next;
+        }
+
+        private bool LessThanAtStart()
+        {
+            return content.Length > 0 && content[0] == '<';
+        }
+
+        private HtmlToken LessThanFromStart()
+        {
+            HtmlToken next = new HtmlToken(
+                HtmlTokenType.LessThan,
+                "<"
+            );
+            content = content.Substring(1);
             return next;
         }
     }

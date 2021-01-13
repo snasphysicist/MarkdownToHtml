@@ -71,9 +71,10 @@ namespace MarkdownToHtml
             );
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [Timeout(500)]
-        public void SeriesOfMixedWhitespaceCharactersAreGroupedIntoWhitespaceTokensForContiguousIdenticalCharacters() {
+        public void SeriesOfMixedWhitespaceCharactersAreGroupedIntoWhitespaceTokensForContiguousIdenticalCharacters() 
+        {
             string content = "    \n\n\n\n\n\t\t\t\r\t";
             string[] expectedTokenContents = new string[]{
                 "    ",
@@ -101,6 +102,28 @@ namespace MarkdownToHtml
                 );
                 checking = checking.Next;
             }
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void LessThanCharacterIsRecognisedAsLessThanHtmlToken() 
+        {
+            string content = "<";
+            HtmlTokeniser tokeniser = new HtmlTokeniser(content);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                1,
+                tokens.Count
+            );
+            HtmlToken checking = tokens.First.Value;
+            Assert.AreEqual(
+                HtmlTokenType.LessThan,
+                checking.Type
+            );
+            Assert.AreEqual(
+                content,
+                checking.Content
+            );
         }
     }
 }
