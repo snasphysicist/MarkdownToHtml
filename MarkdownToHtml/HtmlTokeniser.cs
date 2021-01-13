@@ -45,9 +45,12 @@ namespace MarkdownToHtml
             } else if (WhitespaceAtStart())
             {
                 next = GetWhitespaceFromStart();
-            } else 
+            } else if (LessThanAtStart()) 
             {
                 next = LessThanFromStart();
+            } else 
+            {
+                next = GreaterThanFromStart();
             }
             return next;
         }
@@ -90,6 +93,21 @@ namespace MarkdownToHtml
             HtmlToken next = new HtmlToken(
                 HtmlTokenType.LessThan,
                 "<"
+            );
+            content = content.Substring(1);
+            return next;
+        }
+
+        private bool GreaterThanAtStart()
+        {
+            return content.Length > 0 && content[0] == '>';
+        }
+
+        private HtmlToken GreaterThanFromStart()
+        {
+            HtmlToken next = new HtmlToken(
+                HtmlTokenType.GreaterThan,
+                ">"
             );
             content = content.Substring(1);
             return next;

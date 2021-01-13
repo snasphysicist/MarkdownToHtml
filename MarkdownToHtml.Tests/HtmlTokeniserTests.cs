@@ -125,5 +125,52 @@ namespace MarkdownToHtml
                 checking.Content
             );
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void MultipleContiguousLessThanCharactersAreSeparatedIntoOneTokenPerCharacter() 
+        {
+            string content = "<<<<<<";
+            HtmlTokeniser tokeniser = new HtmlTokeniser(content);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                6,
+                tokens.Count
+            );
+            LinkedListNode<HtmlToken> checking = tokens.First;
+            for (int i = 0; i < content.Length; i++)
+            {
+                Assert.AreEqual(
+                    HtmlTokenType.LessThan,
+                    checking.Value.Type
+                );
+                Assert.AreEqual(
+                    "<",
+                    checking.Value.Content
+                );
+            }
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void GreaterThanCharacterIsRecognisedAsGreaterThanHtmlToken() 
+        {
+            string content = ">";
+            HtmlTokeniser tokeniser = new HtmlTokeniser(content);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                1,
+                tokens.Count
+            );
+            HtmlToken checking = tokens.First.Value;
+            Assert.AreEqual(
+                HtmlTokenType.GreaterThan,
+                checking.Type
+            );
+            Assert.AreEqual(
+                content,
+                checking.Content
+            );
+        }
     }
 }
