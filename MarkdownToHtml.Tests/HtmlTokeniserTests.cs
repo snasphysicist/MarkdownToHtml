@@ -141,6 +141,76 @@ namespace MarkdownToHtml
             );
         }
 
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow("\n\n\n\n\n", 5)]
+        [DataRow("\r\r\r\r\r", 5)]
+        [DataRow("\r\n\r\n\r\n\r\n\r\n", 5)]
+        public void MultipleLineBreakingWhitespaceCharacters(
+            string content,
+            int numberOfTokens
+        ) {
+            HtmlTokeniser tokeniser = new HtmlTokeniser(content);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                numberOfTokens,
+                tokens.Count
+            );
+            LinkedListNode<HtmlToken> checking = tokens.First;
+            int tokenSize = content.Length / numberOfTokens;
+            for (int i = 0; i < numberOfTokens; i++)
+            {
+                Assert.AreEqual(
+                    HtmlTokenType.LineBreakingWhitespace,
+                    checking.Value.Type
+                );
+                Assert.AreEqual(
+                    content.Substring(0, tokenSize),
+                    checking.Value.Content
+                );
+            }
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void MixedSetOfWhitespaceCharactersSeparatesSingleLineBreaksIntoindividualTokens() 
+        {
+            string content = "\n\n\r\n\r\r\r\n\r\n\n\n\r\r";
+            string [] expectedTokenContents = new string[]
+            {
+                "\n",
+                "\n",
+                "\r\n",
+                "\r",
+                "\r",
+                "\r\n",
+                "\r\n",
+                "\n",
+                "\n",
+                "\r",
+                "\r"
+            };
+            HtmlTokeniser tokeniser = new HtmlTokeniser(content);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                expectedTokenContents.Length,
+                tokens.Count
+            );
+            LinkedListNode<HtmlToken> checking = tokens.First;
+            for (int i = 0; i < expectedTokenContents.Length; i++)
+            {
+                Assert.AreEqual(
+                    HtmlTokenType.LineBreakingWhitespace,
+                    checking.Value.Type
+                );
+                Assert.AreEqual(
+                    expectedTokenContents[i],
+                    checking.Value.Content
+                );
+                checking = checking.Next;
+            }
+        }
+
         [TestMethod]
         [Timeout(500)]
         public void LessThanCharacterIsRecognisedAsLessThanHtmlToken() 
