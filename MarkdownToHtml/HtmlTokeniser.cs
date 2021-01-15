@@ -76,7 +76,7 @@ namespace MarkdownToHtml
                 currentCharacter++;
             }
             HtmlToken next = new HtmlToken(
-                HtmlTokenType.Whitespace,
+                HtmlTokenType.NonLineBreakingWhitespace,
                 content.Substring(0, currentCharacter)
             );
             content = content.Substring(currentCharacter);

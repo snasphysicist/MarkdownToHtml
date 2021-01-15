@@ -30,10 +30,8 @@ namespace MarkdownToHtml
         [DataTestMethod]
         [Timeout(500)]
         [DataRow(" ")]
-        [DataRow("\n")]
-        [DataRow("\r")]
         [DataRow("\t")]
-        public void IndividualWhitespaceCharactersAreAWhitespaceToken(
+        public void IndividualNonLineBreakingWhitespaceCharactersAreAWhitespaceToken(
             string character
         ) {
             HtmlTokeniser tokeniser = new HtmlTokeniser(character);
@@ -44,7 +42,7 @@ namespace MarkdownToHtml
             );
             HtmlToken token = tokens.First.Value;
             Assert.AreEqual(
-                HtmlTokenType.Whitespace,
+                HtmlTokenType.NonLineBreakingWhitespace,
                 token.Type
             );
         }
@@ -52,10 +50,8 @@ namespace MarkdownToHtml
         [DataTestMethod]
         [Timeout(500)]
         [DataRow("    ")]
-        [DataRow("\n\n\n\n")]
-        [DataRow("\r\r\r\r\r\r")]
         [DataRow("\t\t\t\t\t\t\t\t")]
-        public void MultipleIdenticalWhitespaceCharactersAreASingleWhitespaceToken(
+        public void MultipleIdenticalNonLineBreakingWhitespaceCharactersAreASingleWhitespaceToken(
             string content
         ) {
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
@@ -66,21 +62,20 @@ namespace MarkdownToHtml
             );
             HtmlToken token = tokens.First.Value;
             Assert.AreEqual(
-                HtmlTokenType.Whitespace,
+                HtmlTokenType.NonLineBreakingWhitespace,
                 token.Type
             );
         }
 
         [TestMethod]
         [Timeout(500)]
-        public void SeriesOfMixedWhitespaceCharactersAreGroupedIntoWhitespaceTokensForContiguousIdenticalCharacters() 
+        public void SeriesOfMixedNonLineBreakingWhitespaceCharactersAreGroupedIntoWhitespaceTokensForContiguousIdenticalCharacters() 
         {
-            string content = "    \n\n\n\n\n\t\t\t\r\t";
+            string content = "    \t\t\t\t  \t";
             string[] expectedTokenContents = new string[]{
                 "    ",
-                "\n\n\n\n\n",
-                "\t\t\t",
-                "\r",
+                "\t\t\t\t",
+                "  ",
                 "\t"
             };
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
@@ -93,7 +88,7 @@ namespace MarkdownToHtml
             for (int i = 0; i < expectedTokenContents.Length; i++)
             {
                 Assert.AreEqual(
-                    HtmlTokenType.Whitespace,
+                    HtmlTokenType.NonLineBreakingWhitespace,
                     checking.Value.Type
                 );
                 Assert.AreEqual(

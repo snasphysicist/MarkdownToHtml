@@ -4,7 +4,8 @@ namespace MarkdownToHtml
     public enum HtmlTokenType
     {
         Text,
-        Whitespace,
+        NonLineBreakingWhitespace,
+        LineBreakingWhitespace,
         DoubleQuote,
         ForwardSlash,
         LessThan,
