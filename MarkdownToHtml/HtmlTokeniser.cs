@@ -38,9 +38,12 @@ namespace MarkdownToHtml
                     TEXT.Match(content).Groups[1].Captures[0].ToString()
                 );
                 content = content.Substring(TEXT.Match(content).Groups[1].Captures[0].Length);
-            } else if (WhitespaceAtStart())
+            } else if (NonLineBreakingWhitespaceAtStart())
             {
-                next = GetWhitespaceFromStart();
+                next = NonLineBreakingWhitespaceFromStart();
+            } else if (LineBreakingWhitespaceAtStart())
+            {
+                next = LineBreakingWhitespaceFromStart();
             } else if (CharacterAtStartOfContent('<')) 
             {
                 next = CharacterFromStartOfContent(HtmlTokenType.LessThan);
@@ -55,19 +58,17 @@ namespace MarkdownToHtml
             return next;
         }
 
-        private bool WhitespaceAtStart()
+        private bool NonLineBreakingWhitespaceAtStart()
         {
             if (content.Length == 0) {
                 return false;
             }
             char firstCharacter = content[0];
             return firstCharacter == ' '
-                || firstCharacter == '\t'
-                || firstCharacter == '\n'
-                || firstCharacter == '\r';
+                || firstCharacter == '\t';
         }
 
-        private HtmlToken GetWhitespaceFromStart()
+        private HtmlToken NonLineBreakingWhitespaceFromStart()
         {
             char firstCharacter = content[0];
             int currentCharacter = 0;
@@ -80,6 +81,26 @@ namespace MarkdownToHtml
                 content.Substring(0, currentCharacter)
             );
             content = content.Substring(currentCharacter);
+            return next;
+        }
+
+        private bool LineBreakingWhitespaceAtStart()
+        {
+            if (content.Length == 0) {
+                return false;
+            }
+            char firstCharacter = content[0];
+            return firstCharacter == '\r'
+                || firstCharacter == '\n';
+        }
+
+        private HtmlToken LineBreakingWhitespaceFromStart()
+        {
+            HtmlToken next = new HtmlToken(
+                HtmlTokenType.LineBreakingWhitespace,
+                content.Substring(0, 1)
+            );
+            content = content.Substring(1);
             return next;
         }
 

@@ -99,6 +99,26 @@ namespace MarkdownToHtml
             }
         }
 
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow("\n")]
+        [DataRow("\r")]
+        public void IndividualLineBreakingWhitespaceCharactersAreALineBreakingWhitespaceToken(
+            string character
+        ) {
+            HtmlTokeniser tokeniser = new HtmlTokeniser(character);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                1,
+                tokens.Count
+            );
+            HtmlToken token = tokens.First.Value;
+            Assert.AreEqual(
+                HtmlTokenType.LineBreakingWhitespace,
+                token.Type
+            );
+        }
+
         [TestMethod]
         [Timeout(500)]
         public void LessThanCharacterIsRecognisedAsLessThanHtmlToken() 
