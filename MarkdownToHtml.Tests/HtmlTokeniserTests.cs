@@ -121,6 +121,28 @@ namespace MarkdownToHtml
 
         [TestMethod]
         [Timeout(500)]
+        public void CRLFWhitespaceCharacterIsASingleLineBreakingWhitespaceToken() 
+        {
+            string content = "\r\n";
+            HtmlTokeniser tokeniser = new HtmlTokeniser(content);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                1,
+                tokens.Count
+            );
+            HtmlToken token = tokens.First.Value;
+            Assert.AreEqual(
+                HtmlTokenType.LineBreakingWhitespace,
+                token.Type
+            );
+            Assert.AreEqual(
+                content,
+                token.Content
+            );
+        }
+
+        [TestMethod]
+        [Timeout(500)]
         public void LessThanCharacterIsRecognisedAsLessThanHtmlToken() 
         {
             string content = "<";

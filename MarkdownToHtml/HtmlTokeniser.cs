@@ -96,11 +96,20 @@ namespace MarkdownToHtml
 
         private HtmlToken LineBreakingWhitespaceFromStart()
         {
+            string tokenContent = "";
+            if (content.Length > 1 && content.Substring(0, 2) == "\r\n") 
+            {
+                tokenContent = "\r\n";
+                content = content.Substring(2);
+            } else 
+            {
+                tokenContent = content.Substring(0, 1);
+                content = content.Substring(1);
+            }
             HtmlToken next = new HtmlToken(
                 HtmlTokenType.LineBreakingWhitespace,
-                content.Substring(0, 1)
+                tokenContent
             );
-            content = content.Substring(1);
             return next;
         }
 
