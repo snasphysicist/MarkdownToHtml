@@ -81,10 +81,6 @@ namespace MarkdownToHtml
                 validity.MarkInvalid();
             };
             validity.Advance();
-            while (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.NonLineBreakingWhitespace)
-            {
-                validity.Advance();
-            }
             if (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.Text)
             {
                 validity.Advance();

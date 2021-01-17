@@ -77,6 +77,32 @@ namespace MarkdownToHtml
 
         [TestMethod]
         [Timeout(500)]
+        public void NonLineBreakingWhitespaceAfterTagOpenerIsNotValidHtmlTag()
+        {
+            HtmlToken[] tokens = new HtmlToken[]
+            {
+                new HtmlToken(
+                    HtmlTokenType.LessThan,
+                    "<"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.NonLineBreakingWhitespace,
+                    " "
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "p"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.GreaterThan,
+                    ">"
+                )
+            };
+            Assert.IsFalse(HtmlTag.IsValidTag(tokens));
+        }
+
+        [TestMethod]
+        [Timeout(500)]
         public void LessThanTextNonLineBreakingWhitespaceGreaterThanSequenceIsAValidHtmlTag()
         {
             HtmlToken[] tokens = new HtmlToken[]
