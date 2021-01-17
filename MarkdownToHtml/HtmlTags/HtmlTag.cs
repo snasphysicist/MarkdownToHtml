@@ -55,7 +55,15 @@ namespace MarkdownToHtml
                 return false;
             };
             int i = 1;
+            while (i < tokens.Length && tokens[i].Type == HtmlTokenType.NonLineBreakingWhitespace)
+            {
+                i++;
+            }
             if (i < tokens.Length && tokens[i].Type == HtmlTokenType.Text)
+            {
+                i++;
+            }
+            while (i < tokens.Length && tokens[i].Type == HtmlTokenType.NonLineBreakingWhitespace)
             {
                 i++;
             }

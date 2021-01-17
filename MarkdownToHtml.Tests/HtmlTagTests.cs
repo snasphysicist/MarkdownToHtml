@@ -74,5 +74,35 @@ namespace MarkdownToHtml
             };
             Assert.IsTrue(HtmlTag.IsValidTag(tokens));
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void LessThanNonLineBreakingWhitespaceTextNonLineBreakingWhitespaceGreaterThanSequenceIsAValidHtmlTag()
+        {
+            HtmlToken[] tokens = new HtmlToken[]
+            {
+                new HtmlToken(
+                    HtmlTokenType.LessThan,
+                    "<"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.NonLineBreakingWhitespace,
+                    "   "
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "p"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.NonLineBreakingWhitespace,
+                    "\t"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.GreaterThan,
+                    ">"
+                )
+            };
+            Assert.IsTrue(HtmlTag.IsValidTag(tokens));
+        }
     }
 }
