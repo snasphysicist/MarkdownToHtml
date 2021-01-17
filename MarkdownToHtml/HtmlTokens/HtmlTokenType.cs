@@ -7,6 +7,7 @@ namespace MarkdownToHtml
         NonLineBreakingWhitespace,
         LineBreakingWhitespace,
         DoubleQuote,
+        Equals,
         ForwardSlash,
         LessThan,
         GreaterThan

@@ -7,7 +7,7 @@ namespace MarkdownToHtml
     public class HtmlTokeniser
     {
         private static Regex TEXT = new Regex(
-            "^([\\w|!|@|#|\\$|%|^|&|\\*|\\(|\\)|_|\\+|=|\\[|\\]|'|;|:|\\.|\\,|\\?|\\\\]+).*"
+            "^([\\w|!|@|#|\\$|%|^|&|\\*|\\(|\\)|_|\\+|\\[|\\]|'|;|:|\\.|\\,|\\?|\\\\]+).*"
         );
 
         private string content;
@@ -52,6 +52,8 @@ namespace MarkdownToHtml
                 next = CharacterFromStartOfContent(HtmlTokenType.GreaterThan);
             } else if (CharacterAtStartOfContent('/')) {
                 next = CharacterFromStartOfContent(HtmlTokenType.ForwardSlash);
+            } else if (CharacterAtStartOfContent('=')) {
+                next = CharacterFromStartOfContent(HtmlTokenType.Equals);
             } else {
                 next = CharacterFromStartOfContent(HtmlTokenType.DoubleQuote);
             }

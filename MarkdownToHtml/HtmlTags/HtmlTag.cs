@@ -48,26 +48,106 @@ namespace MarkdownToHtml
             return IsValidOpeningTag(tokens);
         }
 
+        private class ValidityTracker
+        {
+            public int AtElement
+            { get; private set; }
+
+            public bool Valid
+            { get; private set; }
+
+            public ValidityTracker()
+            {
+                AtElement = 0;
+                Valid = true;
+            }
+
+            public void Advance()
+            {
+                AtElement++;
+            }
+
+            public void MarkInvalid()
+            {
+                Valid = false;
+            }
+        }
+
         private static bool IsValidOpeningTag(
             HtmlToken[] tokens
         ) {
+            ValidityTracker validity = new ValidityTracker();
             if (tokens.Length == 0 || tokens[0].Type != HtmlTokenType.LessThan) {
-                return false;
+                validity.MarkInvalid();
             };
-            int i = 1;
-            while (i < tokens.Length && tokens[i].Type == HtmlTokenType.NonLineBreakingWhitespace)
+            validity.Advance();
+            while (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.NonLineBreakingWhitespace)
             {
-                i++;
+                validity.Advance();
             }
-            if (i < tokens.Length && tokens[i].Type == HtmlTokenType.Text)
+            if (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.Text)
             {
-                i++;
+                validity.Advance();
             }
-            while (i < tokens.Length && tokens[i].Type == HtmlTokenType.NonLineBreakingWhitespace)
+            MoveOverAttributes(
+                tokens,
+                validity
+            );
+            while (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.NonLineBreakingWhitespace)
             {
-                i++;
+                validity.Advance();
             }
-            return (i + 1 == tokens.Length) && (tokens[i].Type == HtmlTokenType.GreaterThan);
+            return (validity.AtElement + 1 == tokens.Length) && (tokens[validity.AtElement].Type == HtmlTokenType.GreaterThan);
+        }
+
+        private static void MoveOverAttributes(
+            HtmlToken[] tokens,
+            ValidityTracker validity
+        ) {
+            while (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.NonLineBreakingWhitespace)
+            {
+                while (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.NonLineBreakingWhitespace)
+                {
+                    validity.Advance();
+                }
+                if (validity.AtElement >= tokens.Length || tokens[validity.AtElement].Type != HtmlTokenType.Text)
+                {
+                    return;
+                }
+                validity.Advance();
+                while (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.NonLineBreakingWhitespace)
+                {
+                    validity.Advance();
+                }
+                if (validity.AtElement >= tokens.Length || tokens[validity.AtElement].Type != HtmlTokenType.Equals)
+                {
+                    validity.MarkInvalid();
+                }
+                validity.Advance();
+                while (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.NonLineBreakingWhitespace)
+                {
+                    validity.Advance();
+                }
+                if (validity.AtElement >= tokens.Length || tokens[validity.AtElement].Type != HtmlTokenType.DoubleQuote)
+                {
+                    validity.MarkInvalid();
+                }
+                validity.Advance();
+                while (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.NonLineBreakingWhitespace)
+                {
+                    validity.Advance();
+                }
+                if (validity.AtElement >= tokens.Length || tokens[validity.AtElement].Type != HtmlTokenType.Text)
+                {
+                    validity.MarkInvalid();
+                }
+                validity.Advance();
+                if (validity.AtElement >= tokens.Length || tokens[validity.AtElement].Type != HtmlTokenType.DoubleQuote)
+                {
+                    validity.MarkInvalid();
+                }
+                validity.Advance();
+            }
         }
 
         private static HtmlDisplayType DetermineDisplayType(

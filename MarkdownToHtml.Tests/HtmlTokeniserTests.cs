@@ -10,7 +10,7 @@ namespace MarkdownToHtml
         [DataTestMethod]
         [Timeout(500)]
         [DataRow("jdf394AHk29MSD")]
-        [DataRow("j!d@f#3_94A$H%k^2?9*M(SD)8:;3jh+u=j[FD]3'2jh7,3H.J\\F|D")]
+        [DataRow("j!d@f#3_94A$H%k^2?9*M(SD)8:;3jh+uj[FD]3'2jh7,3H.J\\F|D")]
         public void GroupOfContiguousNonWhitespaceCharactersExcludingKeyHtmlCharactersAreATextToken(
             string content
         ) {
@@ -394,6 +394,53 @@ namespace MarkdownToHtml
                 );
                 Assert.AreEqual(
                     "\"",
+                    checking.Value.Content
+                );
+            }
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void EqualsCharacterIsRecognisedAsEqualsHtmlToken() 
+        {
+            string content = "=";
+            HtmlTokeniser tokeniser = new HtmlTokeniser(content);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                content.Length,
+                tokens.Count
+            );
+            HtmlToken checking = tokens.First.Value;
+            Assert.AreEqual(
+                HtmlTokenType.Equals,
+                checking.Type
+            );
+            Assert.AreEqual(
+                content,
+                checking.Content
+            );
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void MultipleContiguousEqualsCharactersAreSeparatedIntoOneTokenPerCharacter() 
+        {
+            string content = "======";
+            HtmlTokeniser tokeniser = new HtmlTokeniser(content);
+            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            Assert.AreEqual(
+                content.Length,
+                tokens.Count
+            );
+            LinkedListNode<HtmlToken> checking = tokens.First;
+            for (int i = 0; i < content.Length; i++)
+            {
+                Assert.AreEqual(
+                    HtmlTokenType.Equals,
+                    checking.Value.Type
+                );
+                Assert.AreEqual(
+                    "=",
                     checking.Value.Content
                 );
             }
