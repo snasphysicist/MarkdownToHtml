@@ -77,7 +77,7 @@ namespace MarkdownToHtml
 
         [TestMethod]
         [Timeout(500)]
-        public void LessThanNonLineBreakingWhitespaceTextNonLineBreakingWhitespaceGreaterThanSequenceIsAValidHtmlTag()
+        public void LessThanTextNonLineBreakingWhitespaceGreaterThanSequenceIsAValidHtmlTag()
         {
             HtmlToken[] tokens = new HtmlToken[]
             {
@@ -86,16 +86,16 @@ namespace MarkdownToHtml
                     "<"
                 ),
                 new HtmlToken(
-                    HtmlTokenType.NonLineBreakingWhitespace,
-                    "   "
-                ),
-                new HtmlToken(
                     HtmlTokenType.Text,
                     "p"
                 ),
                 new HtmlToken(
                     HtmlTokenType.NonLineBreakingWhitespace,
                     "\t"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.NonLineBreakingWhitespace,
+                    "   "
                 ),
                 new HtmlToken(
                     HtmlTokenType.GreaterThan,
