@@ -89,11 +89,21 @@ namespace MarkdownToHtml
                 tokens,
                 validity
             );
+            MoveOverNonLineBreakingWhitespace(
+                tokens,
+                validity
+            );
+            return (validity.AtElement + 1 == tokens.Length) && (tokens[validity.AtElement].Type == HtmlTokenType.GreaterThan);
+        }
+
+        private static void MoveOverNonLineBreakingWhitespace(
+            HtmlToken[] tokens,
+            ValidityTracker validity
+        ) {
             while (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.NonLineBreakingWhitespace)
             {
                 validity.Advance();
             }
-            return (validity.AtElement + 1 == tokens.Length) && (tokens[validity.AtElement].Type == HtmlTokenType.GreaterThan);
         }
 
         private static void MoveOverAttributes(
@@ -102,37 +112,33 @@ namespace MarkdownToHtml
         ) {
             while (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.NonLineBreakingWhitespace)
             {
-                while (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.NonLineBreakingWhitespace)
-                {
-                    validity.Advance();
-                }
+                MoveOverNonLineBreakingWhitespace(
+                    tokens,
+                    validity
+                );
                 if (validity.AtElement >= tokens.Length || tokens[validity.AtElement].Type != HtmlTokenType.Text)
                 {
                     return;
                 }
                 validity.Advance();
-                while (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.NonLineBreakingWhitespace)
-                {
-                    validity.Advance();
-                }
+                MoveOverNonLineBreakingWhitespace(
+                    tokens,
+                    validity
+                );
                 if (validity.AtElement >= tokens.Length || tokens[validity.AtElement].Type != HtmlTokenType.Equals)
                 {
                     validity.MarkInvalid();
                 }
                 validity.Advance();
-                while (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.NonLineBreakingWhitespace)
-                {
-                    validity.Advance();
-                }
+                MoveOverNonLineBreakingWhitespace(
+                    tokens,
+                    validity
+                );
                 if (validity.AtElement >= tokens.Length || tokens[validity.AtElement].Type != HtmlTokenType.DoubleQuote)
                 {
                     validity.MarkInvalid();
                 }
                 validity.Advance();
-                while (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.NonLineBreakingWhitespace)
-                {
-                    validity.Advance();
-                }
                 if (validity.AtElement >= tokens.Length || tokens[validity.AtElement].Type != HtmlTokenType.Text)
                 {
                     validity.MarkInvalid();
