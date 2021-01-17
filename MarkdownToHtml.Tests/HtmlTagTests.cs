@@ -49,8 +49,30 @@ namespace MarkdownToHtml
                     token
                 };
                 Assert.IsFalse(HtmlTag.IsValidTag(tagTokens));
-                Assert.ThrowsException<ArgumentException>(() => HtmlTag.fromTokens(tagTokens));
+                Assert.ThrowsException<ArgumentException>(() => HtmlTag.FromTokens(tagTokens));
             }
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void LessThanTextGreaterThanSequenceIsAValidHtmlTag()
+        {
+            HtmlToken[] tokens = new HtmlToken[]
+            {
+                new HtmlToken(
+                    HtmlTokenType.LessThan,
+                    "<"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "p"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.GreaterThan,
+                    ">"
+                )
+            };
+            Assert.IsTrue(HtmlTag.IsValidTag(tokens));
         }
     }
 }

@@ -28,7 +28,7 @@ namespace MarkdownToHtml
             return tokens;
         }
 
-        public static HtmlTag fromTokens(
+        public static HtmlTag FromTokens(
             HtmlToken[] tokens
         ) {
             if (!IsValidTag(tokens))
@@ -44,8 +44,22 @@ namespace MarkdownToHtml
 
         public static bool IsValidTag(
             HtmlToken[] tokens
+        ) { 
+            return IsValidOpeningTag(tokens);
+        }
+
+        private static bool IsValidOpeningTag(
+            HtmlToken[] tokens
         ) {
-            return false;
+            if (tokens.Length == 0 || tokens[0].Type != HtmlTokenType.LessThan) {
+                return false;
+            };
+            int i = 1;
+            if (i < tokens.Length && tokens[i].Type == HtmlTokenType.Text)
+            {
+                i++;
+            }
+            return (i + 1 == tokens.Length) && (tokens[i].Type == HtmlTokenType.GreaterThan);
         }
 
         private static HtmlDisplayType DetermineDisplayType(
