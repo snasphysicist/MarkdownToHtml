@@ -537,5 +537,165 @@ namespace MarkdownToHtml
             HtmlSnippet detected = detector.Detect();
             Assert.IsTrue(detected.IsTag());
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void SeriesOfTokensRepresentingSelfClosingTagWithAttributesWithTrailingNonLineBreakingWhitespaceIsAValidHtmlTag()
+        {
+            HtmlToken[] tokens = new HtmlToken[]
+            {
+                new HtmlToken(
+                    HtmlTokenType.LessThan,
+                    "<"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "p"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.NonLineBreakingWhitespace,
+                    "  "
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "a"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Equals,
+                    "="
+                ),
+                new HtmlToken(
+                    HtmlTokenType.DoubleQuote,
+                    "\""
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "yhtvc754"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.DoubleQuote,
+                    "\""
+                ),
+                new HtmlToken(
+                    HtmlTokenType.NonLineBreakingWhitespace,
+                    "\t\t\t"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "ctvyh745"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Equals,
+                    "="
+                ),
+                new HtmlToken(
+                    HtmlTokenType.DoubleQuote,
+                    "\""
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "3498-vnt58y7"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.DoubleQuote,
+                    "\""
+                ),
+                new HtmlToken(
+                    HtmlTokenType.NonLineBreakingWhitespace,
+                    "     "
+                ),
+                new HtmlToken(
+                    HtmlTokenType.ForwardSlash,
+                    "/"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.GreaterThan,
+                    ">"
+                )
+            };
+            HtmlTagDetector detector = new HtmlTagDetector(tokens);
+            HtmlSnippet detected = detector.Detect();
+            Assert.IsTrue(detected.IsTag());
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void SeriesOfTokensRepresentingSelfClosingTagWithAttributesWithTrailingLineBreakingWhitespaceIsNotAValidHtmlTag()
+        {
+            HtmlToken[] tokens = new HtmlToken[]
+            {
+                new HtmlToken(
+                    HtmlTokenType.LessThan,
+                    "<"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "p"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.NonLineBreakingWhitespace,
+                    "  "
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "a"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Equals,
+                    "="
+                ),
+                new HtmlToken(
+                    HtmlTokenType.DoubleQuote,
+                    "\""
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "yhtvc754"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.DoubleQuote,
+                    "\""
+                ),
+                new HtmlToken(
+                    HtmlTokenType.NonLineBreakingWhitespace,
+                    "\t\t\t"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "ctvyh745"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Equals,
+                    "="
+                ),
+                new HtmlToken(
+                    HtmlTokenType.DoubleQuote,
+                    "\""
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "3498-vnt58y7"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.DoubleQuote,
+                    "\""
+                ),
+                new HtmlToken(
+                    HtmlTokenType.LineBreakingWhitespace,
+                    "\n\n\n\n"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.ForwardSlash,
+                    "/"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.GreaterThan,
+                    ">"
+                )
+            };
+            HtmlTagDetector detector = new HtmlTagDetector(tokens);
+            HtmlSnippet detected = detector.Detect();
+            Assert.IsFalse(detected.IsTag());
+        }
     }
 }
