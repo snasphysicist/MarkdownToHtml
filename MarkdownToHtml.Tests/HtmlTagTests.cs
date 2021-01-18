@@ -48,8 +48,9 @@ namespace MarkdownToHtml
                 {
                     token
                 };
-                Assert.IsFalse(HtmlTag.IsValidTag(tagTokens));
-                Assert.ThrowsException<ArgumentException>(() => HtmlTag.FromTokens(tagTokens));
+                HtmlTagDetector detector = new HtmlTagDetector(tagTokens);
+                HtmlSnippet detected = detector.Detect();
+                Assert.IsTrue(detected.IsToken());
             }
         }
 
@@ -72,7 +73,9 @@ namespace MarkdownToHtml
                     ">"
                 )
             };
-            Assert.IsTrue(HtmlTag.IsValidTag(tokens));
+                HtmlTagDetector detector = new HtmlTagDetector(tokens);
+                HtmlSnippet detected = detector.Detect();
+                Assert.IsTrue(detected.IsTag());
         }
 
         [TestMethod]
@@ -98,7 +101,9 @@ namespace MarkdownToHtml
                     ">"
                 )
             };
-            Assert.IsFalse(HtmlTag.IsValidTag(tokens));
+                HtmlTagDetector detector = new HtmlTagDetector(tokens);
+                HtmlSnippet detected = detector.Detect();
+                Assert.IsTrue(detected.IsToken());
         }
 
         [TestMethod]
@@ -128,7 +133,9 @@ namespace MarkdownToHtml
                     ">"
                 )
             };
-            Assert.IsTrue(HtmlTag.IsValidTag(tokens));
+                HtmlTagDetector detector = new HtmlTagDetector(tokens);
+                HtmlSnippet detected = detector.Detect();
+                Assert.IsTrue(detected.IsTag());
         }
 
         [TestMethod]
@@ -154,7 +161,7 @@ namespace MarkdownToHtml
                     "a"
                 ),
                 new HtmlToken(
-                    HtmlTokenType.Text,
+                    HtmlTokenType.Equals,
                     "="
                 ),
                 new HtmlToken(
@@ -178,7 +185,7 @@ namespace MarkdownToHtml
                     "ctvyh745"
                 ),
                 new HtmlToken(
-                    HtmlTokenType.Text,
+                    HtmlTokenType.Equals,
                     "="
                 ),
                 new HtmlToken(
@@ -198,7 +205,9 @@ namespace MarkdownToHtml
                     ">"
                 )
             };
-            Assert.IsTrue(HtmlTag.IsValidTag(tokens));
+                HtmlTagDetector detector = new HtmlTagDetector(tokens);
+                HtmlSnippet detected = detector.Detect();
+                Assert.IsTrue(detected.IsTag());
         }
     }
 }

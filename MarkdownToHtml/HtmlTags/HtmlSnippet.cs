@@ -26,5 +26,13 @@ namespace MarkdownToHtml
             Tag = tag;
             Token = null;
         }
+
+        public bool IsTag() {
+            return Tag != null;
+        }
+
+        public bool IsToken() {
+            return Token != null;
+        }
     }
 }
