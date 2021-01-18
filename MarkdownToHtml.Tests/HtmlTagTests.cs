@@ -73,9 +73,9 @@ namespace MarkdownToHtml
                     ">"
                 )
             };
-                HtmlTagDetector detector = new HtmlTagDetector(tokens);
-                HtmlSnippet detected = detector.Detect();
-                Assert.IsTrue(detected.IsTag());
+            HtmlTagDetector detector = new HtmlTagDetector(tokens);
+            HtmlSnippet detected = detector.Detect();
+            Assert.IsTrue(detected.IsTag());
         }
 
         [TestMethod]
@@ -101,9 +101,9 @@ namespace MarkdownToHtml
                     ">"
                 )
             };
-                HtmlTagDetector detector = new HtmlTagDetector(tokens);
-                HtmlSnippet detected = detector.Detect();
-                Assert.IsTrue(detected.IsToken());
+            HtmlTagDetector detector = new HtmlTagDetector(tokens);
+            HtmlSnippet detected = detector.Detect();
+            Assert.IsTrue(detected.IsToken());
         }
 
         [TestMethod]
@@ -133,9 +133,9 @@ namespace MarkdownToHtml
                     ">"
                 )
             };
-                HtmlTagDetector detector = new HtmlTagDetector(tokens);
-                HtmlSnippet detected = detector.Detect();
-                Assert.IsTrue(detected.IsTag());
+            HtmlTagDetector detector = new HtmlTagDetector(tokens);
+            HtmlSnippet detected = detector.Detect();
+            Assert.IsTrue(detected.IsTag());
         }
 
         [TestMethod]
@@ -205,9 +205,9 @@ namespace MarkdownToHtml
                     ">"
                 )
             };
-                HtmlTagDetector detector = new HtmlTagDetector(tokens);
-                HtmlSnippet detected = detector.Detect();
-                Assert.IsTrue(detected.IsTag());
+            HtmlTagDetector detector = new HtmlTagDetector(tokens);
+            HtmlSnippet detected = detector.Detect();
+            Assert.IsTrue(detected.IsTag());
         }
 
         [TestMethod]
@@ -533,9 +533,9 @@ namespace MarkdownToHtml
                     ">"
                 )
             };
-                HtmlTagDetector detector = new HtmlTagDetector(tokens);
-                HtmlSnippet detected = detector.Detect();
-                Assert.IsTrue(detected.IsTag());
+            HtmlTagDetector detector = new HtmlTagDetector(tokens);
+            HtmlSnippet detected = detector.Detect();
+            Assert.IsTrue(detected.IsTag());
         }
     }
 }
