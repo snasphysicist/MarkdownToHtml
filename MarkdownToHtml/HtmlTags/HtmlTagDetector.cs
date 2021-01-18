@@ -40,6 +40,12 @@ namespace MarkdownToHtml
         public void CheckForTokenAtStart() 
         { 
             CheckForOpeningTag();
+            if (validity.Valid)
+            {
+                return;
+            }
+            validity = new ValidityTracker();
+            CheckForClosingTag();
         }
 
         private void CheckForOpeningTag()
@@ -53,6 +59,26 @@ namespace MarkdownToHtml
                 validity.Advance();
             }
             MoveOverAttributes();
+            MoveOverNonLineBreakingWhitespace();
+            if (!(validity.AtElement + 1 == tokens.Length) || !(tokens[validity.AtElement].Type == HtmlTokenType.GreaterThan)) {
+                validity.MarkInvalid();
+            }
+        }
+
+        private void CheckForClosingTag()
+        {
+            if (tokens.Length == 0 || tokens[0].Type != HtmlTokenType.LessThan) {
+                validity.MarkInvalid();
+            };
+            validity.Advance();
+            if (validity.AtElement >= tokens.Length || tokens[validity.AtElement].Type != HtmlTokenType.ForwardSlash) {
+                validity.MarkInvalid();
+            };
+            validity.Advance();
+            if (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.Text)
+            {
+                validity.Advance();
+            }
             MoveOverNonLineBreakingWhitespace();
             if (!(validity.AtElement + 1 == tokens.Length) || !(tokens[validity.AtElement].Type == HtmlTokenType.GreaterThan)) {
                 validity.MarkInvalid();
