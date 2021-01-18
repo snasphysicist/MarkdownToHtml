@@ -333,5 +333,37 @@ namespace MarkdownToHtml
             HtmlSnippet detected = detector.Detect();
             Assert.IsTrue(detected.IsTag());
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void SelfClosingTagWithLeadingNonLineBreakingWhitespaceIsNotAValidHtmlTag()
+        {
+            HtmlToken[] tokens = new HtmlToken[]
+            {
+                new HtmlToken(
+                    HtmlTokenType.LessThan,
+                    "<"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.NonLineBreakingWhitespace,
+                    " "
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "p"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.ForwardSlash,
+                    "/"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.GreaterThan,
+                    ">"
+                )
+            };
+            HtmlTagDetector detector = new HtmlTagDetector(tokens);
+            HtmlSnippet detected = detector.Detect();
+            Assert.IsFalse(detected.IsTag());
+        }
     }
 }
