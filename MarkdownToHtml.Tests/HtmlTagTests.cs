@@ -240,6 +240,38 @@ namespace MarkdownToHtml
 
         [TestMethod]
         [Timeout(500)]
+        public void ClosingTagWithWhitespaceBetweenOpenerAndSlashIsNotAValidHtmlTag()
+        {
+            HtmlToken[] tokens = new HtmlToken[]
+            {
+                new HtmlToken(
+                    HtmlTokenType.LessThan,
+                    "<"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.NonLineBreakingWhitespace,
+                    " "
+                ),
+                new HtmlToken(
+                    HtmlTokenType.ForwardSlash,
+                    "/"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "p"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.GreaterThan,
+                    ">"
+                )
+            };
+            HtmlTagDetector detector = new HtmlTagDetector(tokens);
+            HtmlSnippet detected = detector.Detect();
+            Assert.IsFalse(detected.IsTag());
+        }
+
+        [TestMethod]
+        [Timeout(500)]
         public void ClosingTagIncludingNonLineBreakingWhitespaceAfterTagNameIsAValidHtmlTag()
         {
             HtmlToken[] tokens = new HtmlToken[]
