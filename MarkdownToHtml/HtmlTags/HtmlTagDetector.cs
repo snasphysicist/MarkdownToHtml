@@ -46,6 +46,12 @@ namespace MarkdownToHtml
             }
             validity = new ValidityTracker();
             CheckForClosingTag();
+            if (validity.Valid)
+            {
+                return;
+            }
+            validity = new ValidityTracker();
+            CheckForSelfClosingTag();
         }
 
         private void CheckForOpeningTag()
@@ -80,6 +86,28 @@ namespace MarkdownToHtml
                 validity.Advance();
             }
             MoveOverNonLineBreakingWhitespace();
+            if (!(validity.AtElement + 1 == tokens.Length) || !(tokens[validity.AtElement].Type == HtmlTokenType.GreaterThan)) {
+                validity.MarkInvalid();
+            }
+        }
+
+        private void CheckForSelfClosingTag()
+        {
+            if (tokens.Length == 0 || tokens[0].Type != HtmlTokenType.LessThan) {
+                validity.MarkInvalid();
+            };
+            validity.Advance();
+            if (validity.AtElement < tokens.Length && tokens[validity.AtElement].Type == HtmlTokenType.Text)
+            {
+                validity.Advance();
+            }
+            MoveOverAttributes();
+            MoveOverNonLineBreakingWhitespace();
+            if (validity.AtElement >= tokens.Length || tokens[validity.AtElement].Type != HtmlTokenType.ForwardSlash)
+            {
+                validity.MarkInvalid();
+            }
+            validity.Advance();
             if (!(validity.AtElement + 1 == tokens.Length) || !(tokens[validity.AtElement].Type == HtmlTokenType.GreaterThan)) {
                 validity.MarkInvalid();
             }
