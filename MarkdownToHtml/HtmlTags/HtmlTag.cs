@@ -23,7 +23,7 @@ namespace MarkdownToHtml
             TagType = tagType;
         }
 
-        public HtmlToken[] getTokens()
+        public HtmlToken[] GetTokens()
         {
             return tokens;
         }

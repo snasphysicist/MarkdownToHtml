@@ -27,12 +27,27 @@ namespace MarkdownToHtml
             Token = null;
         }
 
-        public bool IsTag() {
+        public bool IsTag()
+        {
             return Tag != null;
         }
 
-        public bool IsToken() {
+        public bool IsToken()
+        {
             return Token != null;
+        }
+
+        public int TokenCount()
+        {
+            if (IsTag())
+            {
+                return Tag.GetTokens().Length;
+            }
+            if (IsToken())
+            {
+                return 1;
+            }
+            return 0;
         }
     }
 }
