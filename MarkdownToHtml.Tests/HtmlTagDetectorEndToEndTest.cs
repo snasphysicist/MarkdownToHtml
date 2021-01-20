@@ -394,14 +394,7 @@ namespace MarkdownToHtml
             // Expect htmlString to be
             // Hello.  test.\n\n<p>A Test</p>\r\n\r\n<test2 />\r\rAnother test > of / specials =. Not so special !@#$%^&*().
             // <open a=\"b\" c=\"47r3w7Hu8t943\"></open>\n\nFinally, a self closer <sc a=\"b\" fdjnhis=\"7yu834thiundfv87\"   /> with attributes
-            LinkedList<HtmlToken> tokenList = new HtmlTokeniser(htmlString).tokenise();
-            HtmlToken[] tokens = new HtmlToken[tokenList.Count];
-            LinkedListNode<HtmlToken> current = tokenList.First;
-            for (int i = 0; i < tokenList.Count; i++)
-            {
-                tokens[i] = current.Value;
-                current = current.Next;
-            }
+            HtmlToken[] tokens = new HtmlTokeniser(htmlString).tokenise();
             HtmlSnippet[] actual = HtmlTagDetector.TagsFromTokens(tokens);
             // Assert.AreEqual(expected.Length, actual.Length);
             for (int i = 0; i < expected.Length; i++)

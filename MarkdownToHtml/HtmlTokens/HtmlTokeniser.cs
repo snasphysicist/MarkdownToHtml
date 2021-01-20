@@ -18,14 +18,14 @@ namespace MarkdownToHtml
             this.content = content;
         }
 
-        public LinkedList<HtmlToken> tokenise()
+        public HtmlToken[] tokenise()
         {
             LinkedList<HtmlToken> tokens = new LinkedList<HtmlToken>();
             while (content.Length > 0)
             {
                 tokens.AddLast(nextToken());
             }
-            return tokens;
+            return tokens.ToArray();
         }
 
         private HtmlToken nextToken()

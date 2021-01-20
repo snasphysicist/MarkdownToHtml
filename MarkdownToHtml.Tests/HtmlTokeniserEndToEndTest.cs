@@ -158,18 +158,11 @@ namespace MarkdownToHtml
                 htmlString = htmlString + token.Content;
             }
             HtmlTokeniser tokeniser = new HtmlTokeniser(htmlString);
-            LinkedList<HtmlToken> tokenised = tokeniser.tokenise();
-            HtmlToken[] actual = new HtmlToken[tokenised.Count];
+            HtmlToken[] actual = tokeniser.tokenise();
             Assert.AreEqual(
                 expected.Length,
                 actual.Length
             );
-            LinkedListNode<HtmlToken> current = tokenised.First;
-            for (int i = 0; i < actual.Length; i++)
-            {
-                actual[i] = current.Value;
-                current = current.Next;
-            }
             for (int i = 0; i < expected.Length; i++)
             {
                 HtmlToken expectedToken = expected[i];

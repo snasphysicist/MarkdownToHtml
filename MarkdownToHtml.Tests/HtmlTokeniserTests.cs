@@ -15,12 +15,12 @@ namespace MarkdownToHtml
             string content
         ) {
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 1,
-                tokens.Count
+                tokens.Length
             );
-            HtmlToken token = tokens.First.Value;
+            HtmlToken token = tokens[0];
             Assert.AreEqual(
                 HtmlTokenType.Text,
                 token.Type
@@ -35,12 +35,12 @@ namespace MarkdownToHtml
             string character
         ) {
             HtmlTokeniser tokeniser = new HtmlTokeniser(character);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 1,
-                tokens.Count
+                tokens.Length
             );
-            HtmlToken token = tokens.First.Value;
+            HtmlToken token = tokens[0];
             Assert.AreEqual(
                 HtmlTokenType.NonLineBreakingWhitespace,
                 token.Type
@@ -55,12 +55,12 @@ namespace MarkdownToHtml
             string content
         ) {
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 1,
-                tokens.Count
+                tokens.Length
             );
-            HtmlToken token = tokens.First.Value;
+            HtmlToken token = tokens[0];
             Assert.AreEqual(
                 HtmlTokenType.NonLineBreakingWhitespace,
                 token.Type
@@ -79,23 +79,22 @@ namespace MarkdownToHtml
                 "\t"
             };
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 expectedTokenContents.Length,
-                tokens.Count
+                tokens.Length
             );
-            LinkedListNode<HtmlToken> checking = tokens.First;
             for (int i = 0; i < expectedTokenContents.Length; i++)
             {
+                HtmlToken checking = tokens[i];
                 Assert.AreEqual(
                     HtmlTokenType.NonLineBreakingWhitespace,
-                    checking.Value.Type
+                    checking.Type
                 );
                 Assert.AreEqual(
                     expectedTokenContents[i],
-                    checking.Value.Content
+                    checking.Content
                 );
-                checking = checking.Next;
             }
         }
 
@@ -107,12 +106,12 @@ namespace MarkdownToHtml
             string character
         ) {
             HtmlTokeniser tokeniser = new HtmlTokeniser(character);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 1,
-                tokens.Count
+                tokens.Length
             );
-            HtmlToken token = tokens.First.Value;
+            HtmlToken token = tokens[0];
             Assert.AreEqual(
                 HtmlTokenType.LineBreakingWhitespace,
                 token.Type
@@ -125,12 +124,12 @@ namespace MarkdownToHtml
         {
             string content = "\r\n";
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 1,
-                tokens.Count
+                tokens.Length
             );
-            HtmlToken token = tokens.First.Value;
+            HtmlToken token = tokens[0];
             Assert.AreEqual(
                 HtmlTokenType.LineBreakingWhitespace,
                 token.Type
@@ -151,22 +150,22 @@ namespace MarkdownToHtml
             int numberOfTokens
         ) {
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 numberOfTokens,
-                tokens.Count
+                tokens.Length
             );
-            LinkedListNode<HtmlToken> checking = tokens.First;
             int tokenSize = content.Length / numberOfTokens;
             for (int i = 0; i < numberOfTokens; i++)
             {
+                HtmlToken checking = tokens[i];
                 Assert.AreEqual(
                     HtmlTokenType.LineBreakingWhitespace,
-                    checking.Value.Type
+                    checking.Type
                 );
                 Assert.AreEqual(
                     content.Substring(0, tokenSize),
-                    checking.Value.Content
+                    checking.Content
                 );
             }
         }
@@ -191,23 +190,22 @@ namespace MarkdownToHtml
                 "\r"
             };
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 expectedTokenContents.Length,
-                tokens.Count
+                tokens.Length
             );
-            LinkedListNode<HtmlToken> checking = tokens.First;
             for (int i = 0; i < expectedTokenContents.Length; i++)
             {
+                HtmlToken checking = tokens[i];
                 Assert.AreEqual(
                     HtmlTokenType.LineBreakingWhitespace,
-                    checking.Value.Type
+                    checking.Type
                 );
                 Assert.AreEqual(
                     expectedTokenContents[i],
-                    checking.Value.Content
+                    checking.Content
                 );
-                checking = checking.Next;
             }
         }
 
@@ -217,19 +215,19 @@ namespace MarkdownToHtml
         {
             string content = "<";
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 content.Length,
-                tokens.Count
+                tokens.Length
             );
-            HtmlToken checking = tokens.First.Value;
+            HtmlToken token = tokens[0];
             Assert.AreEqual(
                 HtmlTokenType.LessThan,
-                checking.Type
+                token.Type
             );
             Assert.AreEqual(
                 content,
-                checking.Content
+                token.Content
             );
         }
 
@@ -239,21 +237,21 @@ namespace MarkdownToHtml
         {
             string content = "<<<<<<";
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 content.Length,
-                tokens.Count
+                tokens.Length
             );
-            LinkedListNode<HtmlToken> checking = tokens.First;
             for (int i = 0; i < content.Length; i++)
             {
+                HtmlToken checking = tokens[i];
                 Assert.AreEqual(
                     HtmlTokenType.LessThan,
-                    checking.Value.Type
+                    checking.Type
                 );
                 Assert.AreEqual(
                     "<",
-                    checking.Value.Content
+                    checking.Content
                 );
             }
         }
@@ -264,19 +262,19 @@ namespace MarkdownToHtml
         {
             string content = ">";
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 content.Length,
-                tokens.Count
+                tokens.Length
             );
-            HtmlToken checking = tokens.First.Value;
+            HtmlToken token = tokens[0];
             Assert.AreEqual(
                 HtmlTokenType.GreaterThan,
-                checking.Type
+                token.Type
             );
             Assert.AreEqual(
                 content,
-                checking.Content
+                token.Content
             );
         }
 
@@ -286,21 +284,21 @@ namespace MarkdownToHtml
         {
             string content = ">>>>>>";
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 content.Length,
-                tokens.Count
+                tokens.Length
             );
-            LinkedListNode<HtmlToken> checking = tokens.First;
             for (int i = 0; i < content.Length; i++)
             {
+                HtmlToken checking = tokens[i];
                 Assert.AreEqual(
                     HtmlTokenType.GreaterThan,
-                    checking.Value.Type
+                    checking.Type
                 );
                 Assert.AreEqual(
                     ">",
-                    checking.Value.Content
+                    checking.Content
                 );
             }
         }
@@ -311,19 +309,19 @@ namespace MarkdownToHtml
         {
             string content = "/";
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 content.Length,
-                tokens.Count
+                tokens.Length
             );
-            HtmlToken checking = tokens.First.Value;
+            HtmlToken token = tokens[0];
             Assert.AreEqual(
                 HtmlTokenType.ForwardSlash,
-                checking.Type
+                token.Type
             );
             Assert.AreEqual(
                 content,
-                checking.Content
+                token.Content
             );
         }
 
@@ -333,21 +331,21 @@ namespace MarkdownToHtml
         {
             string content = "//////";
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 content.Length,
-                tokens.Count
+                tokens.Length
             );
-            LinkedListNode<HtmlToken> checking = tokens.First;
             for (int i = 0; i < content.Length; i++)
             {
+                HtmlToken checking = tokens[i];
                 Assert.AreEqual(
                     HtmlTokenType.ForwardSlash,
-                    checking.Value.Type
+                    checking.Type
                 );
                 Assert.AreEqual(
                     "/",
-                    checking.Value.Content
+                    checking.Content
                 );
             }
         }
@@ -358,19 +356,19 @@ namespace MarkdownToHtml
         {
             string content = "\"";
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 content.Length,
-                tokens.Count
+                tokens.Length
             );
-            HtmlToken checking = tokens.First.Value;
+            HtmlToken token = tokens[0];
             Assert.AreEqual(
                 HtmlTokenType.DoubleQuote,
-                checking.Type
+                token.Type
             );
             Assert.AreEqual(
                 content,
-                checking.Content
+                token.Content
             );
         }
 
@@ -380,21 +378,21 @@ namespace MarkdownToHtml
         {
             string content = "\"\"\"\"\"\"";
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 content.Length,
-                tokens.Count
+                tokens.Length
             );
-            LinkedListNode<HtmlToken> checking = tokens.First;
             for (int i = 0; i < content.Length; i++)
             {
+                HtmlToken checking = tokens[i];
                 Assert.AreEqual(
                     HtmlTokenType.DoubleQuote,
-                    checking.Value.Type
+                    checking.Type
                 );
                 Assert.AreEqual(
                     "\"",
-                    checking.Value.Content
+                    checking.Content
                 );
             }
         }
@@ -405,19 +403,19 @@ namespace MarkdownToHtml
         {
             string content = "=";
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 content.Length,
-                tokens.Count
+                tokens.Length
             );
-            HtmlToken checking = tokens.First.Value;
+            HtmlToken token = tokens[0];
             Assert.AreEqual(
                 HtmlTokenType.Equals,
-                checking.Type
+                token.Type
             );
             Assert.AreEqual(
                 content,
-                checking.Content
+                token.Content
             );
         }
 
@@ -427,21 +425,21 @@ namespace MarkdownToHtml
         {
             string content = "======";
             HtmlTokeniser tokeniser = new HtmlTokeniser(content);
-            LinkedList<HtmlToken> tokens = tokeniser.tokenise();
+            HtmlToken[] tokens = tokeniser.tokenise();
             Assert.AreEqual(
                 content.Length,
-                tokens.Count
+                tokens.Length
             );
-            LinkedListNode<HtmlToken> checking = tokens.First;
             for (int i = 0; i < content.Length; i++)
             {
+                HtmlToken checking = tokens[i];
                 Assert.AreEqual(
                     HtmlTokenType.Equals,
-                    checking.Value.Type
+                    checking.Type
                 );
                 Assert.AreEqual(
                     "=",
-                    checking.Value.Content
+                    checking.Content
                 );
             }
         }
