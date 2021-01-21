@@ -3,6 +3,47 @@ namespace MarkdownToHtml
 {
     public class HtmlTagName
     {
+        private static string[] BLOCK_ELEMENTS = new string[]
+        {
+            "address",
+            "article",
+            "aside",
+            "blockquote",
+            "canvas",
+            "dd",
+            "details",
+            "dialog",
+            "div",
+            "dl",
+            "dt",
+            "fieldset",
+            "figcaption",
+            "figure",
+            "footer",
+            "form",
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6",
+            "header",
+            "hgroup",
+            "hr",
+            "li",
+            "main",
+            "nav",
+            "noscript",
+            "ol",
+            "p",
+            "pre",
+            "section",
+            "table",
+            "tfoot",
+            "ul",
+            "video"
+        };
+
         public string Name
         { get; private set; }
 
@@ -19,6 +60,12 @@ namespace MarkdownToHtml
         private HtmlDisplayType DetermineDisplayType(
             string name
         ) {
+            foreach (string block in BLOCK_ELEMENTS)
+            {
+                if (block == name) {
+                    return HtmlDisplayType.Block; 
+                }
+            }
             return HtmlDisplayType.Inline;
         }
     }
