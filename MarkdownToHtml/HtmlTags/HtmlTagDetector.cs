@@ -12,6 +12,8 @@ namespace MarkdownToHtml
 
         private string probableName;
 
+        private HtmlTagType probableType;
+
         public HtmlTagDetector(
             HtmlToken[] tokens
         ) {
@@ -104,6 +106,7 @@ namespace MarkdownToHtml
                 return;
             }
             validity.Advance();
+            probableType = HtmlTagType.Opening;
         }
 
         private void CheckForClosingTag()
@@ -131,6 +134,7 @@ namespace MarkdownToHtml
                 return;
             }
             validity.Advance();
+            probableType = HtmlTagType.Closing;
         }
 
         private void CheckForSelfClosingTag()
@@ -218,7 +222,7 @@ namespace MarkdownToHtml
 
         private HtmlTagType DetermineTagType()
         {
-            return HtmlTagType.Opening;
+            return probableType;
         }
 
         private class ValidityTracker
