@@ -52,6 +52,93 @@ namespace MarkdownToHtml
                 tag.Type
             );
         }
-    }
 
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow("a")]
+        [DataRow("abbr")]
+        [DataRow("acronym")]
+        [DataRow("audio")]
+        [DataRow("b")]
+        [DataRow("bdi")]
+        [DataRow("bdo")]
+        [DataRow("big")]
+        [DataRow("br")]
+        [DataRow("button")]
+        [DataRow("canvas")]
+        [DataRow("cite")]
+        [DataRow("code")]
+        [DataRow("data")]
+        [DataRow("datalist")]
+        [DataRow("del")]
+        [DataRow("dfn")]
+        [DataRow("em")]
+        [DataRow("embed")]
+        [DataRow("i")]
+        [DataRow("iframe")]
+        [DataRow("img")]
+        [DataRow("input")]
+        [DataRow("ins")]
+        [DataRow("kbd")]
+        [DataRow("label")]
+        [DataRow("map")]
+        [DataRow("mark")]
+        [DataRow("meter")]
+        [DataRow("noscript")]
+        [DataRow("object")]
+        [DataRow("output")]
+        [DataRow("picture")]
+        [DataRow("progress")]
+        [DataRow("q")]
+        [DataRow("ruby")]
+        [DataRow("s")]
+        [DataRow("samp")]
+        [DataRow("script")]
+        [DataRow("select")]
+        [DataRow("slot")]
+        [DataRow("small")]
+        [DataRow("span")]
+        [DataRow("strong")]
+        [DataRow("sub")]
+        [DataRow("sup")]
+        [DataRow("svg")]
+        [DataRow("template")]
+        [DataRow("textarea")]
+        [DataRow("time")]
+        [DataRow("u")]
+        [DataRow("tt")]
+        [DataRow("var")]
+        [DataRow("video")]
+        [DataRow("wbr")]
+        public void ElementsDefinedAsInlineInHtmlSpecificationRecognisedAsInlineType(
+            string element
+        ) {
+            HtmlTagName tag = new HtmlTagName(
+                element
+            );
+            Assert.AreEqual(
+                HtmlDisplayType.Inline,
+                tag.Type
+            );
+        }
+
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow("fhudisj")]
+        [DataRow("k")]
+        [DataRow("ufds78534hnu")]
+        [DataRow("error")]
+        [DataRow("human")]
+        public void ElementsNotDefinedInHtmlSpecificationRecognisedAsInlineType(
+            string element
+        ) {
+            HtmlTagName tag = new HtmlTagName(
+                element
+            );
+            Assert.AreEqual(
+                HtmlDisplayType.Inline,
+                tag.Type
+            );
+        }
+    }
 }

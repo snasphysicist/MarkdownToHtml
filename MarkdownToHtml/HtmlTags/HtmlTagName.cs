@@ -9,7 +9,6 @@ namespace MarkdownToHtml
             "article",
             "aside",
             "blockquote",
-            "canvas",
             "dd",
             "details",
             "dialog",
@@ -33,15 +32,13 @@ namespace MarkdownToHtml
             "li",
             "main",
             "nav",
-            "noscript",
             "ol",
             "p",
             "pre",
             "section",
             "table",
             "tfoot",
-            "ul",
-            "video"
+            "ul"
         };
 
         public string Name
