@@ -53,7 +53,7 @@ namespace MarkdownToHtml
                 return new HtmlSnippet(
                     new HtmlTag(
                         tagTokens,
-                        DetermineDisplayType(),
+                        DetermineName(),
                         DetermineTagType()
                     )
                 );
@@ -204,9 +204,11 @@ namespace MarkdownToHtml
             }
         }
 
-        private HtmlDisplayType DetermineDisplayType()
+        private HtmlTagName DetermineName()
         {
-            return HtmlDisplayType.Block;
+            return new HtmlTagName(
+                ""
+            );
         }
 
         private HtmlTagType DetermineTagType()

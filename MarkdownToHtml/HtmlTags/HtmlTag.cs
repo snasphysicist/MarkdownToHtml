@@ -1,26 +1,24 @@
 
-using System;
-
 namespace MarkdownToHtml
 {
     public class HtmlTag
     {
         private HtmlToken[] tokens;
 
-        public HtmlDisplayType DisplayType
+        public HtmlTagName Name
         { get; private set; }
 
-        public HtmlTagType TagType
+        public HtmlTagType Type
         { get; private set; }
 
         public HtmlTag(
             HtmlToken[] tokens,
-            HtmlDisplayType displayType,
+            HtmlTagName name,
             HtmlTagType tagType
         ) {
             this.tokens = tokens;
-            DisplayType = displayType;
-            TagType = tagType;
+            Name = Name;
+            Type = tagType;
         }
 
         public HtmlToken[] GetTokens()

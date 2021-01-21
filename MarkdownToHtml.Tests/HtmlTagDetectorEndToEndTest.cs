@@ -77,7 +77,9 @@ namespace MarkdownToHtml
                         ),
                         closer
                     },
-                    HtmlDisplayType.Block,
+                    new HtmlTagName(
+                        "p"
+                    ),
                     HtmlTagType.Opening
                 )
             );
@@ -105,7 +107,9 @@ namespace MarkdownToHtml
                         forwardSlash,
                         closer
                     },
-                    HtmlDisplayType.Block,
+                    new HtmlTagName(
+                        "p"
+                    ),
                     HtmlTagType.Closing
                 )
             );
@@ -122,7 +126,9 @@ namespace MarkdownToHtml
                         forwardSlash,
                         closer
                     },
-                    HtmlDisplayType.Block,
+                    new HtmlTagName(
+                        "p"
+                    ),
                     HtmlTagType.SelfClosing
                 )
             );
@@ -221,7 +227,9 @@ namespace MarkdownToHtml
                         doubleQuote,
                         closer
                     },
-                    HtmlDisplayType.Inline,
+                    new HtmlTagName(
+                        "open"
+                    ),
                     HtmlTagType.Opening
                 )
             );
@@ -237,7 +245,9 @@ namespace MarkdownToHtml
                         forwardSlash,
                         closer
                     },
-                    HtmlDisplayType.Block,
+                    new HtmlTagName(
+                        "open"
+                    ),
                     HtmlTagType.Closing
                 )
             );
@@ -302,7 +312,9 @@ namespace MarkdownToHtml
                         forwardSlash,
                         closer
                     },
-                    HtmlDisplayType.Inline,
+                    new HtmlTagName(
+                        "sc"
+                    ),
                     HtmlTagType.SelfClosing
                 )
             );
