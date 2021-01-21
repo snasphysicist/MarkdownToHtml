@@ -138,5 +138,36 @@ namespace MarkdownToHtml
                 detected.Tag.Name.Name
             );
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void TextImmediatelyFollowingOpenerIsTagNameForSelfClosingTagWithoutAttributes()
+        {
+            HtmlToken[] tokens = new HtmlToken[]
+            {
+                new HtmlToken(
+                    HtmlTokenType.LessThan,
+                    "<"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "div"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.ForwardSlash,
+                    "/"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.GreaterThan,
+                    ">"
+                )
+            };
+            HtmlTagDetector detector = new HtmlTagDetector(tokens);
+            HtmlSnippet detected = detector.Detect();
+            Assert.AreEqual(
+                "div",
+                detected.Tag.Name.Name
+            );
+        }
     }
 }
