@@ -17,7 +17,7 @@ namespace MarkdownToHtml
             HtmlTagType tagType
         ) {
             this.tokens = tokens;
-            Name = Name;
+            Name = name;
             Type = tagType;
         }
 

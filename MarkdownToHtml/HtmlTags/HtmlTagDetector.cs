@@ -10,6 +10,8 @@ namespace MarkdownToHtml
 
         private ValidityTracker validity;
 
+        private string probableName;
+
         public HtmlTagDetector(
             HtmlToken[] tokens
         ) {
@@ -93,6 +95,7 @@ namespace MarkdownToHtml
                 validity.MarkInvalid();
                 return;
             }
+            probableName = tokens[validity.AtElement].Content;
             validity.Advance();
             MoveOverAttributes();
             MoveOverNonLineBreakingWhitespace();
@@ -120,6 +123,7 @@ namespace MarkdownToHtml
                 validity.MarkInvalid();
                 return;
             }
+            probableName = tokens[validity.AtElement].Content;
             validity.Advance();
             MoveOverNonLineBreakingWhitespace();
             if (validity.AtElement >= tokens.Length || !(tokens[validity.AtElement].Type == HtmlTokenType.GreaterThan)) {
@@ -141,6 +145,7 @@ namespace MarkdownToHtml
                 validity.MarkInvalid();
                 return;
             }
+            probableName = tokens[validity.AtElement].Content;
             validity.Advance();
             MoveOverAttributes();
             MoveOverNonLineBreakingWhitespace();
@@ -207,7 +212,7 @@ namespace MarkdownToHtml
         private HtmlTagName DetermineName()
         {
             return new HtmlTagName(
-                ""
+                probableName
             );
         }
 
