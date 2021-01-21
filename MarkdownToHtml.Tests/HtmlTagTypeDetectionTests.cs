@@ -170,7 +170,6 @@ namespace MarkdownToHtml
             );
         }
 
-        [Ignore]
         [TestMethod]
         [Timeout(500)]
         public void SelfClosingTagWithAttributesIsOfSelfClosingType()
