@@ -164,6 +164,7 @@ namespace MarkdownToHtml
                 return;
             }
             validity.Advance();
+            probableType = HtmlTagType.SelfClosing;
         }
 
         private void MoveOverNonLineBreakingWhitespace() 
