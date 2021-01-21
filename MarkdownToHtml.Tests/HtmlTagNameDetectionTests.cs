@@ -169,5 +169,84 @@ namespace MarkdownToHtml
                 detected.Tag.Name.Name
             );
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void TextImmediatelyFollowingOpenerIsTagNameForSelfClosingTagWithAttributes()
+        {
+            HtmlToken[] tokens = new HtmlToken[]
+            {
+                new HtmlToken(
+                    HtmlTokenType.LessThan,
+                    "<"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "img"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.NonLineBreakingWhitespace,
+                    "  "
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "a"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Equals,
+                    "="
+                ),
+                new HtmlToken(
+                    HtmlTokenType.DoubleQuote,
+                    "\""
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "yhtvc754"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.DoubleQuote,
+                    "\""
+                ),
+                new HtmlToken(
+                    HtmlTokenType.NonLineBreakingWhitespace,
+                    "\t\t\t"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "ctvyh745"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Equals,
+                    "="
+                ),
+                new HtmlToken(
+                    HtmlTokenType.DoubleQuote,
+                    "\""
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "3498-vnt58y7"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.DoubleQuote,
+                    "\""
+                ),
+                new HtmlToken(
+                    HtmlTokenType.ForwardSlash,
+                    "/"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.GreaterThan,
+                    ">"
+                )
+            };
+            HtmlTagDetector detector = new HtmlTagDetector(tokens);
+            HtmlSnippet detected = detector.Detect();
+            Assert.AreEqual(
+                "img",
+                detected.Tag.Name.Name
+            );
+        }
     }
 }
