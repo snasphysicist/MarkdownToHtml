@@ -107,5 +107,36 @@ namespace MarkdownToHtml
                 detected.Tag.Name.Name
             );
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void TextImmediatelyFollowingForwardSlashIsTagNameForClosingTag()
+        {
+            HtmlToken[] tokens = new HtmlToken[]
+            {
+                new HtmlToken(
+                    HtmlTokenType.LessThan,
+                    "<"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.ForwardSlash,
+                    "/"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.Text,
+                    "video"
+                ),
+                new HtmlToken(
+                    HtmlTokenType.GreaterThan,
+                    ">"
+                )
+            };
+            HtmlTagDetector detector = new HtmlTagDetector(tokens);
+            HtmlSnippet detected = detector.Detect();
+            Assert.AreEqual(
+                "video",
+                detected.Tag.Name.Name
+            );
+        }
     }
 }
