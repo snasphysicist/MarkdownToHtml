@@ -42,7 +42,7 @@ namespace MarkdownToHtml
         {
             return new HtmlElement(
                 toScan[0],
-                false
+                toScan[0].IsTag() && toScan[0].Tag.Type == HtmlTagType.SelfClosing
             );
         }
     }

@@ -25,7 +25,6 @@ namespace MarkdownToHtml
         [DataRow("\"")]
         [DataRow("<p>")]
         [DataRow("</p>")]
-        [DataRow("<sc a=\"b\"/>")]
         public void SingleSnippetNotSelfClosingTagIsNotATagGroup(
             string htmlString
         ) {
@@ -36,6 +35,23 @@ namespace MarkdownToHtml
                 elements.Length
             );
             Assert.IsFalse(
+                elements[0].IsTagGroup
+            );
+        }
+
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow("<sc a=\"b\"/>")]
+        public void SingleSnippetSelfClosingTagIsTagGroup(
+            string htmlString
+        ) {
+            HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            Assert.AreEqual(
+                1,
+                elements.Length
+            );
+            Assert.IsTrue(
                 elements[0].IsTagGroup
             );
         }
