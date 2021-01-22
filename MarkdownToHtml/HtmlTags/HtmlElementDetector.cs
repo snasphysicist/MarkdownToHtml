@@ -51,28 +51,35 @@ namespace MarkdownToHtml
         }
 
         private HtmlElement InlineGroupAtStart()
-        {
+        {   
+            int current = 0;
             if (
-                toScan.Length < 1
-                || !toScan[0].IsTag() 
-                || toScan[0].Tag.Name.Type != HtmlDisplayType.Inline 
-                || toScan[0].Tag.Type != HtmlTagType.Opening
+                toScan.Length <= current
+                || !toScan[current].IsTag() 
+                || toScan[current].Tag.Name.Type != HtmlDisplayType.Inline 
+                || toScan[current].Tag.Type != HtmlTagType.Opening
             ) {
                 return null;
             }
+            current++;
+            while (toScan.Length >= current && !toScan[current].IsTag())
+            {
+                current++;
+            }
             if (
-                toScan.Length < 2
-                || !toScan[1].IsTag()
-                || toScan[1].Tag.Type != HtmlTagType.Closing
-                || toScan[1].Tag.Name.Type != HtmlDisplayType.Inline
+                toScan.Length <= current
+                || !toScan[current].IsTag()
+                || toScan[current].Tag.Type != HtmlTagType.Closing
+                || toScan[current].Tag.Name.Type != HtmlDisplayType.Inline
             ) {
                 return null;
             }
+            current++;
             return new HtmlElement(
                 new ArraySegment<HtmlSnippet>(
                     toScan,
                     0,
-                    2
+                    current
                 ).ToArray(),
                 true
             );
