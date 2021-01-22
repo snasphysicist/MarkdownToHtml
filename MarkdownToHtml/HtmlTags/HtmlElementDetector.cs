@@ -40,9 +40,41 @@ namespace MarkdownToHtml
 
         public HtmlElement Detect()
         {
+            HtmlElement inlineGroup = InlineGroupAtStart();
+            if (inlineGroup != null) {
+                return inlineGroup;
+            }
             return new HtmlElement(
                 toScan[0],
                 toScan[0].IsTag() && toScan[0].Tag.Type == HtmlTagType.SelfClosing
+            );
+        }
+
+        private HtmlElement InlineGroupAtStart()
+        {
+            if (
+                toScan.Length < 1
+                || !toScan[0].IsTag() 
+                || toScan[0].Tag.Name.Type != HtmlDisplayType.Inline 
+                || toScan[0].Tag.Type != HtmlTagType.Opening
+            ) {
+                return null;
+            }
+            if (
+                toScan.Length < 2
+                || !toScan[1].IsTag()
+                || toScan[1].Tag.Type != HtmlTagType.Closing
+                || toScan[1].Tag.Name.Type != HtmlDisplayType.Inline
+            ) {
+                return null;
+            }
+            return new HtmlElement(
+                new ArraySegment<HtmlSnippet>(
+                    toScan,
+                    0,
+                    2
+                ).ToArray(),
+                true
             );
         }
     }
