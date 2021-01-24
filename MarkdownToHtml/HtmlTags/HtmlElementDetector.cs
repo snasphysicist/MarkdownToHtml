@@ -66,7 +66,7 @@ namespace MarkdownToHtml
                 return null;
             }
             current++;
-            while (toScan.Length >= current && !toScan[current].IsTag())
+            while (toScan.Length > current && !toScan[current].IsTag())
             {
                 current++;
             }
@@ -101,6 +101,10 @@ namespace MarkdownToHtml
                 return null;
             }
             current++;
+            while (toScan.Length > current && !toScan[current].IsTag())
+            {
+                current++;
+            }
             if (
                 toScan.Length <= current
                 || !toScan[current].IsTag()
