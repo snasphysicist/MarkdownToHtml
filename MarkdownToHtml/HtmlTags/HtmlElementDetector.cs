@@ -40,9 +40,13 @@ namespace MarkdownToHtml
 
         public HtmlElement Detect()
         {
-            HtmlElement inlineGroup = InlineGroupAtStart();
-            if (inlineGroup != null) {
-                return inlineGroup;
+            HtmlElement foundElement = InlineGroupAtStart();
+            if (foundElement != null) {
+                return foundElement;
+            }
+            foundElement = BlockGroupAtStart();
+            if (foundElement != null) {
+                return foundElement;
             }
             return new HtmlElement(
                 toScan[0],
@@ -71,6 +75,37 @@ namespace MarkdownToHtml
                 || !toScan[current].IsTag()
                 || toScan[current].Tag.Type != HtmlTagType.Closing
                 || toScan[current].Tag.Name.Type != HtmlDisplayType.Inline
+            ) {
+                return null;
+            }
+            current++;
+            return new HtmlElement(
+                new ArraySegment<HtmlSnippet>(
+                    toScan,
+                    0,
+                    current
+                ).ToArray(),
+                true
+            );
+        }
+
+        public HtmlElement BlockGroupAtStart()
+        {
+            int current = 0;
+            if (
+                toScan.Length <= current
+                || !toScan[current].IsTag() 
+                || toScan[current].Tag.Name.Type != HtmlDisplayType.Block 
+                || toScan[current].Tag.Type != HtmlTagType.Opening
+            ) {
+                return null;
+            }
+            current++;
+            if (
+                toScan.Length <= current
+                || !toScan[current].IsTag()
+                || toScan[current].Tag.Type != HtmlTagType.Closing
+                || toScan[current].Tag.Name.Type != HtmlDisplayType.Block
             ) {
                 return null;
             }

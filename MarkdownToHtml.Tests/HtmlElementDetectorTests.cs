@@ -87,5 +87,21 @@ namespace MarkdownToHtml
                 elements[0].IsTagGroup
             );
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void ProperlyClosedBlockTagWithNoInnerTextIsATagGroup() 
+        {
+            string htmlString = "<p></p>";
+            HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            Assert.AreEqual(
+                1,
+                elements.Length
+            );
+            Assert.IsTrue(
+                elements[0].IsTagGroup
+            );
+        }
     }
 }
