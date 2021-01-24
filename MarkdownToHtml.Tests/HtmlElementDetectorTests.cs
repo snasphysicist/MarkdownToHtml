@@ -110,6 +110,29 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
+        [DataRow("<span>Inner <b>important text</span>")]
+        [DataRow("<span>Inner important</b> text</span>")]
+        [DataRow("<span>Inner <b>important</i> text</span>")]
+        public void ProperlyClosedInlineTagContainingImproperlyClosedInlineTagIsASingleTagGroupWithOuterElementsType(
+            string htmlString
+        ) {
+            HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            Assert.AreEqual(
+                1,
+                elements.Length
+            );
+            Assert.IsTrue(
+                elements[0].IsTagGroup
+            );
+            Assert.AreEqual(
+                "span",
+                elements[0].GroupDisplayType().Name
+            );
+        }
+
+        [DataTestMethod]
+        [Timeout(500)]
         [DataRow("<p></p>")]
         [DataRow("<p></p>\n")]
         [DataRow("\n<p></p>")]
