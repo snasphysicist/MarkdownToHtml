@@ -107,6 +107,7 @@ namespace MarkdownToHtml
             ) {
                 return null;
             }
+            current++;
             if (
                 toScan.Length <= current
                 || !toScan[current].IsTag() 
@@ -144,6 +145,7 @@ namespace MarkdownToHtml
             ) {
                 return null;
             }
+            current++;
             return new HtmlElement(
                 new ArraySegment<HtmlSnippet>(
                     toScan,
