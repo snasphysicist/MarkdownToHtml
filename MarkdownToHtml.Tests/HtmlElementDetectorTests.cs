@@ -156,6 +156,30 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
+        [DataRow("<span>Inner \n\n<p>important</p>\n\n text</span>")]
+        public void ProperlyClosedInlineTagContainingProperlyClosedBlockTagIsNotATagGroupOfInlineType(
+            string htmlString
+        ) {
+            HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            foreach (HtmlElement element in elements)
+            {
+                if (element.IsTagGroup)
+                {
+                    Assert.AreNotEqual(
+                        "span",
+                        element.GroupDisplayType().Name
+                    );
+                    Assert.AreNotEqual(
+                        HtmlDisplayType.Inline,
+                        element.GroupDisplayType().Type
+                    );
+                }
+            }
+        }
+
+        [DataTestMethod]
+        [Timeout(500)]
         [DataRow("<p></p>")]
         [DataRow("<p></p>\n")]
         [DataRow("\n<p></p>")]

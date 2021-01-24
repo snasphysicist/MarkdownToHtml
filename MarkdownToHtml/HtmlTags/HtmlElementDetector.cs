@@ -71,13 +71,23 @@ namespace MarkdownToHtml
             {
                 current++;
             }
-            if (
-                toScan.Length <= current
-                || !toScan[current].IsTag()
-                || toScan[current].Tag.Type != HtmlTagType.Closing
-                || toScan[current].Tag.Name.Type != HtmlDisplayType.Inline
-            ) {
+            if (current == toScan.Length)
+            {
                 return null;
+            }
+            HtmlElement[] contents = ElementsFromTags(
+                new ArraySegment<HtmlSnippet>(
+                    toScan,
+                    1,
+                    current - 1
+                ).ToArray()
+            );
+            foreach (HtmlElement contained in contents)
+            {
+                if (contained.IsTagGroup && contained.GroupDisplayType().Type == HtmlDisplayType.Block)
+                {
+                    return null;
+                }
             }
             current++;
             return new HtmlElement(
