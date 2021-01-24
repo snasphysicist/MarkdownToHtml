@@ -31,5 +31,20 @@ namespace MarkdownToHtml
         {
             return sequence.Length;
         }
+
+        public HtmlTagName GroupDisplayType()
+        {
+            if (!IsTagGroup) {
+                return null;
+            }
+            for (int i = 0; i < Count(); i++)
+            {
+                if (sequence[i].IsTag())
+                {
+                    return sequence[i].Tag.Name;
+                }
+            }
+            return null;
+        }
     }
 }

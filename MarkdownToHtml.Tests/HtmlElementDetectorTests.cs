@@ -88,6 +88,26 @@ namespace MarkdownToHtml
             );
         }
 
+        [TestMethod]
+        [Timeout(500)]
+        public void ProperlyClosedInlineTagContainingAnotherProperlyClosedInlineTagIsASingleTagGroupWithOuterElementsType() 
+        {
+            string htmlString = "<span>Inner <b>important</b> text</span>";
+            HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            Assert.AreEqual(
+                1,
+                elements.Length
+            );
+            Assert.IsTrue(
+                elements[0].IsTagGroup
+            );
+            Assert.AreEqual(
+                "span",
+                elements[0].GroupDisplayType().Name
+            );
+        }
+
         [DataTestMethod]
         [Timeout(500)]
         [DataRow("<p></p>")]
