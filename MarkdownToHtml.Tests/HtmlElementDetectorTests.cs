@@ -91,6 +91,11 @@ namespace MarkdownToHtml
         [DataTestMethod]
         [Timeout(500)]
         [DataRow("<p></p>")]
+        [DataRow("<p></p>\n")]
+        [DataRow("\n<p></p>")]
+        [DataRow("\n<p></p>\n")]
+        [DataRow("\n\n<p></p>\n")]
+        [DataRow("\n<p></p>\n\n")]
         public void ProperlyClosedBlockTagWithoutAtLeastTwoPrecedingAndSucceedingLineBreaksIsNotATagGroup(
             string htmlString
         ) {
