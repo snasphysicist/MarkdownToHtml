@@ -94,6 +94,21 @@ namespace MarkdownToHtml
             int current = 0;
             if (
                 toScan.Length <= current
+                || !toScan[current].IsToken() 
+                || toScan[current].Token.Type != HtmlTokenType.LineBreakingWhitespace
+            ) {
+                return null;
+            }
+            current++;
+            if (
+                toScan.Length <= current
+                || !toScan[current].IsToken() 
+                || toScan[current].Token.Type != HtmlTokenType.LineBreakingWhitespace
+            ) {
+                return null;
+            }
+            if (
+                toScan.Length <= current
                 || !toScan[current].IsTag() 
                 || toScan[current].Tag.Name.Type != HtmlDisplayType.Block 
                 || toScan[current].Tag.Type != HtmlTagType.Opening
@@ -114,6 +129,21 @@ namespace MarkdownToHtml
                 return null;
             }
             current++;
+            if (
+                toScan.Length <= current
+                || !toScan[current].IsToken() 
+                || toScan[current].Token.Type != HtmlTokenType.LineBreakingWhitespace
+            ) {
+                return null;
+            }
+            current++;
+            if (
+                toScan.Length <= current
+                || !toScan[current].IsToken() 
+                || toScan[current].Token.Type != HtmlTokenType.LineBreakingWhitespace
+            ) {
+                return null;
+            }
             return new HtmlElement(
                 new ArraySegment<HtmlSnippet>(
                     toScan,
