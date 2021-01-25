@@ -290,7 +290,6 @@ namespace MarkdownToHtml
         }
 
         [DataTestMethod]
-        [TestMethod]
         [Timeout(500)]
         [DataRow("\n\n<p>Inside <b>the paragraph</p>\n\n")]
         [DataRow("\n\n<p>Inside the</b> paragraph</p>\n\n")]
@@ -313,13 +312,12 @@ namespace MarkdownToHtml
             );
         }
 
-        [DataTestMethod]
+
         [TestMethod]
         [Timeout(500)]
-        [DataRow("\n\n<p>Inside <div>the</div> paragraph</p>\n\n")]
-        public void ProperlyClosedBlockTagWhichContainsProperlyClosedBlockTagOfDifferentNameIsASingleBlockTagGroup(
-            string htmlString
-        ) {
+        public void ProperlyClosedBlockTagWhichContainsProperlyClosedBlockTagOfDifferentNameIsASingleBlockTagGroup() 
+        {
+            string htmlString = "\n\n<p>Inside <div>the</div> paragraph</p>\n\n";
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
             HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
             Assert.AreEqual(
@@ -333,10 +331,13 @@ namespace MarkdownToHtml
                 HtmlDisplayType.Block,
                 elements[0].GroupDisplayType().Type
             );
+            Assert.AreEqual(
+                "p",
+                elements[0].GroupDisplayType().Name
+            );
         }
 
         [DataTestMethod]
-        [TestMethod]
         [Timeout(500)]
         [DataRow("\n\n<p>Inside <div>the paragraph</p>\n\n")]
         [DataRow("\n\n<p>Inside the</div> paragraph</p>\n\n")]
