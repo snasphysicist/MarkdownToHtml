@@ -57,6 +57,7 @@ namespace MarkdownToHtml
         private HtmlElement InlineGroupAtStart()
         {   
             int current = 0;
+            int depth = 0;
             if (
                 toScan.Length <= current
                 || !toScan[current].IsTag() 
@@ -66,16 +67,24 @@ namespace MarkdownToHtml
                 return null;
             }
             HtmlTagName groupName = toScan[current].Tag.Name;
+            depth++;
             current++;
-            while (
-                toScan.Length > current && 
-                (
-                    toScan[current].IsToken() || 
-                    toScan[current].Tag.Name.Name != groupName.Name ||
-                    toScan[current].Tag.Type != HtmlTagType.Closing
-                )
-            ) {
-                current++;
+            while (depth != 0 && toScan.Length > current) {
+                if (toScan[current].IsTag() && toScan[current].Tag.Name.Name == groupName.Name)
+                {
+                    if (toScan[current].Tag.Type == HtmlTagType.Opening)
+                    {
+                        depth++;
+                    }
+                    if (toScan[current].Tag.Type == HtmlTagType.Closing)
+                    {
+                        depth--;
+                    }
+                }
+                if (depth != 0)
+                {
+                    current++;
+                }
             }
             if (current == toScan.Length)
             {

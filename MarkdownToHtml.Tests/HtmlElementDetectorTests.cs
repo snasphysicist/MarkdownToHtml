@@ -195,7 +195,6 @@ namespace MarkdownToHtml
             }
         }
 
-        [Ignore]
         [DataTestMethod]
         [Timeout(500)]
         [DataRow("<b>Inner <b>important</b> text</b>")]
