@@ -67,8 +67,14 @@ namespace MarkdownToHtml
             }
             HtmlTagName groupName = toScan[current].Tag.Name;
             current++;
-            while (toScan.Length > current && (toScan[current].IsToken() || toScan[current].Tag.Name.Name != groupName.Name))
-            {
+            while (
+                toScan.Length > current && 
+                (
+                    toScan[current].IsToken() || 
+                    toScan[current].Tag.Name.Name != groupName.Name ||
+                    toScan[current].Tag.Type != HtmlTagType.Closing
+                )
+            ) {
                 current++;
             }
             if (current == toScan.Length)

@@ -180,6 +180,45 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
+        [DataRow("<b>Inner<b>")]
+        [DataRow("</b>Inner</b>")]
+        public void TwoTagsOfSameTypeOpeningOrClosingDoNotFormATagGroup(
+            string htmlString
+        ) {
+            HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            foreach (HtmlElement element in elements)
+            {
+                Assert.IsFalse(
+                    elements[0].IsTagGroup
+                );
+            }
+        }
+
+        [Ignore]
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow("<b>Inner <b>important</b> text</b>")]
+        public void ProperlyClosedInlineTagContainingProperlyClosedInlineTagOfSameTypeIsSingleTagGroup(
+            string htmlString
+        ) {
+            HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            Assert.AreEqual(
+                1,
+                elements.Length
+            );
+            Assert.IsTrue(
+                elements[0].IsTagGroup
+            );
+            Assert.AreEqual(
+                "b",
+                elements[0].GroupDisplayType().Name
+            );
+        }
+
+        [DataTestMethod]
+        [Timeout(500)]
         [DataRow("<p></p>")]
         [DataRow("<p></p>\n")]
         [DataRow("\n<p></p>")]
