@@ -288,5 +288,29 @@ namespace MarkdownToHtml
                 elements[0].GroupDisplayType().Type
             );
         }
+
+        [DataTestMethod]
+        [TestMethod]
+        [Timeout(500)]
+        [DataRow("\n\n<p>Inside <b>the paragraph</p>\n\n")]
+        [DataRow("\n\n<p>Inside the</b> paragraph</p>\n\n")]
+        [DataRow("\n\n<p>Inside <b>the</i> paragraph</p>\n\n")]
+        public void ProperlyClosedBlockTagWhichContainsImproperlyClosedInlineTagIsASingleBlockTagGroup(
+            string htmlString
+        ) {
+            HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            Assert.AreEqual(
+                1,
+                elements.Length
+            );
+            Assert.IsTrue(
+                elements[0].IsTagGroup
+            );
+            Assert.AreEqual(
+                HtmlDisplayType.Block,
+                elements[0].GroupDisplayType().Type
+            );
+        }
     }
 }
