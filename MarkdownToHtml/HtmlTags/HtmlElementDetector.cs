@@ -118,6 +118,7 @@ namespace MarkdownToHtml
         public HtmlElement BlockGroupAtStart()
         {
             int current = 0;
+            int depth = 0;
             if (
                 toScan.Length <= current
                 || !toScan[current].IsToken() 
@@ -142,17 +143,27 @@ namespace MarkdownToHtml
             ) {
                 return null;
             }
+            HtmlTagName groupName = toScan[current].Tag.Name;
             current++;
-            while (toScan.Length > current && !toScan[current].IsTag())
-            {
-                current++;
+            depth++;
+            while (depth != 0 && toScan.Length > current) {
+                if (toScan[current].IsTag() && toScan[current].Tag.Name.Name == groupName.Name)
+                {
+                    if (toScan[current].Tag.Type == HtmlTagType.Opening)
+                    {
+                        depth++;
+                    }
+                    if (toScan[current].Tag.Type == HtmlTagType.Closing)
+                    {
+                        depth--;
+                    }
+                }
+                if (depth != 0)
+                {
+                    current++;
+                }
             }
-            if (
-                toScan.Length <= current
-                || !toScan[current].IsTag()
-                || toScan[current].Tag.Type != HtmlTagType.Closing
-                || toScan[current].Tag.Name.Type != HtmlDisplayType.Block
-            ) {
+            if (current == toScan.Length) {
                 return null;
             }
             current++;
