@@ -195,12 +195,12 @@ namespace MarkdownToHtml
             }
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [Timeout(500)]
-        [DataRow("<b>Inner <b>important</b> text</b>")]
-        public void ProperlyClosedInlineTagContainingProperlyClosedInlineTagOfSameTypeIsSingleTagGroup(
-            string htmlString
-        ) {
+        [DataRow()]
+        public void ProperlyClosedInlineTagContainingProperlyClosedInlineTagOfSameTypeIsSingleTagGroup() 
+        {
+            string htmlString = "<b>Inner <b>important</b> text</b>";
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
             HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
             Assert.AreEqual(
