@@ -25,5 +25,15 @@ namespace MarkdownToHtml
         {
             return tokens;
         }
+
+        public string AsHtmlString()
+        {
+            string html = "";
+            foreach (HtmlToken token in tokens)
+            {
+                html = html + token.AsHtmlString();
+            }
+            return html;
+        }
     }
 }

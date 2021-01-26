@@ -46,5 +46,15 @@ namespace MarkdownToHtml
             }
             return null;
         }
+
+        public string AsHtmlString()
+        {
+            string html = "";
+            foreach (HtmlSnippet snippet in sequence)
+            {
+                html = html + snippet.AsHtmlString();
+            }
+            return html;
+        }
     }
 }

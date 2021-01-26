@@ -16,5 +16,10 @@ namespace MarkdownToHtml
             Type = type;
             Content = content;
         }
+
+        public string AsHtmlString()
+        {
+            return Content;
+        }
     }
 }

@@ -49,5 +49,18 @@ namespace MarkdownToHtml
             }
             return 0;
         }
+
+        public string AsHtmlString()
+        {
+            if (IsTag())
+            {
+                return Tag.AsHtmlString();
+            }
+            if (IsToken())
+            {
+                return Token.AsHtmlString();
+            }
+            return "";
+        }
     }
 }

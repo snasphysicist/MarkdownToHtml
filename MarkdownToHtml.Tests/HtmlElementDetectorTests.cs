@@ -359,5 +359,20 @@ namespace MarkdownToHtml
                 elements[0].GroupDisplayType().Type
             );
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void BlockTagClosedWithExtraClosingTagInsideWithoutLineBreaksIsNotATagGroup() 
+        {
+            string htmlString = "\n\n<p>Yes</p>No</p>\n\n";
+            HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            foreach (HtmlElement element in elements)
+            {
+                Assert.IsFalse(
+                    element.IsTagGroup
+                );
+            }
+        }
     }
 }
