@@ -374,5 +374,37 @@ namespace MarkdownToHtml
                 );
             }
         }
+
+
+        [TestMethod]
+        [Timeout(500)]
+        public void BlockTagClosedWithExtraOpeningTagInsideWithoutLineBreaksIsNotATagGroup() 
+        {
+            string htmlString = "\n\n<p>Yes<p>No</p>\n\n";
+            HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            foreach (HtmlElement element in elements)
+            {
+                Assert.IsFalse(
+                    element.IsTagGroup
+                );
+            }
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void ProperlyClosedBlockTagContaingProperlyClosedTagOfSameNameWithoutLineBreaksIsSingleTagGroup() 
+        {
+            string htmlString = "\n\n<div>Yes<div>No</div>Maybe</div>\n\n";
+            HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            Assert.AreEqual(
+                1,
+                elements.Length
+            );
+            Assert.IsTrue(
+                elements[0].IsTagGroup
+            );
+        }
     }
 }
