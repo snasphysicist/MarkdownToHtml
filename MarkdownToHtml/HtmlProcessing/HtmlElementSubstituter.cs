@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 
 namespace MarkdownToHtml
@@ -10,18 +11,19 @@ namespace MarkdownToHtml
         public string Processed
         { get; private set; }
 
-        private Dictionary<string, string> replacements;
+        private Dictionary<Guid, string> replacements;
 
         public HtmlElementSubstituter(
             HtmlElement[] elements
         ) {
+            Processed = "";
             this.elements = elements;
-            replacements = new Dictionary<string, string>();
+            replacements = new Dictionary<Guid, string>();
         }
 
-        public Dictionary<string, string> GetReplacements()
+        public Dictionary<Guid, string> GetReplacements()
         {
-            return new Dictionary<string, string>(replacements);
+            return new Dictionary<Guid, string>(replacements);
         }
 
         public void Process()
@@ -57,7 +59,19 @@ namespace MarkdownToHtml
         private void ProcessBlockElement(
             HtmlElement element
         ) {
-
+            Guid uuid = Guid.NewGuid();
+            HtmlSnippet[] parts = element.Contents();
+            Processed = Processed + parts[0].AsHtmlString() + parts[1].AsHtmlString() 
+                + uuid.ToString() + parts[parts.Length - 2].AsHtmlString() + parts[parts.Length - 1].AsHtmlString();
+            string replacedContent = "";
+            for (int i = 2; i < parts.Length - 2; i++)
+            {
+                replacedContent = replacedContent + parts[i].AsHtmlString();
+            }
+            replacements.Add(
+                uuid,
+                replacedContent
+            ); 
         }
 
         private void ProcessInlineElement(

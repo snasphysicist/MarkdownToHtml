@@ -1,4 +1,6 @@
 
+using System;
+
 namespace MarkdownToHtml
 {
     public class HtmlElement
@@ -55,6 +57,15 @@ namespace MarkdownToHtml
                 html = html + snippet.AsHtmlString();
             }
             return html;
+        }
+
+        public HtmlSnippet[] Contents()
+        {
+            return new ArraySegment<HtmlSnippet>(
+                sequence,
+                0,
+                sequence.Length
+            ).ToArray();
         }
     }
 }
