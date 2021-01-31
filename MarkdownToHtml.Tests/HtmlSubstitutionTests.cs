@@ -81,8 +81,8 @@ namespace MarkdownToHtml
                 substituted
             );
             Assert.AreEqual(
-                substituter.Processed,
-                "\n\n" + uuid.ToString() + "\n\n"
+                "\n\n" + uuid.ToString() + "\n\n",
+                substituter.Processed
             );
         }
 
@@ -109,8 +109,55 @@ namespace MarkdownToHtml
                 substituted
             );
             Assert.AreEqual(
-                substituter.Processed,
-                "\n\n" + uuid.ToString() + "\n\n"
+                "\n\n" + uuid.ToString() + "\n\n",
+                substituter.Processed
+            );
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void SingleValidInlineElementWithoutNestedElementsOnlyTagsAreReplacedByUUIDNotInnerText()
+        {
+            string html = "<span> Test </span>";
+            HtmlElement[] elements = HtmlStringToElements(html);
+            HtmlElementSubstituter substituter = new HtmlElementSubstituter(elements);
+            substituter.Process();
+            Assert.AreEqual(
+                2,
+                substituter.GetReplacements().Count
+            );
+            Guid[] uuids = Keys(substituter.GetReplacements());
+            string[] substituted = Values(substituter.GetReplacements());
+            Guid openerUuid = new Guid();
+            string openerSubstituted = "";
+            Guid closerUuid = new Guid();
+            string closerSubstituted = "";
+            for (int i = 0; i < uuids.Length; i++)
+            {
+                if (substituted[i].Contains("/"))
+                {
+                    closerUuid = uuids[i];
+                    closerSubstituted = substituted[i];
+                } else {
+                    openerUuid = uuids[i];
+                    openerSubstituted = substituted[i];
+                }
+            }
+            Assert.AreEqual(
+                html.Split(" ")[0],
+                openerSubstituted
+            );
+            Assert.AreEqual(
+                substituter.Processed.Split(" ")[0],
+                openerUuid.ToString()
+            );
+            Assert.AreEqual(
+                html.Split(" ")[2],
+                closerSubstituted
+            );
+            Assert.AreEqual(
+                substituter.Processed.Split(" ")[2],
+                closerUuid.ToString()
             );
         }
     }

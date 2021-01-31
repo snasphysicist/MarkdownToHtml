@@ -77,7 +77,25 @@ namespace MarkdownToHtml
         private void ProcessInlineElement(
             HtmlElement element
         ) {
-
+            HtmlSnippet[] contents = element.Contents();
+            HtmlSnippet opener = contents[0];
+            Guid openerUuid = Guid.NewGuid();
+            replacements.Add(
+                openerUuid,
+                opener.AsHtmlString()
+            );
+            HtmlSnippet closer = contents[contents.Length - 1];
+            Guid closerUuid = Guid.NewGuid();
+            replacements.Add(
+                closerUuid,
+                closer.AsHtmlString()
+            );
+            Processed = Processed + openerUuid.ToString();
+            for (int i = 1; i < contents.Length - 1; i++)
+            {
+                Processed = Processed + contents[i].AsHtmlString();
+            }
+            Processed = Processed + closerUuid.ToString();
         }
 
         private void ProcessOther(
