@@ -160,5 +160,64 @@ namespace MarkdownToHtml
                 closerUuid.ToString()
             );
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void SingleValidInlineElementWithAttributesWithoutNestedElementsOnlyTagsAreReplacedByUUIDNotInnerText()
+        {
+            string opener = "<span a=\"b\">";
+            string innerText = " Test ";
+            string closer = "</span>";
+            string html = opener + innerText + closer;
+            HtmlElement[] elements = HtmlStringToElements(html);
+            HtmlElementSubstituter substituter = new HtmlElementSubstituter(elements);
+            substituter.Process();
+            Assert.AreEqual(
+                2,
+                substituter.GetReplacements().Count
+            );
+            Guid[] uuids = Keys(substituter.GetReplacements());
+            string[] substituted = Values(substituter.GetReplacements());
+            Guid openerUuid = new Guid();
+            string openerSubstituted = "";
+            Guid closerUuid = new Guid();
+            string closerSubstituted = "";
+            for (int i = 0; i < uuids.Length; i++)
+            {
+                if (substituted[i].Contains("/"))
+                {
+                    closerUuid = uuids[i];
+                    closerSubstituted = substituted[i];
+                } else {
+                    openerUuid = uuids[i];
+                    openerSubstituted = substituted[i];
+                }
+            }
+            Assert.AreEqual(
+                opener,
+                openerSubstituted
+            );
+            Assert.AreEqual(
+                substituter.Processed.Split(" ")[0],
+                openerUuid.ToString()
+            );
+            Assert.AreEqual(
+                closer,
+                closerSubstituted
+            );
+            Assert.AreEqual(
+                substituter.Processed.Split(" ")[2],
+                closerUuid.ToString()
+            );
+            string processedInnerText = substituter.Processed;
+            for (int i = 0; i < uuids.Length; i++)
+            {
+                processedInnerText = processedInnerText.Replace(uuids[i].ToString(), "");
+            }
+            Assert.AreEqual(
+                innerText,
+                processedInnerText
+            );
+        }
     }
 }
