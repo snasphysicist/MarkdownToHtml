@@ -85,5 +85,33 @@ namespace MarkdownToHtml
                 "\n\n" + uuid.ToString() + "\n\n"
             );
         }
+
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow("\n\n<p>Outside<p>then in</p>and back</p>\n\n")]
+        [DataRow("\n\n<div>We<p>need<article>to</article>go</p>deeper</div>\n\n")]
+        [DataRow("\n\n<p>I can't <b>emphasise</b> this enough</p>\n\n")]
+        [DataRow("\n\n<div>Extremely <i>very <b>really</b> <span>insanely</span></i> important!</div>\n\n")]
+        public void SingleValidBlockLevelElementWithNestedElementsIsReplacedByLineBreaksAndUUID(
+            string html
+        ) {
+            HtmlElement[] elements = HtmlStringToElements(html);
+            HtmlElementSubstituter substituter = new HtmlElementSubstituter(elements);
+            substituter.Process();
+            Assert.AreEqual(
+                1,
+                substituter.GetReplacements().Count
+            );
+            Guid uuid = Keys(substituter.GetReplacements())[0];
+            string substituted = Values(substituter.GetReplacements())[0];
+            Assert.AreEqual(
+                html.Replace("\n", ""),
+                substituted
+            );
+            Assert.AreEqual(
+                substituter.Processed,
+                "\n\n" + uuid.ToString() + "\n\n"
+            );
+        }
     }
 }
