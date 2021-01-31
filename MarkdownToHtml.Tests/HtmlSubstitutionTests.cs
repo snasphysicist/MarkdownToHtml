@@ -34,6 +34,20 @@ namespace MarkdownToHtml
             return strings;
         }
 
+        private Guid FindKeyForValueOrDefault(
+            Dictionary <Guid, string> replacements,
+            string search
+        ) {
+            foreach (KeyValuePair<Guid, string> entry in replacements)
+            {
+                if (entry.Value == search)
+                {
+                    return entry.Key;
+                }
+            }
+            throw new AssertFailedException("The provided exact string \"" + search + "\" was not in the list of replaced values");
+        }
+
         [DataTestMethod]
         [Timeout(500)]
         [DataRow("Text")]
@@ -217,6 +231,71 @@ namespace MarkdownToHtml
             Assert.AreEqual(
                 innerText,
                 processedInnerText
+            );
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void SingleValidInlineElementWithNestedElementsOuterAndNestedTagsNoInnerTextReplacedByUUID()
+        {
+            string outerOpener = "<span>";
+            string innerOpener = "<i>";
+            string innerCloser = "</i>";
+            string outerCloser = "</span>";
+            string innerText1 = " Use ";
+            string innerText2 = " the ";
+            string innerText3 = " force ";
+            string html = outerOpener + innerText1 + innerOpener + innerText2 + innerCloser + innerText3 + outerCloser;
+            HtmlElement[] elements = HtmlStringToElements(html);
+            HtmlElementSubstituter substituter = new HtmlElementSubstituter(elements);
+            substituter.Process();
+            Assert.AreEqual(
+                4,
+                substituter.GetReplacements().Count
+            );
+            Guid outerOpenerUuid = FindKeyForValueOrDefault(
+                substituter.GetReplacements(),
+                outerOpener
+            );
+            Assert.AreEqual(
+                substituter.Processed.Split(" ")[0],
+                outerOpenerUuid.ToString()
+            );
+            Guid innerOpenerUuid = FindKeyForValueOrDefault(
+                substituter.GetReplacements(),
+                innerOpener
+            );
+            Assert.AreEqual(
+                substituter.Processed.Split(" ")[2],
+                innerOpenerUuid.ToString()
+            );
+            Guid innerCloserUuid = FindKeyForValueOrDefault(
+                substituter.GetReplacements(),
+                innerCloser
+            );
+            Assert.AreEqual(
+                substituter.Processed.Split(" ")[4],
+                innerCloserUuid.ToString()
+            );
+            Guid outerCloserUuid = FindKeyForValueOrDefault(
+                substituter.GetReplacements(),
+                outerCloser
+            );
+            Assert.AreEqual(
+                substituter.Processed.Split(" ")[6],
+                outerCloserUuid.ToString()
+            );
+            Assert.AreEqual(
+                innerText1.Replace(" ", ""),
+                substituter.Processed.Split(" ")[1]
+            );
+            Assert.AreEqual(
+                innerText2.Replace(" ", ""),
+                substituter.Processed.Split(" ")[3]
+            );
+            Assert.AreEqual(
+                innerText3.Replace(" ", ""),
+                substituter.Processed.Split(" ")[5]
             );
         }
     }

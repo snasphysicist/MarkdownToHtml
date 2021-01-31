@@ -90,13 +90,25 @@ namespace MarkdownToHtml
                 closerUuid,
                 closer.AsHtmlString()
             );
-            Processed = Processed + openerUuid.ToString();
-            for (int i = 1; i < contents.Length - 1; i++)
+            HtmlElementSubstituter substituteInner = new HtmlElementSubstituter(
+                HtmlElementDetector.ElementsFromTags(
+                    new ArraySegment<HtmlSnippet>(
+                        contents,
+                        1,
+                        contents.Length - 2
+                    ).ToArray()
+                )
+            );
+            substituteInner.Process();
+            foreach (KeyValuePair<Guid, string> substitution in substituteInner.GetReplacements())
             {
-                Processed = Processed + contents[i].AsHtmlString();
+                replacements.Add(
+                    substitution.Key,
+                    substitution.Value
+                );
             }
-            Processed = Processed + closerUuid.ToString();
-        }
+            Processed = Processed + openerUuid.ToString() + substituteInner.Processed + closerUuid.ToString();
+         }
 
         private void ProcessOther(
             HtmlElement element
