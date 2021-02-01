@@ -16,7 +16,7 @@ namespace MarkdownToHtml
         };
 
         private Regex escapedSpecial = new Regex(
-            "^&[a-z]+;"
+            "^&[a-z0-9]+;"
         );
 
         private string input;
@@ -37,7 +37,13 @@ namespace MarkdownToHtml
             while (current < input.Length)
             {
                 int nextSpecialIndex = FindNextUnescapedSpecialAfter(current);
-                Escaped = Escaped + input.Substring(current, nextSpecialIndex);
+                Escaped = Escaped + input.Substring(current, nextSpecialIndex - current);
+                if (nextSpecialIndex < input.Length)
+                {
+                    string escapeText = htmlSpecials[input.Substring(nextSpecialIndex, 1)];
+                    Escaped = escapeText;
+                    current = nextSpecialIndex + escapeText.Length; 
+                }
                 current = nextSpecialIndex + 1;
             }
         }
@@ -45,7 +51,28 @@ namespace MarkdownToHtml
         private int FindNextUnescapedSpecialAfter(
             int current
         ) {
-            return input.Length;
+            while (
+                current < input.Length 
+                && (
+                    !IsHtmlSpecialCharacterAtStart(input.Substring(current))
+                    || EscapedSpecialAtStart(input.Substring(current))
+                )
+            ) {
+                current++;
+            }
+            return current;
+        }
+
+        private bool IsHtmlSpecialCharacterAtStart(
+            string checkStart
+        ) {
+            return htmlSpecials.ContainsKey(checkStart.Substring(0, 1));
+        }
+
+        private bool EscapedSpecialAtStart(
+            string checkStart
+        ) {
+            return escapedSpecial.IsMatch(checkStart);
         }
     }
 }
