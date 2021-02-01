@@ -136,5 +136,18 @@ namespace MarkdownToHtml
                 withoutSurroundingText
             );
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void AutomaticallyEscapedSpecialsAdjacentToOneAnotherAreBothEscaped() 
+        {
+            string adjacentSpecials = "<>>&'\"";
+            string replaced = "&lt;&gt;&gt;&amp;&apos;&quot;";
+            HtmlSpecialCharacterEscaper escaper = new HtmlSpecialCharacterEscaper(adjacentSpecials);
+            Assert.AreEqual(
+                replaced,
+                escaper.Escaped
+            );
+        }
     }
 }
