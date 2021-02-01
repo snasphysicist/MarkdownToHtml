@@ -113,5 +113,28 @@ namespace MarkdownToHtml
                 escaper.Escaped
             );
         }
+
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow("Test&Test", "amp")]
+        [DataRow("Test\"Test", "quot")]
+        [DataRow("Test'Test", "apos")]
+        [DataRow("Test<Test", "lt")]
+        [DataRow("Test>Test", "gt")]
+        public void OnlyAutomaticallyEscapedSpecialsAreReplacedByHtmlEscapeSequenceWhenInBetweenOtherText(
+            string unescaped,
+            string expectedEscapeName
+        ) {
+            HtmlSpecialCharacterEscaper escaper = new HtmlSpecialCharacterEscaper(unescaped);
+            string withoutSurroundingText = escaper.Escaped.Replace("Test", "");
+            Assert.AreEqual(
+                escaper.Escaped.Length - 8,
+                withoutSurroundingText.Length
+            );
+            Assert.AreEqual(
+                "&" + expectedEscapeName + ";",
+                withoutSurroundingText
+            );
+        }
     }
 }

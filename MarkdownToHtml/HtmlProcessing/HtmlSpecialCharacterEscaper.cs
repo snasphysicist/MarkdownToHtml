@@ -41,7 +41,7 @@ namespace MarkdownToHtml
                 if (nextSpecialIndex < input.Length)
                 {
                     string escapeText = htmlSpecials[input.Substring(nextSpecialIndex, 1)];
-                    Escaped = escapeText;
+                    Escaped = Escaped + escapeText;
                     current = nextSpecialIndex + escapeText.Length; 
                 }
                 current = nextSpecialIndex + 1;
