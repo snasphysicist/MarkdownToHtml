@@ -75,7 +75,7 @@ namespace MarkdownToHtml
              * and wrapped in a blockquote element
              */
             MarkdownParser parser = new MarkdownParser(
-                truncatedLines
+                string.Join("\n", truncatedLines)
             );
             Element element = new ElementFactory().New(
                 ElementType.Quote,

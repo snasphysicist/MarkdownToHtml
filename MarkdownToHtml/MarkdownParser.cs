@@ -1,7 +1,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
@@ -44,6 +43,10 @@ namespace MarkdownToHtml
         private LinkedList<ReferencedUrl> Urls
         { get; set; }
 
+        private string newLine;
+
+        private string postprocessed;
+
         public IHtmlable[] ContentAsArray()
         {
             IHtmlable[] contentArray = new IHtmlable[Content.Count];
@@ -56,17 +59,16 @@ namespace MarkdownToHtml
 
         public string ToHtml()
         {
-            string html = "";
-            foreach (IHtmlable entry in Content)
-            {
-                html += entry.ToHtml();
-            }
-            return html;
+            return postprocessed;
         }
 
         public MarkdownParser(
-            string[] lines
+            string markdown
         ) {
+            newLine = GuessNewLine(markdown);
+            string preprocessed = markdown;
+            // TODO PREPROCESSING
+            string[] lines = preprocessed.Split(new char[]{'\n', '\r'});
             // Assume success
             Success = true;
             // Store parsed content as we go
@@ -97,6 +99,51 @@ namespace MarkdownToHtml
                 ) {
                     input.NextLine();
                 }
+            }
+            // TODO POSTPROCESSING
+            string html = "";
+            foreach (IHtmlable entry in Content)
+            {
+                html += entry.ToHtml();
+            }
+            postprocessed = html;
+        }
+
+        private string GuessNewLine(
+            string markdown
+        ) {
+            int unix = 0;
+            int weird = 0;
+            int windows = 0;
+            char[] markdownAsChars = markdown.ToCharArray();
+            for (int index = 0; index < markdown.Length - 1; index++)
+            {
+                if (markdownAsChars[index] == '\r' && markdownAsChars[index + 1] == '\n')
+                {
+                    windows++;
+                } else if (markdownAsChars[index] == '\r')
+                {
+                    weird++;
+                } else if (markdownAsChars[index] == '\n')
+                {
+                    unix++;
+                }
+            }
+            if (markdownAsChars[markdownAsChars.Length - 1] == '\r')
+            {
+                weird++;
+            } else if (markdownAsChars[markdownAsChars.Length - 1] == '\n')
+            {
+                unix++;
+            }
+            if (unix > weird && unix > windows)
+            {
+                return "\n";
+            } else if (weird > windows)
+            {
+                return "\r";
+            } else {
+                return "\r\n";
             }
         }
 
