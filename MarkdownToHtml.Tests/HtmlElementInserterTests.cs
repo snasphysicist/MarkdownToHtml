@@ -23,5 +23,22 @@ namespace MarkdownToHtml
             );
         }
 
+        [TestMethod]
+        [Timeout(500)]
+        public void NoReplacementsAreMadeNothingInTheInputStringMatchesAGuidInTheDictionary()
+        {
+            string toProcess = "Not A Guid, A Guid " + Guid.NewGuid().ToString();
+            Dictionary<Guid, string> replacements = new Dictionary<Guid, string>{
+                {Guid.NewGuid(), "<p>"}
+            };
+            HtmlElementInserter inserter = new HtmlElementInserter(
+                replacements,
+                toProcess
+            );
+            Assert.AreEqual(
+                toProcess,
+                inserter.Processed
+            );
+        }
     }
 }
