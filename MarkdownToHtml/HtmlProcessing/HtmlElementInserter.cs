@@ -27,7 +27,7 @@ namespace MarkdownToHtml
             Processed = input;
             foreach (Guid placeholder in replacements.Keys)
             {
-                input.Replace(
+                Processed = Processed.Replace(
                     placeholder.ToString(),
                     replacements[placeholder]
                 );

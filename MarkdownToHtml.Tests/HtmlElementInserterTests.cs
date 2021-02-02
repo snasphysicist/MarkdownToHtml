@@ -40,5 +40,26 @@ namespace MarkdownToHtml
                 inserter.Processed
             );
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void InputContainingOnlyAMatchingGuidIsReplacedByReplacementForThatGuid()
+        {
+            Guid guid = Guid.NewGuid();
+            string toProcess = guid.ToString();
+            string replaced = "<p>";
+            Dictionary<Guid, string> replacements = new Dictionary<Guid, string>{
+                {guid, replaced},
+                {Guid.NewGuid(), "Something else"}
+            };
+            HtmlElementInserter inserter = new HtmlElementInserter(
+                replacements,
+                toProcess
+            );
+            Assert.AreEqual(
+                replaced,
+                inserter.Processed
+            );
+        }
     }
 }
