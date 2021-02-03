@@ -1,6 +1,4 @@
 
-using System.Collections.Generic;
-
 namespace MarkdownToHtml
 {
     public class ElementFactory
@@ -13,9 +11,17 @@ namespace MarkdownToHtml
             ElementDetails details = new ElementDetails(
                 type
             );
+            IHtmlWriter writer;
+            if (type != ElementType.HorizontalRule)
+            {
+                writer = new TagOnlyWriter();
+            } else 
+            {
+                writer = new TagOnlySelfClosingWriter();
+            }
             return new Element(
                 details,
-                new TagOnlyWriter()
+                writer
             );
         }
 

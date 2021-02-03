@@ -69,11 +69,13 @@ namespace MarkdownToHtml
             HtmlTokeniser tokeniser = new HtmlTokeniser(markdown);
             HtmlToken[] tokens = tokeniser.tokenise();
             HtmlSnippet[] tags = HtmlTagDetector.TagsFromTokens(tokens);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(tags);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                tags,
+                LineBreaksAroundBlocks.Required
+            );
             HtmlElementSubstituter substituter = new HtmlElementSubstituter(elements);
             substituter.Process();
             string preprocessed = substituter.Processed;
-            // TODO PREPROCESSING
             string[] lines = preprocessed.Split(new char[]{'\n', '\r'});
             // Assume success
             Success = true;
@@ -106,13 +108,25 @@ namespace MarkdownToHtml
                     input.NextLine();
                 }
             }
-            // TODO POSTPROCESSING
             string html = "";
             foreach (IHtmlable entry in Content)
             {
                 html += entry.ToHtml();
             }
-            postprocessed = html;
+            HtmlTokeniser tokeniserAfter = new HtmlTokeniser(html);
+            HtmlToken[] tokensAfter = tokeniserAfter.tokenise();
+            HtmlSnippet[] tagsAfter = HtmlTagDetector.TagsFromTokens(tokensAfter);
+            HtmlElement[] elementsAfter = HtmlElementDetector.ElementsFromTags(
+                tagsAfter,
+                LineBreaksAroundBlocks.NotRequired
+            );
+            HtmlElementSubstituter substituterAfter = new HtmlElementSubstituter(elementsAfter);
+            substituterAfter.Process();
+            HtmlSpecialCharacterEscaper escaper = new HtmlSpecialCharacterEscaper(substituterAfter.Processed);
+            string escaped = escaper.Escaped;
+            HtmlElementInserter postInserter = new HtmlElementInserter(substituterAfter.GetReplacements(), escaped);
+            HtmlElementInserter preInserter = new HtmlElementInserter(substituter.GetReplacements(), postInserter.Processed);
+            postprocessed = preInserter.Processed;
         }
 
         private string GuessNewLine(

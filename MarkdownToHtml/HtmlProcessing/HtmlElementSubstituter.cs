@@ -61,12 +61,43 @@ namespace MarkdownToHtml
         ) {
             Guid uuid = Guid.NewGuid();
             HtmlSnippet[] parts = element.Contents();
+            if (parts[0].IsToken() && parts[0].Token.Type == HtmlTokenType.LineBreakingWhitespace)
+            {
+                ProcessBlockElementWithLineBreaks(element);
+            } else 
+            {
+                ProcessBlockElementWithoutLineBreaks(element);
+            }
+        }
+
+        private void ProcessBlockElementWithLineBreaks(
+            HtmlElement element
+        ) {
+            Guid uuid = Guid.NewGuid();
+            HtmlSnippet[] parts = element.Contents();
             Processed = Processed + parts[0].AsHtmlString() + parts[1].AsHtmlString() 
                 + uuid.ToString() + parts[parts.Length - 2].AsHtmlString() + parts[parts.Length - 1].AsHtmlString();
             string replacedContent = "";
             for (int i = 2; i < parts.Length - 2; i++)
             {
                 replacedContent = replacedContent + parts[i].AsHtmlString();
+            }
+            replacements.Add(
+                uuid,
+                replacedContent
+            ); 
+        }
+
+        private void ProcessBlockElementWithoutLineBreaks(
+            HtmlElement element
+        ) {
+            Guid uuid = Guid.NewGuid();
+            HtmlSnippet[] parts = element.Contents();
+            Processed = Processed + uuid.ToString();
+            string replacedContent = "";
+            foreach (HtmlSnippet part in parts)
+            {
+                replacedContent = replacedContent + part.AsHtmlString();
             }
             replacements.Add(
                 uuid,
@@ -96,7 +127,8 @@ namespace MarkdownToHtml
                         contents,
                         1,
                         contents.Length - 2
-                    ).ToArray()
+                    ).ToArray(),
+                    LineBreaksAroundBlocks.NotRequired
                 )
             );
             substituteInner.Process();

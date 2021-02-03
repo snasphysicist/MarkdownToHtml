@@ -29,7 +29,10 @@ namespace MarkdownToHtml
             string htmlString
         ) {
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
@@ -46,7 +49,10 @@ namespace MarkdownToHtml
             string htmlString
         ) {
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
@@ -62,7 +68,10 @@ namespace MarkdownToHtml
         {
             string htmlString = "<span></span>";
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
@@ -78,7 +87,10 @@ namespace MarkdownToHtml
         {
             string htmlString = "<span>Inner text</span>";
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
@@ -94,7 +106,10 @@ namespace MarkdownToHtml
         {
             string htmlString = "<span>Inner <b>important</b> text</span>";
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
@@ -117,7 +132,10 @@ namespace MarkdownToHtml
             string htmlString
         ) {
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
@@ -140,7 +158,10 @@ namespace MarkdownToHtml
             string htmlString
         ) {
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
@@ -161,7 +182,10 @@ namespace MarkdownToHtml
             string htmlString
         ) {
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             foreach (HtmlElement element in elements)
             {
                 if (element.IsTagGroup)
@@ -186,7 +210,10 @@ namespace MarkdownToHtml
             string htmlString
         ) {
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             foreach (HtmlElement element in elements)
             {
                 Assert.IsFalse(
@@ -202,7 +229,10 @@ namespace MarkdownToHtml
         {
             string htmlString = "<b>Inner <b>important</b> text</b>";
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
@@ -228,7 +258,10 @@ namespace MarkdownToHtml
             string htmlString
         ) {
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             foreach (HtmlElement element in elements)
             {
                 Assert.IsFalse(
@@ -243,7 +276,10 @@ namespace MarkdownToHtml
         {
             string htmlString = "\n\n<p></p>\n\n";
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
@@ -259,7 +295,10 @@ namespace MarkdownToHtml
         {
             string htmlString = "\n\n<p>Inside the paragraph</p>\n\n";
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
@@ -275,7 +314,10 @@ namespace MarkdownToHtml
         {
             string htmlString = "\n\n<p>Inside <b>the</b> paragraph</p>\n\n";
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
@@ -298,7 +340,10 @@ namespace MarkdownToHtml
             string htmlString
         ) {
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
@@ -319,7 +364,10 @@ namespace MarkdownToHtml
         {
             string htmlString = "\n\n<p>Inside <div>the</div> paragraph</p>\n\n";
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
@@ -346,7 +394,10 @@ namespace MarkdownToHtml
             string htmlString
         ) {
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
@@ -366,7 +417,10 @@ namespace MarkdownToHtml
         {
             string htmlString = "\n\n<p>Yes</p>No</p>\n\n";
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             foreach (HtmlElement element in elements)
             {
                 Assert.IsFalse(
@@ -382,7 +436,10 @@ namespace MarkdownToHtml
         {
             string htmlString = "\n\n<p>Yes<p>No</p>\n\n";
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             foreach (HtmlElement element in elements)
             {
                 Assert.IsFalse(
@@ -397,7 +454,10 @@ namespace MarkdownToHtml
         {
             string htmlString = "\n\n<div>Yes<div>No</div>Maybe</div>\n\n";
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
@@ -413,7 +473,10 @@ namespace MarkdownToHtml
         {
             string htmlString = "\n\n<div>Yes\n\n<div>No</div>\n\nMaybe</div>\n\n";
             HtmlSnippet[] snippets = snippetsFromHtmlString(htmlString);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             Assert.AreEqual(
                 1,
                 elements.Length
