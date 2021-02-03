@@ -66,7 +66,13 @@ namespace MarkdownToHtml
             string markdown
         ) {
             newLine = GuessNewLine(markdown);
-            string preprocessed = markdown;
+            HtmlTokeniser tokeniser = new HtmlTokeniser(markdown);
+            HtmlToken[] tokens = tokeniser.tokenise();
+            HtmlSnippet[] tags = HtmlTagDetector.TagsFromTokens(tokens);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(tags);
+            HtmlElementSubstituter substituter = new HtmlElementSubstituter(elements);
+            substituter.Process();
+            string preprocessed = substituter.Processed;
             // TODO PREPROCESSING
             string[] lines = preprocessed.Split(new char[]{'\n', '\r'});
             // Assume success
