@@ -61,7 +61,7 @@ namespace MarkdownToHtml
         public void HtmlElementSubstituterLongInput() {
             // This is some *standard* Markdown text
             // 
-            // <p = "Something">Some inline <b>HTML</b> </p>
+            // <p attr="Something">Some inline <b>HTML</b> </p>
             // 
             // # Markdown Heading <i>heaaadiiing</i>
             // <div> Oh no, where are the lines new lines???</div>
