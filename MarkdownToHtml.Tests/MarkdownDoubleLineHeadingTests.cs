@@ -17,7 +17,7 @@ namespace MarkdownToHtml
             string targetHtml
         ) {
             MarkdownParser parser = new MarkdownParser(
-                markdown.Split("\n")
+                markdown
             );
             Assert.IsTrue(
                 parser.Success
@@ -37,7 +37,7 @@ namespace MarkdownToHtml
             string targetHtml
         ) {
             MarkdownParser parser = new MarkdownParser(
-                markdown.Split("\n")
+                markdown
             );
             Assert.IsTrue(
                 parser.Success
@@ -59,7 +59,7 @@ namespace MarkdownToHtml
             string targetHtml
         ) {
             MarkdownParser parser = new MarkdownParser(
-                markdown.Split("\n")
+                markdown
             );
             Assert.IsTrue(
                 parser.Success
@@ -79,7 +79,7 @@ namespace MarkdownToHtml
             string targetHtml
         ) {
             MarkdownParser parser = new MarkdownParser(
-                markdown.Split("\n")
+                markdown
             );
             Assert.IsTrue(
                 parser.Success

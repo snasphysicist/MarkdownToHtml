@@ -14,7 +14,10 @@ namespace MarkdownToHtml
         ) {
             HtmlToken[] tokens = new HtmlTokeniser(html).tokenise();
             HtmlSnippet[] snippets = HtmlTagDetector.TagsFromTokens(tokens);
-            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(snippets);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                snippets,
+                LineBreaksAroundBlocks.Required
+            );
             return elements;
         }
 

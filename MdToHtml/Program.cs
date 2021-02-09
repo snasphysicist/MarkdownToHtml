@@ -89,7 +89,7 @@ namespace MdToHtml
             string inputFilePath = arguments.ValueForFlag(
                 "i"
             );
-            string[] input = ReadFileIfExists(
+            string input = ReadFileIfExists(
                 inputFilePath
             );
             if (input.Length == 0)
@@ -172,7 +172,7 @@ namespace MdToHtml
             System.Environment.Exit(0);
         }
 
-        private static string[] ReadFileIfExists(
+        private static string ReadFileIfExists(
             string filePath
         ) {
             if (
@@ -180,11 +180,11 @@ namespace MdToHtml
                     filePath
                 )
             ) {
-                return File.ReadAllLines(
+                return File.ReadAllText(
                     filePath
                 );
             }
-            return new string[]{};
+            return "";
         }
     }
 }

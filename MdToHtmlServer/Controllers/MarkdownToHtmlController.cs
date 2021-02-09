@@ -1,11 +1,5 @@
 ﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 using MarkdownToHtml;
 
@@ -20,7 +14,7 @@ namespace MdToHtmlServer.Controllers
             [FromBody] MarkdownModel markdown
         ) {
             MarkdownParser parser = new MarkdownParser(
-                markdown.Lines()
+                markdown.Markdown
             );
             HtmlModel html = new HtmlModel(
                 parser.ToHtml()
@@ -34,11 +28,6 @@ namespace MdToHtmlServer.Controllers
         {
             public string Markdown
             { get; set; }
-
-            public string[] Lines()
-            {
-                return Markdown.Split("\n");
-            }
         }
 
         public class HtmlModel

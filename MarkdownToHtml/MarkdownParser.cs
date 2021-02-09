@@ -1,7 +1,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
@@ -44,6 +43,10 @@ namespace MarkdownToHtml
         private LinkedList<ReferencedUrl> Urls
         { get; set; }
 
+        private string newLine;
+
+        private string postprocessed;
+
         public IHtmlable[] ContentAsArray()
         {
             IHtmlable[] contentArray = new IHtmlable[Content.Count];
@@ -56,17 +59,24 @@ namespace MarkdownToHtml
 
         public string ToHtml()
         {
-            string html = "";
-            foreach (IHtmlable entry in Content)
-            {
-                html += entry.ToHtml();
-            }
-            return html;
+            return postprocessed;
         }
 
         public MarkdownParser(
-            string[] lines
+            string markdown
         ) {
+            newLine = GuessNewLine(markdown);
+            HtmlTokeniser tokeniser = new HtmlTokeniser(markdown);
+            HtmlToken[] tokens = tokeniser.tokenise();
+            HtmlSnippet[] tags = HtmlTagDetector.TagsFromTokens(tokens);
+            HtmlElement[] elements = HtmlElementDetector.ElementsFromTags(
+                tags,
+                LineBreaksAroundBlocks.Required
+            );
+            HtmlElementSubstituter substituter = new HtmlElementSubstituter(elements);
+            substituter.Process();
+            string preprocessed = substituter.Processed;
+            string[] lines = preprocessed.Split(new char[]{'\n', '\r'});
             // Assume success
             Success = true;
             // Store parsed content as we go
@@ -97,6 +107,63 @@ namespace MarkdownToHtml
                 ) {
                     input.NextLine();
                 }
+            }
+            string html = "";
+            foreach (IHtmlable entry in Content)
+            {
+                html += entry.ToHtml();
+            }
+            HtmlTokeniser tokeniserAfter = new HtmlTokeniser(html);
+            HtmlToken[] tokensAfter = tokeniserAfter.tokenise();
+            HtmlSnippet[] tagsAfter = HtmlTagDetector.TagsFromTokens(tokensAfter);
+            HtmlElement[] elementsAfter = HtmlElementDetector.ElementsFromTags(
+                tagsAfter,
+                LineBreaksAroundBlocks.NotRequired
+            );
+            HtmlElementSubstituter substituterAfter = new HtmlElementSubstituter(elementsAfter);
+            substituterAfter.Process();
+            HtmlSpecialCharacterEscaper escaper = new HtmlSpecialCharacterEscaper(substituterAfter.Processed);
+            string escaped = escaper.Escaped;
+            HtmlElementInserter postInserter = new HtmlElementInserter(substituterAfter.GetReplacements(), escaped);
+            HtmlElementInserter preInserter = new HtmlElementInserter(substituter.GetReplacements(), postInserter.Processed);
+            postprocessed = preInserter.Processed;
+        }
+
+        private string GuessNewLine(
+            string markdown
+        ) {
+            int unix = 0;
+            int weird = 0;
+            int windows = 0;
+            char[] markdownAsChars = markdown.ToCharArray();
+            for (int index = 0; index < markdown.Length - 1; index++)
+            {
+                if (markdownAsChars[index] == '\r' && markdownAsChars[index + 1] == '\n')
+                {
+                    windows++;
+                } else if (markdownAsChars[index] == '\r')
+                {
+                    weird++;
+                } else if (markdownAsChars[index] == '\n')
+                {
+                    unix++;
+                }
+            }
+            if (markdownAsChars[markdownAsChars.Length - 1] == '\r')
+            {
+                weird++;
+            } else if (markdownAsChars[markdownAsChars.Length - 1] == '\n')
+            {
+                unix++;
+            }
+            if (unix > weird && unix > windows)
+            {
+                return "\n";
+            } else if (weird > windows)
+            {
+                return "\r";
+            } else {
+                return "\r\n";
             }
         }
 

@@ -4,18 +4,28 @@ using System.Collections.Generic;
 
 namespace MarkdownToHtml
 {
+    public enum LineBreaksAroundBlocks {
+        Required,
+        NotRequired
+    }
+
     public class HtmlElementDetector
     {
         private HtmlSnippet[] toScan;
 
+        private LineBreaksAroundBlocks lineBreaks;
+
         public HtmlElementDetector(
-            HtmlSnippet[] toScan
+            HtmlSnippet[] toScan,
+            LineBreaksAroundBlocks lineBreaks
         ) {
             this.toScan = toScan;
+            this.lineBreaks = lineBreaks;
         }
 
         public static HtmlElement[] ElementsFromTags(
-            HtmlSnippet[] snippets
+            HtmlSnippet[] snippets,
+            LineBreaksAroundBlocks lineBreaks
         ) {
             if (snippets.Length == 0) {
                 return new HtmlElement[0];
@@ -29,7 +39,8 @@ namespace MarkdownToHtml
                         snippets,
                         currentToken,
                         snippets.Length - currentToken
-                    ).ToArray()
+                    ).ToArray(),
+                    lineBreaks
                 );
                 HtmlElement element = detector.Detect();
                 elements.AddLast(element);
@@ -95,7 +106,8 @@ namespace MarkdownToHtml
                     toScan,
                     1,
                     current - 1
-                ).ToArray()
+                ).ToArray(),
+                lineBreaks
             );
             foreach (HtmlElement contained in contents)
             {
@@ -119,22 +131,25 @@ namespace MarkdownToHtml
         {
             int current = 0;
             int depth = 0;
-            if (
-                toScan.Length <= current
-                || !toScan[current].IsToken() 
-                || toScan[current].Token.Type != HtmlTokenType.LineBreakingWhitespace
-            ) {
-                return null;
+            if (lineBreaks == LineBreaksAroundBlocks.Required) 
+            {
+                if (
+                    toScan.Length <= current
+                    || !toScan[current].IsToken() 
+                    || toScan[current].Token.Type != HtmlTokenType.LineBreakingWhitespace
+                ) {
+                    return null;
+                }
+                current++;
+                if (
+                    toScan.Length <= current
+                    || !toScan[current].IsToken() 
+                    || toScan[current].Token.Type != HtmlTokenType.LineBreakingWhitespace
+                ) {
+                    return null;
+                }
+                current++;
             }
-            current++;
-            if (
-                toScan.Length <= current
-                || !toScan[current].IsToken() 
-                || toScan[current].Token.Type != HtmlTokenType.LineBreakingWhitespace
-            ) {
-                return null;
-            }
-            current++;
             if (
                 toScan.Length <= current
                 || !toScan[current].IsTag() 
@@ -167,22 +182,25 @@ namespace MarkdownToHtml
                 return null;
             }
             current++;
-            if (
-                toScan.Length <= current
-                || !toScan[current].IsToken() 
-                || toScan[current].Token.Type != HtmlTokenType.LineBreakingWhitespace
-            ) {
-                return null;
+            if (lineBreaks == LineBreaksAroundBlocks.Required)
+            {
+                if (
+                    toScan.Length <= current
+                    || !toScan[current].IsToken() 
+                    || toScan[current].Token.Type != HtmlTokenType.LineBreakingWhitespace
+                ) {
+                    return null;
+                }
+                current++;
+                if (
+                    toScan.Length <= current
+                    || !toScan[current].IsToken() 
+                    || toScan[current].Token.Type != HtmlTokenType.LineBreakingWhitespace
+                ) {
+                    return null;
+                }
+                current++;
             }
-            current++;
-            if (
-                toScan.Length <= current
-                || !toScan[current].IsToken() 
-                || toScan[current].Token.Type != HtmlTokenType.LineBreakingWhitespace
-            ) {
-                return null;
-            }
-            current++;
             return new HtmlElement(
                 new ArraySegment<HtmlSnippet>(
                     toScan,
