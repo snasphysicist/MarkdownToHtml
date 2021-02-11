@@ -8,10 +8,10 @@ namespace MarkdownToHtml
     {
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("1. test1", "<ol><li>test1</li></ol>")]
-        [DataRow(" 1. test1", "<ol><li>test1</li></ol>")]
-        [DataRow("  1. test1", "<ol><li>test1</li></ol>")]
-        [DataRow("   1. test1", "<ol><li>test1</li></ol>")]
+        [DataRow("1. test1", "<ol><li>test1</li>\n</ol>")]
+        [DataRow(" 1. test1", "<ol><li>test1</li>\n</ol>")]
+        [DataRow("  1. test1", "<ol><li>test1</li>\n</ol>")]
+        [DataRow("   1. test1", "<ol><li>test1</li>\n</ol>")]
         public void ShouldParseOrderedListZeroToThreeSpacesSuccess(
             string markdown,
             string targetHtml
@@ -30,7 +30,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("19274. test1", "<ol><li>test1</li></ol>")]
+        [DataRow("19274. test1", "<ol><li>test1</li>\n</ol>")]
         public void ShouldParseOrderedListNotStartAtOneSuccess(
             string markdown,
             string targetHtml
@@ -49,7 +49,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("1. test1\n2. test2", "<ol><li>test1</li><li>test2</li></ol>")]
+        [DataRow("1. test1\n2. test2", "<ol><li>test1</li>\n<li>test2</li>\n</ol>")]
         public void ShouldParseOrderedListLinesNotSeparatedByWhitespaceAscendingSuccess(
             string markdown,
             string targetHtml
@@ -68,7 +68,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("39438. test1\n749. test2", "<ol><li>test1</li><li>test2</li></ol>")]
+        [DataRow("39438. test1\n749. test2", "<ol><li>test1</li>\n<li>test2</li>\n</ol>")]
         public void ShouldParseOrderedListLinesNotSeparatedByWhitespaceDescendingSuccess(
             string markdown,
             string targetHtml
@@ -89,7 +89,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "1. test1\n\n2. test2", 
-            "<ol><li><p>test1</p>\n</li><li><p>test2</p>\n</li></ol>"
+            "<ol><li><p>test1</p>\n</li>\n<li><p>test2</p>\n</li>\n</ol>"
         )]
         public void ShouldParseOrderedListLinesSeparatedByWhitespaceSuccess(
             string markdown,
@@ -111,7 +111,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "1. test1\n\ntest2\n\n2. test3", 
-            "<ol><li>test1</li></ol><p>test2</p>\n<ol><li>test3</li></ol>"
+            "<ol><li>test1</li>\n</ol><p>test2</p>\n<ol><li>test3</li>\n</ol>"
         )]
         public void ShouldParseOrderedListLinesSeparatedByNormalParagraphSuccess(
             string markdown,
@@ -152,11 +152,11 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "1. test1\n\n    test2\ntest3", 
-            "<ol><li><p>test1</p>\n<p>test2 test3</p>\n</li></ol>"
+            "<ol><li><p>test1</p>\n<p>test2 test3</p>\n</li>\n</ol>"
         )]
         [DataRow(
             "1. test1\n\n    test2\n    test3", 
-            "<ol><li><p>test1</p>\n<p>test2 test3</p>\n</li></ol>"
+            "<ol><li><p>test1</p>\n<p>test2 test3</p>\n</li>\n</ol>"
         )]
         public void IndentedFollowingParagraphParsedAsPartOfListItem(
             string markdown,
@@ -178,7 +178,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "1. test1\n\n    > test2", 
-            "<ol><li><p>test1</p>\n<blockquote><p>test2</p>\n</blockquote>\n</li></ol>"
+            "<ol><li><p>test1</p>\n<blockquote><p>test2</p>\n</blockquote>\n</li>\n</ol>"
         )]
         public void IndentedQuoteBlockParsedAsPartOfListItem(
             string markdown,

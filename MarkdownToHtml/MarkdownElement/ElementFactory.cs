@@ -101,6 +101,8 @@ namespace MarkdownToHtml
                 case ElementType.Heading2Underlined:
                 case ElementType.Paragraph:
                 case ElementType.Quote:
+                case ElementType.ListItem:
+                case ElementType.UnorderedList:
                     return ElementDetails.FollowWithNewLine.Yes;
                 default:
                     return ElementDetails.FollowWithNewLine.No; 
