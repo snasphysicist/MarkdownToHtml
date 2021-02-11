@@ -8,11 +8,11 @@ namespace MarkdownToHtml
     {
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow(">test", "<blockquote><p>test</p>\n</blockquote>")]
-        [DataRow("> test", "<blockquote><p>test</p>\n</blockquote>")]
-        [DataRow(">  test", "<blockquote><p>test</p>\n</blockquote>")]
-        [DataRow(">   test", "<blockquote><p>test</p>\n</blockquote>")]
-        [DataRow(">    test", "<blockquote><p>test</p>\n</blockquote>")]
+        [DataRow(">test", "<blockquote><p>test</p>\n</blockquote>\n")]
+        [DataRow("> test", "<blockquote><p>test</p>\n</blockquote>\n")]
+        [DataRow(">  test", "<blockquote><p>test</p>\n</blockquote>\n")]
+        [DataRow(">   test", "<blockquote><p>test</p>\n</blockquote>\n")]
+        [DataRow(">    test", "<blockquote><p>test</p>\n</blockquote>\n")]
         public void ShouldParseBlockquoteZeroToFourSpacesSuccessfully(
             string markdown,
             string targetHtml

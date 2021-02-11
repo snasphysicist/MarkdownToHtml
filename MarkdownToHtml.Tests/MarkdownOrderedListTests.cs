@@ -178,7 +178,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "1. test1\n\n    > test2", 
-            "<ol><li><p>test1</p>\n<blockquote><p>test2</p>\n</blockquote></li></ol>"
+            "<ol><li><p>test1</p>\n<blockquote><p>test2</p>\n</blockquote>\n</li></ol>"
         )]
         public void IndentedQuoteBlockParsedAsPartOfListItem(
             string markdown,
