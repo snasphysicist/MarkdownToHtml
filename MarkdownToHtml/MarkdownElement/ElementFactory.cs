@@ -103,6 +103,7 @@ namespace MarkdownToHtml
                 case ElementType.Quote:
                 case ElementType.ListItem:
                 case ElementType.UnorderedList:
+                case ElementType.OrderedList:
                     return ElementDetails.FollowWithNewLine.Yes;
                 default:
                     return ElementDetails.FollowWithNewLine.No; 
