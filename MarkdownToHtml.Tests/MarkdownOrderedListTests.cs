@@ -194,6 +194,24 @@ namespace MarkdownToHtml
                 targetHtml,
                 parser.ToHtml()
             );
-        }        
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void DoubleIndentedBlockParsedAsCodeBlockInsideListItem()
+        {
+            string markdown = "1. Test 1\n\n        i = i + 1\n\n2. Test 2";
+            string html = "<ol><li><p>Test 1</p>\n<code>i = i + 1</code>\n</li>\n<li><p>Test 2</p>\n</li>\n</ol>\n";
+            MarkdownParser parser = new MarkdownParser(
+                markdown
+            );
+            Assert.IsTrue(
+                parser.Success
+            );
+            Assert.AreEqual(
+                html,
+                parser.ToHtml()
+            );
+        }
     }
 }
