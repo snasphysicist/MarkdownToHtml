@@ -104,6 +104,7 @@ namespace MarkdownToHtml
                 case ElementType.ListItem:
                 case ElementType.UnorderedList:
                 case ElementType.OrderedList:
+                case ElementType.Preformatted:
                     return ElementDetails.FollowWithNewLine.Yes;
                 default:
                     return ElementDetails.FollowWithNewLine.No; 
