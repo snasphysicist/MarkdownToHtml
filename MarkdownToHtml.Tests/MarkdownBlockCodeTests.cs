@@ -50,7 +50,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("    test1", "<pre><code>test1</code></pre>")]
+        [DataRow("    test1", "<pre><code>test1</code></pre>\n")]
         public void ParseProperlyIndentedCodeBlockAsPreCode(
             string markdown,
             string targetHtml
@@ -70,7 +70,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("     test1", "<pre><code> test1</code></pre>")]
+        [DataRow("     test1", "<pre><code> test1</code></pre>\n")]
         public void PreserveSpacesInIndentedCodeBlockAfterFirstFour(
             string markdown,
             string targetHtml
@@ -90,7 +90,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("    test1\n    test2", "<pre><code>test1\ntest2</code></pre>")]
+        [DataRow("    test1\n    test2", "<pre><code>test1\ntest2</code></pre>\n")]
         public void GroupAdjacentIndentedLinesIntoSamePreCodeBlock(
             string markdown,
             string targetHtml
@@ -110,7 +110,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("    test1\n\n    test2", "<pre><code>test1\n\ntest2</code></pre>")]
+        [DataRow("    test1\n\n    test2", "<pre><code>test1\n\ntest2</code></pre>\n")]
         public void PreserveEmptyLinesBetweenIndentedLinesInPreCodeBlock(
             string markdown,
             string targetHtml
