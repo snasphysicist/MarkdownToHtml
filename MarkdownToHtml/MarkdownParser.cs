@@ -9,7 +9,9 @@ namespace MarkdownToHtml
         private static IMarkdownParser[] multilineElementParsers
             = new IMarkdownParser[]
             {
-                new PreformattedCodeBlock(),
+                new PreformattedCodeBlock(
+                    0
+                ),
                 new DoubleLineHeading(),
                 new SingleLineHeading(),
                 new HorizontalRule(),

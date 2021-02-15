@@ -201,7 +201,7 @@ namespace MarkdownToHtml
         public void DoubleIndentedBlockParsedAsCodeBlockInsideListItem()
         {
             string markdown = "1. Test 1\n\n        i = i + 1\n\n2. Test 2";
-            string html = "<ol><li><p>Test 1</p>\n<code>i = i + 1</code>\n</li>\n<li><p>Test 2</p>\n</li>\n</ol>\n";
+            string html = "<ol><li><p>Test 1</p>\n<pre><code>i = i + 1\n</code></pre>\n</li>\n<li><p>Test 2</p>\n</li>\n</ol>\n";
             MarkdownParser parser = new MarkdownParser(
                 markdown
             );

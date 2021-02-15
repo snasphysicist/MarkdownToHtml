@@ -7,18 +7,29 @@ namespace MarkdownToHtml
 {
     public class PreformattedCodeBlock : IMarkdownParser
     {
+        int indentationLevel;
+
         private static MarkdownText newLine = new MarkdownText(
             "\n"
         );
 
         private static Regex regexIndentedLineStart = new Regex(
-            @"^ {4}.*"
+            @"^ {4} *.*"
         );
+
+        public PreformattedCodeBlock(
+            int indentationLevel
+        ) {
+            this.indentationLevel = indentationLevel;
+        }
 
         public bool CanParseFrom(
             ParseInput input
         ) {
-            return regexIndentedLineStart.Match(input[0].Text).Success;
+            return (
+                regexIndentedLineStart.Match(input[0].Text).Success
+                && (input[0].IndentationLevel() == indentationLevel + 1)
+            );
         }
 
         public ParseResult ParseFrom(
@@ -30,19 +41,30 @@ namespace MarkdownToHtml
             {
                 return result;
             }
+            string spacesAtStart = "";
+            while (
+                input[0].StartsWith(spacesAtStart + " ")
+            ) {
+                spacesAtStart += " ";
+            }
             int endOfCodeBlock = Utils.FindEndOfSection(
                 input,
-                "    "
+                spacesAtStart
             );
             LinkedList<IHtmlable> innerContent = new LinkedList<IHtmlable>();
             for (int i = 0; i < endOfCodeBlock; i++)
             {
                 string line = input[i].Text;
-                // Remove four leading spaces, if present
-                if (line.Length > 3)
-                {
-                    line = line.Substring(4);
+                // Remove up to 4 + indentation spaces
+                int toRemove = 0;
+                while (
+                    toRemove < line.Length 
+                    && toRemove < 4 * (1 + indentationLevel)
+                    && line.Substring(toRemove, 1) == " "
+                ) {
+                    toRemove++;
                 }
+                line = line.Substring(toRemove);
                 innerContent.AddLast(
                     new MarkdownText(
                         line

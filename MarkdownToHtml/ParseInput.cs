@@ -137,5 +137,14 @@ namespace MarkdownToHtml
             return this;
         }
 
+        public string CurrentContent() 
+        {
+            string current = "";
+            for (int i = startIndex; i < lines.Length; i++)
+            {
+                current += lines[i].Text;
+            }
+            return current;
+        }
     }
 }
