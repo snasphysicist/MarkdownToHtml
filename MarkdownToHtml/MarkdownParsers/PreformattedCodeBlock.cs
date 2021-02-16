@@ -66,8 +66,9 @@ namespace MarkdownToHtml
                 }
                 line = line.Substring(toRemove);
                 innerContent.AddLast(
-                    MarkdownText.NotEscapingReplacedHtml(
-                        line
+                    MarkdownText.EscapingReplacedHtml(
+                        line,
+                        input.Replacements
                     )
                 );
                 // Add a newline character after all lines except final line
