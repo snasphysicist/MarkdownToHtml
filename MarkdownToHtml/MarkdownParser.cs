@@ -94,7 +94,8 @@ namespace MarkdownToHtml
                 Urls.ToArray(),
                 lines,
                 0,
-                lines.Length
+                lines.Length,
+                substituter.GetReplacements()
             );
             // Parsing printed content
             while (input.Count > 0) {
