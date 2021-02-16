@@ -9,7 +9,7 @@ namespace MarkdownToHtml
     {
         int indentationLevel;
 
-        private static MarkdownText newLine = new MarkdownText(
+        private static MarkdownText newLine = MarkdownText.NotEscapingReplacedHtml(
             "\n"
         );
 
@@ -66,7 +66,7 @@ namespace MarkdownToHtml
                 }
                 line = line.Substring(toRemove);
                 innerContent.AddLast(
-                    new MarkdownText(
+                    MarkdownText.NotEscapingReplacedHtml(
                         line
                     )
                 );
