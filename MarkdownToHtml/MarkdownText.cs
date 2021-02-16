@@ -47,7 +47,8 @@ namespace MarkdownToHtml
         }
 
         public string ToHtml() {
-            return content;
+            HtmlSpecialCharacterEscaper escaper = new HtmlSpecialCharacterEscaper(content);
+            return escaper.Escaped;
         }
 
         private string ReplaceEscapeCharacters(
