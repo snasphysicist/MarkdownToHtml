@@ -71,5 +71,25 @@ namespace MarkdownToHtml
             );
         }
 
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow("``Markdown code like `this`, right?``", "<p><code>Markdown code like `this`, right?</code></p>\n")]
+        [DataRow("```Using `double quotes` like ``this``, though```", "<p><code>Using `double quotes` like ``this``, though</code></p>\n")]
+        public void TextSurroundedByNumberOfQuotesUsedInCodeBlockPlusOneIsParsedAsCodeBlock(
+            string markdown,
+            string targetHtml
+        ) {
+            MarkdownParser parser = new MarkdownParser(
+                markdown
+            );
+            Assert.IsTrue(
+                parser.Success
+            );
+            string html = parser.ToHtml();
+            Assert.AreEqual(
+                targetHtml,
+                html
+            );
+        }
     }
 }
