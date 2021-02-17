@@ -9,10 +9,10 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("---", "<hr />")]
-        [DataRow("***", "<hr />")]
-        [DataRow("----", "<hr />")]
-        [DataRow("*****", "<hr />")]
+        [DataRow("---", "<hr />\n")]
+        [DataRow("***", "<hr />\n")]
+        [DataRow("----", "<hr />\n")]
+        [DataRow("*****", "<hr />\n")]
         public void ShouldParseCorrectlyFormattedHorizontalRuleSuccess(
             string markdown,
             string targetHtml
