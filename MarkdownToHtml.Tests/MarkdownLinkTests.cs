@@ -31,7 +31,9 @@ namespace MarkdownToHtml
         [DataTestMethod]
         [Timeout(500)]
         [DataRow("[text][ref]\n\n\n[ref]: url", "<p><a href=\"url\" title=\"\">text</a></p>\n")]
-        public void ShouldParseCorrectlyFormattedLinkReferenceSuccess(
+        [DataRow("[text] [ref]\n\n\n[ref]: url", "<p><a href=\"url\" title=\"\">text</a></p>\n")]
+        [DataRow("[text]  [ref]\n\n\n[ref]: url", "<p><a href=\"url\" title=\"\">text</a></p>\n")]
+        public void SquareBracketedTextFollowedBySquareBracketedTextPossiblyWithWhitespaceBetweenIsAReferenceStyleLink(
             string markdown,
             string targetHtml
         ) {

@@ -15,7 +15,7 @@ namespace MarkdownToHtml
         );
 
         private static Regex regexLinkReference = new Regex(
-            @"^\[(.*[^\\])\]\[(.*[^\\])\]"
+            @"^\[(.*[^\\])\]\s*\[(.*[^\\])\]"
         );
 
         private Regex regexLinkSelfReference = new Regex(
