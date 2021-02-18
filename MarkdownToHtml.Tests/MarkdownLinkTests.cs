@@ -115,5 +115,18 @@ namespace MarkdownToHtml
             );
         }
 
+        [TestMethod]
+        [Timeout(500)]
+        public void Test()
+        {
+            string markdown = "But my favourite search engine is [Bing](https://bing.com \"The worst search engine, period\")";
+            string expectedHtml = "<p>But my favourite search engine is " + 
+                "<a href=\"https://bing.com\" title=\"The worst search engine, period\">Bing</a></p>\n";
+            MarkdownParser parser = new MarkdownParser(markdown);
+            Assert.AreEqual(
+                expectedHtml, 
+                parser.ToHtml()
+            );
+        }
     }
 }

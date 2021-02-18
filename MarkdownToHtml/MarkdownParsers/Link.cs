@@ -7,7 +7,11 @@ namespace MarkdownToHtml
     public class Link : IMarkdownParser
     {
         private static Regex regexLinkImmediate = new Regex(
-            @"^\[(.*[^\\])\]\((.*[^\\])\)"
+            @"^\[(.*[^\\])\]\(([^""]*[^\\])\)"
+        );
+
+        private static Regex regexLinkImmediateWithTitle = new Regex(
+            @"^\[(.*[^\\])\]\((.*[^\\])\s+""(.+)""\s*\)"
         );
 
         private static Regex regexLinkReference = new Regex(
@@ -23,8 +27,10 @@ namespace MarkdownToHtml
         ) {
             string line = input[0].Text;
             ReferencedUrl[] urls = input.Urls;
-            if (regexLinkImmediate.Match(line).Success)
-            {
+            if (
+                regexLinkImmediate.Match(line).Success
+                || regexLinkImmediateWithTitle.Match(line).Success
+            ) {
                 return true;
             }
             Match linkMatch = regexLinkReference.Match(line);
@@ -79,6 +85,40 @@ namespace MarkdownToHtml
                 );
                 result.Success = true;
                 input[0].Text = regexLinkImmediate.Replace(
+                    line,
+                    ""
+                );
+                result.AddContent(
+                    new ElementFactory().New(
+                        ElementType.Link,
+                        MarkdownParser.ParseInnerText(
+                            new ParseInput(
+                                input,
+                                linkMatch.Groups[1].Value
+                            )
+                        ),
+                        attributes.ToArray()
+                    )
+                );
+            }
+            // Format: [text](url "title")
+            linkMatch = regexLinkImmediateWithTitle.Match(line);
+            if (linkMatch.Success)
+            {
+                attributes.AddLast(
+                    new Attribute(
+                        "href",
+                        linkMatch.Groups[2].Value
+                    )
+                );
+                attributes.AddLast(
+                    new Attribute(
+                        "title",
+                        linkMatch.Groups[3].Value
+                    )
+                );
+                result.Success = true;
+                input[0].Text = regexLinkImmediateWithTitle.Replace(
                     line,
                     ""
                 );
