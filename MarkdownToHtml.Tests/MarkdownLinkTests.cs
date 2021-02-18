@@ -30,7 +30,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("[text][ref]\n\n\n[ref]: url", "<p><a href=\"url\">text</a></p>\n")]
+        [DataRow("[text][ref]\n\n\n[ref]: url", "<p><a href=\"url\" title=\"\">text</a></p>\n")]
         public void ShouldParseCorrectlyFormattedLinkReferenceSuccess(
             string markdown,
             string targetHtml
@@ -48,6 +48,30 @@ namespace MarkdownToHtml
                 html
             );
         }
+
+        [DataTestMethod]
+        [Timeout(500)]
+        [DataRow("[text][ref]\n\n\n[ref]: url \"the title\"", "<p><a href=\"url\" title=\"the title\">text</a></p>\n")]
+        [DataRow("[text][ref]\n\n\n[ref]: url 'the title'", "<p><a href=\"url\" title=\"the title\">text</a></p>\n")]
+        [DataRow("[text][ref]\n\n\n[ref]: url (the title)", "<p><a href=\"url\" title=\"the title\">text</a></p>\n")]
+        public void TextAfterReferenceLinkInSingleOrDoubleQuotesOrParenthesesIsTitleText(
+            string markdown,
+            string targetHtml
+        ) {
+            MarkdownParser parser = new MarkdownParser(
+                markdown
+            );
+            Assert.IsTrue(
+                parser.Success
+            );
+            string html = parser.ToHtml();
+            // Check that the correct HTML is produced
+            Assert.AreEqual(
+                targetHtml,
+                html
+            );
+        }
+
 
         [DataTestMethod]
         [Timeout(500)]

@@ -150,6 +150,12 @@ namespace MarkdownToHtml
                                 url.Url
                             )
                         );
+                        attributes.AddLast(
+                            new Attribute(
+                                "title",
+                                url.Title
+                            )
+                        );
                         result.Success = true;
                         input[0].Text = regexLinkReference.Replace(
                             line,

@@ -8,15 +8,24 @@ namespace MarkdownToHtml
     {
 
         private static Regex regexLinkReference = new Regex(
-            @"^\[(.*[^\\])\]:\s*(.+)"
+            @"^\[(.*[^\\])\]:\s*([^\(\)""']+)"
+        );
+
+        private static Regex regexLinkReferenceWithDoubleQuotedTitle = new Regex(
+            @"^\[(.*[^\\])\]:\s*(.+)\s+""(.+)""\s*"
+        );
+
+        private static Regex regexLinkReferenceWithSingleQuotedTitle = new Regex(
+            @"^\[(.*[^\\])\]:\s*(.+)\s+'(.+)'\s*"
+        );
+
+        private static Regex regexLinkReferenceWithParentheticTitle = new Regex(
+            @"^\[(.*[^\\])\]:\s*(.+)\s+\((.+)\)\s*"
         );
 
         private static Regex regexImageReference = new Regex(
             @"^\[(.*[^\\])\]:\s*(.+?)\s+""(.+?)""\s*$"
         );
-
-        public ReferencedUrlType Type
-        { get; private set; }
 
         public string Reference
         { get; private set; }
@@ -30,13 +39,11 @@ namespace MarkdownToHtml
         public ReferencedUrl(
             string reference,
             string url,
-            string title,
-            ReferencedUrlType type
+            string title
         ) {
             Reference = reference;
             Url = url;
             Title = title;
-            Type = type;
         }
 
         public static bool CanParseFrom(
@@ -45,49 +52,89 @@ namespace MarkdownToHtml
             return (
                 regexLinkReference.Match(lines[0]).Success
                 || regexImageReference.Match(lines[0]).Success
+                || regexLinkReferenceWithDoubleQuotedTitle.Match(lines[0]).Success
+                || regexLinkReferenceWithSingleQuotedTitle.Match(lines[0]).Success
+                || regexLinkReferenceWithParentheticTitle.Match(lines[0]).Success
             );
         }
 
         public static ReferencedUrl ParseFrom(
             ArraySegment<string> lines
         ) {
-            string reference = "";
-            string url = "";
-            string title = "";
-            ReferencedUrlType type = ReferencedUrlType.Link;
-            Match linkMatch = regexLinkReference.Match(
+            Match urlMatch;
+            // Image ![alt](link \"title\")
+            urlMatch = regexImageReference.Match(
                 lines[0]
             );
-            Match imageMatch = regexImageReference.Match(
-                lines[0]
-            );
-            if (imageMatch.Success)
+            if (urlMatch.Success)
             {
-                reference = imageMatch.Groups[1].Value;
-                url = imageMatch.Groups[2].Value;
-                title = imageMatch.Groups[3].Value;
-                type = ReferencedUrlType.Image;
                 lines[0] = regexImageReference.Replace(
                     lines[0],
                     ""
                 );
-            } else if (linkMatch.Success)
+                return new ReferencedUrl(
+                    urlMatch.Groups[1].Value,
+                    urlMatch.Groups[2].Value,
+                    urlMatch.Groups[3].Value
+                );
+            }
+            urlMatch = regexLinkReferenceWithDoubleQuotedTitle.Match(
+                lines[0]
+            );
+            if (urlMatch.Success)
             {
-                reference = linkMatch.Groups[1].Value;
-                url = linkMatch.Groups[2].Value;
-                type = ReferencedUrlType.Link;
-                lines[0] = regexLinkReference.Replace(
+                lines[0] = regexLinkReferenceWithDoubleQuotedTitle.Replace(
                     lines[0],
                     ""
                 );
-            } 
+                return new ReferencedUrl(
+                    urlMatch.Groups[1].Value,
+                    urlMatch.Groups[2].Value,
+                    urlMatch.Groups[3].Value
+                );
+            }
+            urlMatch = regexLinkReferenceWithSingleQuotedTitle.Match(
+                lines[0]
+            );
+            if (urlMatch.Success)
+            {
+                lines[0] = regexLinkReferenceWithSingleQuotedTitle.Replace(
+                    lines[0],
+                    ""
+                );
+                return new ReferencedUrl(
+                    urlMatch.Groups[1].Value,
+                    urlMatch.Groups[2].Value,
+                    urlMatch.Groups[3].Value
+                );
+            }
+            urlMatch = regexLinkReferenceWithParentheticTitle.Match(
+                lines[0]
+            );
+            if (urlMatch.Success) 
+            {
+                lines[0] = regexLinkReferenceWithParentheticTitle.Replace(
+                    lines[0],
+                    ""
+                );
+                return new ReferencedUrl(
+                    urlMatch.Groups[1].Value,
+                    urlMatch.Groups[2].Value,
+                    urlMatch.Groups[3].Value
+                );
+            }
+            urlMatch = regexLinkReference.Match(
+                lines[0]
+            );
+            lines[0] = regexLinkReference.Replace(
+                lines[0],
+                ""
+            );
             return new ReferencedUrl(
-                reference,
-                url,
-                title,
-                type
+                urlMatch.Groups[1].Value,
+                urlMatch.Groups[2].Value,
+                ""
             );
         }
-
     }
 }
