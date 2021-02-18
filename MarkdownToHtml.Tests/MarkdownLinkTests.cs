@@ -141,7 +141,7 @@ namespace MarkdownToHtml
 
         [TestMethod]
         [Timeout(500)]
-        public void Test()
+        public void TextBetweenDoubleQuotesAfterUrlInImmediateLinkIsLinkTitle()
         {
             string markdown = "But my favourite search engine is [Bing](https://bing.com \"The worst search engine, period\")";
             string expectedHtml = "<p>But my favourite search engine is " + 
