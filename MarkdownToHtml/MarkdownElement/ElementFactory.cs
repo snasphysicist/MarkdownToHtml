@@ -99,6 +99,7 @@ namespace MarkdownToHtml
                 case ElementType.Heading6:
                 case ElementType.Heading1Underlined:
                 case ElementType.Heading2Underlined:
+                case ElementType.Paragraph:
                     return ElementDetails.FollowWithNewLine.Yes;
                 default:
                     return ElementDetails.FollowWithNewLine.No; 

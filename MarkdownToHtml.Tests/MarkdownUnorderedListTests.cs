@@ -94,7 +94,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "* test1\n\n\n* test2", 
-            "<ul><li><p>test1</p></li><li><p>test2</p></li></ul>"
+            "<ul><li><p>test1</p>\n</li><li><p>test2</p>\n</li></ul>"
         )]
         public void ShouldParseUnorderedListLinesSeparatedByWhitespaceSuccess(
             string markdown,
@@ -116,7 +116,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "* test1\n\ntest2\n\n* test3", 
-            "<ul><li>test1</li></ul><p>test2</p><ul><li>test3</li></ul>"
+            "<ul><li>test1</li></ul><p>test2</p>\n<ul><li>test3</li></ul>"
         )]
         public void ShouldParseUnorderedListLinesSeparatedByNormalParagraphSuccess(
             string markdown,
@@ -138,7 +138,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "* test1\ntest2\n\n* test3", 
-            "<ul><li><p>test1 test2</p></li><li><p>test3</p></li></ul>"
+            "<ul><li><p>test1 test2</p>\n</li><li><p>test3</p>\n</li></ul>"
         )]
         public void ShouldParseUnorderedListLineAfterParagraphAsParagraphSuccess(
             string markdown,
@@ -180,7 +180,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("*test1", "<p>*test1</p>")]
+        [DataRow("*test1", "<p>*test1</p>\n")]
         public void ShouldParseImproperlyFormattedUnorderedListAsParagraphSuccess(
             string markdown,
             string targetHtml

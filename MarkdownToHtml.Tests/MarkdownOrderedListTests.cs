@@ -89,7 +89,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "1. test1\n\n2. test2", 
-            "<ol><li><p>test1</p></li><li><p>test2</p></li></ol>"
+            "<ol><li><p>test1</p>\n</li><li><p>test2</p>\n</li></ol>"
         )]
         public void ShouldParseOrderedListLinesSeparatedByWhitespaceSuccess(
             string markdown,
@@ -111,7 +111,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "1. test1\n\ntest2\n\n2. test3", 
-            "<ol><li>test1</li></ol><p>test2</p><ol><li>test3</li></ol>"
+            "<ol><li>test1</li></ol><p>test2</p>\n<ol><li>test3</li></ol>"
         )]
         public void ShouldParseOrderedListLinesSeparatedByNormalParagraphSuccess(
             string markdown,
@@ -131,7 +131,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("test1\n2. test2", "<p>test1 2. test2</p>")]
+        [DataRow("test1\n2. test2", "<p>test1 2. test2</p>\n")]
         public void ShouldParseOrderedListLineAfterParagraphAsParagraphSuccess(
             string markdown,
             string targetHtml
@@ -152,11 +152,11 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "1. test1\n\n    test2\ntest3", 
-            "<ol><li><p>test1</p><p>test2 test3</p></li></ol>"
+            "<ol><li><p>test1</p>\n<p>test2 test3</p>\n</li></ol>"
         )]
         [DataRow(
             "1. test1\n\n    test2\n    test3", 
-            "<ol><li><p>test1</p><p>test2 test3</p></li></ol>"
+            "<ol><li><p>test1</p>\n<p>test2 test3</p>\n</li></ol>"
         )]
         public void IndentedFollowingParagraphParsedAsPartOfListItem(
             string markdown,
@@ -178,7 +178,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "1. test1\n\n    > test2", 
-            "<ol><li><p>test1</p><blockquote><p>test2</p></blockquote></li></ol>"
+            "<ol><li><p>test1</p>\n<blockquote><p>test2</p>\n</blockquote></li></ol>"
         )]
         public void IndentedQuoteBlockParsedAsPartOfListItem(
             string markdown,

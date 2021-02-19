@@ -8,7 +8,7 @@ namespace MarkdownToHtml
     {
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("Test1", "<p>Test1</p>")]
+        [DataRow("Test1", "<p>Test1</p>\n")]
         public void SinglePlainTextLineParsedAsParagraph(
             string markdown,
             string targetHtml

@@ -31,7 +31,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("test1\n=1", "<p>test1 =1</p>")]
+        [DataRow("test1\n=1", "<p>test1 =1</p>\n")]
         public void ShouldNotParseEqualsHeadingLineFollowedByIncorrectCharacterSuccess(
             string markdown,
             string targetHtml
@@ -73,7 +73,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("test1\n-1", "<p>test1 -1</p>")]
+        [DataRow("test1\n-1", "<p>test1 -1</p>\n")]
         public void ShouldNotParseDashHeadingLineFollowedByIncorrectCharacterSuccess(
             string markdown,
             string targetHtml
