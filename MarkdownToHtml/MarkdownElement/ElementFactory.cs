@@ -9,7 +9,8 @@ namespace MarkdownToHtml
             ElementType type
         ) {
             ElementDetails details = new ElementDetails(
-                type
+                type,
+                NewLineStatus(type)
             );
             IHtmlWriter writer;
             if (type != ElementType.HorizontalRule)
@@ -31,6 +32,7 @@ namespace MarkdownToHtml
         ) {
             ElementDetails details = new ElementDetails(
                 type,
+                NewLineStatus(type),
                 content
             );
             return new Element(
@@ -59,6 +61,7 @@ namespace MarkdownToHtml
         ) {
             ElementDetails details = new ElementDetails(
                 type,
+                NewLineStatus(type),
                 attributes
             );
             return new Element(
@@ -74,6 +77,7 @@ namespace MarkdownToHtml
         ) {
             ElementDetails details = new ElementDetails(
                 type,
+                NewLineStatus(type),
                 content,
                 attributes
             );
@@ -81,6 +85,24 @@ namespace MarkdownToHtml
                 details,
                 new TagContentAttributesWriter()
             );
+        }
+
+        private static ElementDetails.FollowWithNewLine NewLineStatus(ElementType type)
+        {
+            switch (type)
+            {
+                case ElementType.Heading1:
+                case ElementType.Heading2:
+                case ElementType.Heading3:
+                case ElementType.Heading4:
+                case ElementType.Heading5:
+                case ElementType.Heading6:
+                case ElementType.Heading1Underlined:
+                case ElementType.Heading2Underlined:
+                    return ElementDetails.FollowWithNewLine.Yes;
+                default:
+                    return ElementDetails.FollowWithNewLine.No; 
+            }
         }
     }
 }

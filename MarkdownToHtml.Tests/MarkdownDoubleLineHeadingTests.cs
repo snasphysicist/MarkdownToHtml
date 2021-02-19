@@ -9,9 +9,9 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("test1\n=", "<h1>test1</h1>")]
-        [DataRow("test1\n=====", "<h1>test1</h1>")]
-        [DataRow("test1\n====================", "<h1>test1</h1>")]
+        [DataRow("test1\n=", "<h1>test1</h1>\n")]
+        [DataRow("test1\n=====", "<h1>test1</h1>\n")]
+        [DataRow("test1\n====================", "<h1>test1</h1>\n")]
         public void ShouldParseHeadingLineFollowedByOnlyEqualsSuccess(
             string markdown,
             string targetHtml
@@ -51,9 +51,9 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("test1\n-", "<h2>test1</h2>")]
-        [DataRow("test1\n-----", "<h2>test1</h2>")]
-        [DataRow("test1\n--------------------", "<h2>test1</h2>")]
+        [DataRow("test1\n-", "<h2>test1</h2>\n")]
+        [DataRow("test1\n-----", "<h2>test1</h2>\n")]
+        [DataRow("test1\n--------------------", "<h2>test1</h2>\n")]
         public void ShouldParseHeadingLineFollowedByOnlyDashSuccess(
             string markdown,
             string targetHtml

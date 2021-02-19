@@ -1,12 +1,12 @@
 
 namespace MarkdownToHtml
 {
-    public class TagOnlySelfClosingWriter : IHtmlWriter
+    public class TagOnlySelfClosingWriter : HtmlWriterBase, IHtmlWriter
     {
         public string WriteToString(
             ElementDetails details
         ) {
-            return $"<{details.Tag} />";
+            return TerminateWithNewLineIfRequired(details, $"<{details.Tag} />");
         }
     }
 }
