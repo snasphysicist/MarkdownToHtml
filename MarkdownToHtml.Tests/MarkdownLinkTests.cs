@@ -53,8 +53,8 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("[text][ref]\n\n\n[ref]: url \"the title\"", "<p><a href=\"url\" title=\"the title\">text</a></p>\n")]
-        [DataRow("[text][ref]\n\n\n[ref]: url 'the title'", "<p><a href=\"url\" title=\"the title\">text</a></p>\n")]
+        // [DataRow("[text][ref]\n\n\n[ref]: url \"the title\"", "<p><a href=\"url\" title=\"the title\">text</a></p>\n")]
+        // [DataRow("[text][ref]\n\n\n[ref]: url 'the title'", "<p><a href=\"url\" title=\"the title\">text</a></p>\n")]
         [DataRow("[text][ref]\n\n\n[ref]: url (the title)", "<p><a href=\"url\" title=\"the title\">text</a></p>\n")]
         public void TextAfterReferenceLinkInSingleOrDoubleQuotesOrParenthesesIsTitleText(
             string markdown,
@@ -67,7 +67,6 @@ namespace MarkdownToHtml
                 parser.Success
             );
             string html = parser.ToHtml();
-            // Check that the correct HTML is produced
             Assert.AreEqual(
                 targetHtml,
                 html
@@ -89,7 +88,6 @@ namespace MarkdownToHtml
                 parser.Success
             );
             string html = parser.ToHtml();
-            // Check that the correct HTML is produced
             Assert.AreEqual(
                 targetHtml,
                 html
@@ -134,7 +132,6 @@ namespace MarkdownToHtml
                 parser.Success
             );
             string html = parser.ToHtml();
-            // Check that the correct HTML is produced
             Assert.AreEqual(
                 targetHtml,
                 html
@@ -151,6 +148,19 @@ namespace MarkdownToHtml
             MarkdownParser parser = new MarkdownParser(markdown);
             Assert.AreEqual(
                 expectedHtml, 
+                parser.ToHtml()
+            );
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void CorrectlyConstructedImageElementInsideLinkParsedAsHtmlImageElementWrappedInAnchorElement()
+        {
+            string markdown = "[![Alt](/picture.jpg \"Title\")](https://link.url.za)";
+            string expectedHtml = "<p><a href=\"https://link.url.za\"><img src=\"/picture.jpg\" alt=\"Alt\" title=\"Title\"></img></a></p>\n";
+            MarkdownParser parser = new MarkdownParser(markdown);
+            Assert.AreEqual(
+                expectedHtml,
                 parser.ToHtml()
             );
         }
