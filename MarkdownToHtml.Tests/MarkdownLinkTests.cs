@@ -53,8 +53,8 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        // [DataRow("[text][ref]\n\n\n[ref]: url \"the title\"", "<p><a href=\"url\" title=\"the title\">text</a></p>\n")]
-        // [DataRow("[text][ref]\n\n\n[ref]: url 'the title'", "<p><a href=\"url\" title=\"the title\">text</a></p>\n")]
+        [DataRow("[text][ref]\n\n\n[ref]: url \"the title\"", "<p><a href=\"url\" title=\"the title\">text</a></p>\n")]
+        [DataRow("[text][ref]\n\n\n[ref]: url 'the title'", "<p><a href=\"url\" title=\"the title\">text</a></p>\n")]
         [DataRow("[text][ref]\n\n\n[ref]: url (the title)", "<p><a href=\"url\" title=\"the title\">text</a></p>\n")]
         public void TextAfterReferenceLinkInSingleOrDoubleQuotesOrParenthesesIsTitleText(
             string markdown,
