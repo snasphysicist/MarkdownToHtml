@@ -65,8 +65,11 @@ namespace MarkdownToHtml
             Element element = new ElementFactory().New(
                 ElementType.Paragraph,
                 new ElementFactory().New(
-                    ElementType.CodeBlock,
-                    innerContent.ToArray()
+                    ElementType.Preformatted,
+                    new ElementFactory().New(
+                        ElementType.CodeBlock,
+                        innerContent.ToArray()
+                    )
                 )
             );
             result.Success = true;
