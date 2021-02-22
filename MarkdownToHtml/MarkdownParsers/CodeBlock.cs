@@ -52,6 +52,11 @@ namespace MarkdownToHtml
                         input.Replacements
                     )
                 );
+                innerContent.AddLast(
+                    MarkdownText.NotEscapingReplacedHtml(
+                        "\n"
+                    )
+                );
                 input[i].WasParsed();
                 i++;
             }
