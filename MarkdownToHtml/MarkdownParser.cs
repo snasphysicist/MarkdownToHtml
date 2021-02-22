@@ -28,6 +28,7 @@ namespace MarkdownToHtml
         private static IMarkdownParser[] innerTextParsers
             = new IMarkdownParser[]
             {
+                new StrongEmphasis(),
                 new Strong(),
                 new Strikethrough(),
                 new Emphasis(),

@@ -38,7 +38,7 @@ namespace MarkdownToHtml
         [DataRow("*** test", "<p><em>*</em> test</p>\n")]
         [DataRow(
             "___________________ something", 
-            "<p><strong><strong><strong><strong><em>_</em></strong></strong></strong></strong> something</p>\n"
+            "<p><strong><em>_</em></strong><strong><em>_</em></strong><strong>_</strong> something</p>\n"
         )]
         public void ShouldNotParseIncorrectlyFormattedHorizontalRuleFail(
             string markdown,

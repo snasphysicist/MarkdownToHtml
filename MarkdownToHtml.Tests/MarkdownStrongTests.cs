@@ -95,5 +95,27 @@ namespace MarkdownToHtml
             );
         }
 
+
+        [TestMethod]
+        [Timeout(500)]
+        public void MultipleStrongSectionsInSameParagraphEachTerminatedByDelimiterImmediatelyFollowing()
+        {
+            string markdown = 
+                "We are mostly interested in communication peripherals so we will focus on USARTn " + 
+                "(Section 23 - **Universal Synchronous and Asynchronous Receiver and Transmitter**), " + 
+                "SPI0 (Section 24 - **Serial Peripheral Interface**), TWI0 (Section 25 - **Two-Wire Interface**).";
+            string html = 
+                "<p>We are mostly interested in communication peripherals so we will focus on USARTn " +
+                "(Section 23 - <strong>Universal Synchronous and Asynchronous Receiver and Transmitter</strong>), " + 
+                "SPI0 (Section 24 - <strong>Serial Peripheral Interface</strong>), TWI0 (Section 25 - " + 
+                "<strong>Two-Wire Interface</strong>).</p>\n";
+            MarkdownParser parser = new MarkdownParser(
+                markdown
+            );
+            Assertions.AssertStringsEqualShowingDifference(
+                html,
+                parser.ToHtml()
+            );
+        }
     }
 }
