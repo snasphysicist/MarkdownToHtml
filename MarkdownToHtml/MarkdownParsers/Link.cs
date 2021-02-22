@@ -7,7 +7,7 @@ namespace MarkdownToHtml
     public class Link : IMarkdownParser
     {
         private static Regex regexLinkImmediate = new Regex(
-            @"^\(([^""]*[^\\])\)"
+            @"^\(([^""]*?[^\\])\)"
         );
 
         private static Regex regexLinkImmediateWithTitle = new Regex(
