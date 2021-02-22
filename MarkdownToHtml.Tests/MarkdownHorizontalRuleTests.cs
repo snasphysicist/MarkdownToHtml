@@ -9,11 +9,13 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("---", "<hr />")]
-        [DataRow("***", "<hr />")]
-        [DataRow("----", "<hr />")]
-        [DataRow("*****", "<hr />")]
-        public void ShouldParseCorrectlyFormattedHorizontalRuleSuccess(
+        [DataRow("---", "<hr />\n")]
+        [DataRow("***", "<hr />\n")]
+        [DataRow("___", "<hr />\n")]
+        [DataRow("----", "<hr />\n")]
+        [DataRow("*****", "<hr />\n")]
+        [DataRow("___________________", "<hr />\n")]
+        public void AtLeastThreeDashAsteriskOrUnderscoreAndNothingElseOnALineIsAHorizontalRule(
             string markdown,
             string targetHtml
         ) {
@@ -32,8 +34,12 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("---*", "<p>---*</p>")]
-        [DataRow("*** test", "<p><em>*</em> test</p>")]
+        [DataRow("---*", "<p>---*</p>\n")]
+        [DataRow("*** test", "<p><em>*</em> test</p>\n")]
+        [DataRow(
+            "___________________ something", 
+            "<p><strong><strong><strong><strong><em>_</em></strong></strong></strong></strong> something</p>\n"
+        )]
         public void ShouldNotParseIncorrectlyFormattedHorizontalRuleFail(
             string markdown,
             string targetHtml

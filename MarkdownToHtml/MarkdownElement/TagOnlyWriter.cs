@@ -1,12 +1,12 @@
 
 namespace MarkdownToHtml
 {
-    public class TagOnlyWriter : IHtmlWriter
+    public class TagOnlyWriter : HtmlWriterBase, IHtmlWriter
     {
         public string WriteToString(
             ElementDetails details
         ) {
-            return $"<{details.Tag}>";
+            return TerminateWithNewLineIfRequired(details, $"<{details.Tag}>");
         }
     }
 }

@@ -5,6 +5,11 @@ namespace MarkdownToHtml
 {
     public class ElementDetails  
     {
+        public enum FollowWithNewLine {
+            Yes,
+            No
+        };
+
         public ElementType Type
         {
             get; private set;
@@ -15,6 +20,10 @@ namespace MarkdownToHtml
             get {
                 return Type.Tag();
             }
+        }
+
+        public FollowWithNewLine NewLine {
+            get; private set;
         }
 
         private IHtmlable[] content = new IHtmlable[]{};
@@ -38,32 +47,37 @@ namespace MarkdownToHtml
         }
 
         public ElementDetails(
-            ElementType type
+            ElementType type,
+            FollowWithNewLine newLine
         ) {
             Type = type;
+            NewLine = newLine;
         }
 
         public ElementDetails(
             ElementType type,
+            FollowWithNewLine newLine,
             IHtmlable[] content
-        ) : this(type) 
+        ) : this(type, newLine) 
         {
             this.content = content;
         }
 
         public ElementDetails(
             ElementType type,
+            FollowWithNewLine newLine,
             Attribute[] attributes
-        ) : this(type) 
+        ) : this(type, newLine) 
         {
             this.attributes = attributes;
         }
 
         public ElementDetails(
             ElementType type,
+            FollowWithNewLine newLine,
             IHtmlable[] content,
             Attribute[] attributes
-        ) : this(type, content)
+        ) : this(type, newLine, content)
         {
             this.attributes = attributes;
         }

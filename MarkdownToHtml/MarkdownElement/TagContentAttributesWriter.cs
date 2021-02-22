@@ -1,7 +1,7 @@
 
 namespace MarkdownToHtml
 {
-    public class TagContentAttributesWriter : IHtmlWriter
+    public class TagContentAttributesWriter : HtmlWriterBase, IHtmlWriter
     {
         public string WriteToString(
             ElementDetails details
@@ -17,7 +17,7 @@ namespace MarkdownToHtml
                 html += item.ToHtml();
             }
             html += $"</{details.Tag}>";
-            return html;
+            return TerminateWithNewLineIfRequired(details, html);
         }
     }
 }

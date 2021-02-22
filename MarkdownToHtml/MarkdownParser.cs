@@ -9,7 +9,9 @@ namespace MarkdownToHtml
         private static IMarkdownParser[] multilineElementParsers
             = new IMarkdownParser[]
             {
-                new PreformattedCodeBlock(),
+                new PreformattedCodeBlock(
+                    0
+                ),
                 new DoubleLineHeading(),
                 new SingleLineHeading(),
                 new HorizontalRule(),
@@ -92,7 +94,8 @@ namespace MarkdownToHtml
                 Urls.ToArray(),
                 lines,
                 0,
-                lines.Length
+                lines.Length,
+                substituter.GetReplacements()
             );
             // Parsing printed content
             while (input.Count > 0) {

@@ -47,8 +47,9 @@ namespace MarkdownToHtml
             while (!regexBacktickSectionClose.Match(input[i].Text).Success)
             {
                 innerContent.AddLast(
-                    new MarkdownText(
-                        input[i].Text
+                    MarkdownText.EscapingReplacedHtml(
+                        input[i].Text,
+                        input.Replacements
                     )
                 );
                 input[i].WasParsed();

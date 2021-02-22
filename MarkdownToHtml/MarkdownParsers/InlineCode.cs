@@ -1,18 +1,87 @@
 
-using System.Text.RegularExpressions;
+using System;
+using System.Collections.Generic;
 
 namespace MarkdownToHtml
 {
     public class InlineCode : IMarkdownParser
     {
-        private static Regex regexParseable = new Regex(
-            @"^`.*([^`])`.*"
-        );
+        private int QuotesAtStart(
+            string line
+        ) {
+            int quotes = 0;
+            while (
+                quotes < line.Length
+                && line.Substring(quotes, 1) == "`"
+            ) {
+                quotes++;
+            }
+            return quotes;
+        }
+
+        private bool IsCharEscapedAt(
+            string line,
+            int at
+        ) {
+            int checkForSlash = at - 1;
+            bool isEscaped = false;
+            while (
+                checkForSlash >= 0
+                && line[checkForSlash] == '\\'
+            ) {
+                checkForSlash--;
+                isEscaped = !isEscaped;
+            }
+            return isEscaped;
+        }
+
+        private int FindClosingQuotes(
+            string line,
+            string quoteSection
+        ) {
+            int numberOfQuotes = quoteSection.Length;
+            int location = numberOfQuotes;
+            while (
+                location < (line.Length - numberOfQuotes)
+                && (
+                    line.Substring(
+                        location, 
+                        numberOfQuotes
+                    ) != quoteSection
+                    || IsCharEscapedAt(
+                        line, 
+                        location
+                    )
+                )
+            ) {
+                location++;
+            }
+            if (
+                (location == (line.Length - numberOfQuotes))
+                && !line.EndsWith(
+                    quoteSection
+                )
+            ) {
+                return line.Length;
+            } else {
+                return location;
+            }
+        }
 
         public bool CanParseFrom(
             ParseInput input
         ) {
-            return regexParseable.Match(input[0].Text).Success;
+            int quotesAtStart = QuotesAtStart(
+                input[0].Text
+            );
+            int locationOfClosingQuotes = FindClosingQuotes(
+                input[0].Text,
+                input[0].Text.Substring(0, quotesAtStart)
+            );
+            return (
+                quotesAtStart > 0
+                && locationOfClosingQuotes != input[0].Text.Length
+            );
         }
 
         // Shared code for parsing emphasis sections
@@ -27,18 +96,14 @@ namespace MarkdownToHtml
                 result.Line = line;
                 return result;
             }
-            int j = 1;
-            // Find closing `
-            while (
-                (j < line.Length)
-                && !(
-                    (line[j] == '`')
-                    && (line[j-1] != '\\')
-                )
-            ) {
-                j++;
-            }
-            if (j >= line.Length)
+            int quotesAtStart = QuotesAtStart(
+                input[0].Text
+            );
+            int locationOfClosingQuotes = FindClosingQuotes(
+                input[0].Text,
+                input[0].Text.Substring(0, quotesAtStart)
+            );
+            if (locationOfClosingQuotes == input[0].Text.Length)
             {
                 // If we cannot parse, then return line as is
                 result.Line = line;
@@ -47,15 +112,16 @@ namespace MarkdownToHtml
             // Parse everything inside the backticks
             Element element = new ElementFactory().New(
                 ElementType.CodeInline,
-                MarkdownParser.ParseInnerText(
-                    new ParseInput(
-                        input,
-                        line.Substring(1, j - 1)
-                    )
+                MarkdownText.EscapingReplacedHtml(
+                    line.Substring(
+                        quotesAtStart, 
+                        locationOfClosingQuotes - quotesAtStart
+                    ),
+                    input.Replacements
                 )
             );
             result.AddContent(element);
-            input[0].Text = line.Substring(j + 1);
+            input[0].Text = line.Substring(locationOfClosingQuotes + quotesAtStart);
             result.Success = true;
             return result;
         }

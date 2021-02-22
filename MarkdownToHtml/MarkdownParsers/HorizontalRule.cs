@@ -8,6 +8,7 @@ namespace MarkdownToHtml
         static Regex regexHorizontalRule = new Regex(
             @"^[\s|\*]{3,}$"
             + @"|^[\s|-]{3,}$"
+            + @"|^[\s|_]{3,}$"
         );
 
         public bool CanParseFrom(
@@ -17,7 +18,7 @@ namespace MarkdownToHtml
             bool correctFormat = regexHorizontalRule.Match(line).Success;
             // Check there are enough - or * characters (3++)
             bool enoughNonWhitespace = (
-                (line.Length - line.Replace("*", "").Replace("-", "").Length)
+                (line.Length - line.Replace("*", "").Replace("-", "").Replace("_", "").Length)
                 > 2
             );
             return correctFormat && enoughNonWhitespace;

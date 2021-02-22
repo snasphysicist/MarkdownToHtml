@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 
 namespace MarkdownToHtml
 {
@@ -38,11 +39,22 @@ namespace MarkdownToHtml
             }
         }
 
+        private Dictionary<Guid, string> replacements;
+
+        public Dictionary<Guid, string> Replacements
+        {
+            get
+            {
+                return new Dictionary<Guid, string>(replacements);
+            }
+        }
+
         public ParseInput(
             ReferencedUrl[] urls,
             string[] lines,
             int startIndex,
-            int elements
+            int elements,
+            Dictionary<Guid, string> replacements
         ) {
             Urls = urls;
             this.lines = new Line[lines.Length];
@@ -54,18 +66,21 @@ namespace MarkdownToHtml
             }
             this.startIndex = startIndex;
             this.elements = elements;
+            this.replacements = new Dictionary<Guid, string>(replacements);
         }
 
         private ParseInput(
             ReferencedUrl[] urls,
             Line[] lines,
             int startIndex,
-            int elements
+            int elements,
+            Dictionary<Guid, string> replacements
         ) {
             Urls = urls;
             this.lines = lines;
             this.startIndex = startIndex;
             this.elements = elements;
+            this.replacements = new Dictionary<Guid, string>(replacements);
         }
 
         public ParseInput(
@@ -81,6 +96,7 @@ namespace MarkdownToHtml
             };
             startIndex = 0;
             elements = 1;
+            this.replacements = toCopy.Replacements;
         }
 
         public ParseInput LinesFromStart(
@@ -90,7 +106,8 @@ namespace MarkdownToHtml
                 Urls,
                 lines,
                 startIndex,
-                numberOfLines
+                numberOfLines,
+                replacements
             );
         }
 
@@ -101,7 +118,8 @@ namespace MarkdownToHtml
                 Urls,
                 lines,
                 startIndex,
-                endIndex - startIndex
+                endIndex - startIndex,
+                replacements
             );
         }
 
@@ -137,5 +155,14 @@ namespace MarkdownToHtml
             return this;
         }
 
+        public string CurrentContent() 
+        {
+            string current = "";
+            for (int i = startIndex; i < lines.Length; i++)
+            {
+                current += lines[i].Text;
+            }
+            return current;
+        }
     }
 }

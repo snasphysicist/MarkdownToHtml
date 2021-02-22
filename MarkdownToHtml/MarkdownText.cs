@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
@@ -32,22 +33,48 @@ namespace MarkdownToHtml
             '~'
         };
 
-        string content;
+        private HtmlElementInserter reinsertedContent;
 
         public ElementType Type
         { get; private set; }
 
-        public MarkdownText(
+        public static MarkdownText NotEscapingReplacedHtml(
             string content
         ) {
-            Type = ElementType.Text;
-            this.content = ReplaceEscapeCharacters(
-                content
+            return new MarkdownText(
+                new HtmlElementInserter(
+                    new Dictionary<Guid, string>(),
+                    content
+                )
             );
         }
 
+        public static MarkdownText EscapingReplacedHtml(
+            string content,
+            Dictionary<Guid, string> replacements
+        ) {
+            return new MarkdownText(
+                new HtmlElementInserter(
+                    replacements, 
+                    content
+                )
+            );
+        }
+
+        private MarkdownText(
+            HtmlElementInserter inserter
+        ) {
+            Type = ElementType.Text;
+            this.reinsertedContent = inserter;
+        }
+
         public string ToHtml() {
-            return content;
+            HtmlSpecialCharacterEscaper escaper = new HtmlSpecialCharacterEscaper(
+                reinsertedContent.Processed
+            );
+            return ReplaceEscapeCharacters(
+                escaper.Escaped
+            );
         }
 
         private string ReplaceEscapeCharacters(
@@ -94,7 +121,7 @@ namespace MarkdownToHtml
             {
                 // There is some special character in the string
                 // Add as plain text only the content up to where it starts
-                MarkdownText element = new MarkdownText(
+                MarkdownText element = MarkdownText.NotEscapingReplacedHtml(
                     line.Substring(0, indexFirstSpecialCharacter)
                 );
                 result.AddContent(element);
@@ -102,7 +129,7 @@ namespace MarkdownToHtml
                 result.Success = true;
             } else {
                 // If there are no special sections, everything is plain text
-                MarkdownText element = new MarkdownText(
+                MarkdownText element = MarkdownText.NotEscapingReplacedHtml(
                     line
                 );
                 result.AddContent(element);

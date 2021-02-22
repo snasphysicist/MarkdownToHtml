@@ -69,6 +69,9 @@ namespace MarkdownToHtml
             IMarkdownParser blockquoteParser = new Quote(
                 indentationLevel + 1
             );
+            IMarkdownParser codeParser = new PreformattedCodeBlock(
+                indentationLevel + 1
+            );
             bool whitespaceLineBefore = false;
             bool whitespaceLineAfter = false;
             do 
@@ -92,6 +95,18 @@ namespace MarkdownToHtml
                     )
                 ) {
                     innerResult = blockquoteParser.ParseFrom(
+                        input
+                    );
+                    notParagraphable.Add(
+                        numberOfElements,
+                        innerResult.GetContent()
+                    );
+                } else if (
+                    codeParser.CanParseFrom(
+                        input
+                    )
+                ) {
+                    innerResult = codeParser.ParseFrom(
                         input
                     );
                     notParagraphable.Add(

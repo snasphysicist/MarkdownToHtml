@@ -8,10 +8,10 @@ namespace MarkdownToHtml
     {
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("1. test1", "<ol><li>test1</li></ol>")]
-        [DataRow(" 1. test1", "<ol><li>test1</li></ol>")]
-        [DataRow("  1. test1", "<ol><li>test1</li></ol>")]
-        [DataRow("   1. test1", "<ol><li>test1</li></ol>")]
+        [DataRow("1. test1", "<ol><li>test1</li>\n</ol>\n")]
+        [DataRow(" 1. test1", "<ol><li>test1</li>\n</ol>\n")]
+        [DataRow("  1. test1", "<ol><li>test1</li>\n</ol>\n")]
+        [DataRow("   1. test1", "<ol><li>test1</li>\n</ol>\n")]
         public void ShouldParseOrderedListZeroToThreeSpacesSuccess(
             string markdown,
             string targetHtml
@@ -30,7 +30,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("19274. test1", "<ol><li>test1</li></ol>")]
+        [DataRow("19274. test1", "<ol><li>test1</li>\n</ol>\n")]
         public void ShouldParseOrderedListNotStartAtOneSuccess(
             string markdown,
             string targetHtml
@@ -49,7 +49,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("1. test1\n2. test2", "<ol><li>test1</li><li>test2</li></ol>")]
+        [DataRow("1. test1\n2. test2", "<ol><li>test1</li>\n<li>test2</li>\n</ol>\n")]
         public void ShouldParseOrderedListLinesNotSeparatedByWhitespaceAscendingSuccess(
             string markdown,
             string targetHtml
@@ -68,7 +68,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("39438. test1\n749. test2", "<ol><li>test1</li><li>test2</li></ol>")]
+        [DataRow("39438. test1\n749. test2", "<ol><li>test1</li>\n<li>test2</li>\n</ol>\n")]
         public void ShouldParseOrderedListLinesNotSeparatedByWhitespaceDescendingSuccess(
             string markdown,
             string targetHtml
@@ -89,7 +89,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "1. test1\n\n2. test2", 
-            "<ol><li><p>test1</p></li><li><p>test2</p></li></ol>"
+            "<ol><li><p>test1</p>\n</li>\n<li><p>test2</p>\n</li>\n</ol>\n"
         )]
         public void ShouldParseOrderedListLinesSeparatedByWhitespaceSuccess(
             string markdown,
@@ -111,7 +111,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "1. test1\n\ntest2\n\n2. test3", 
-            "<ol><li>test1</li></ol><p>test2</p><ol><li>test3</li></ol>"
+            "<ol><li>test1</li>\n</ol>\n<p>test2</p>\n<ol><li>test3</li>\n</ol>\n"
         )]
         public void ShouldParseOrderedListLinesSeparatedByNormalParagraphSuccess(
             string markdown,
@@ -131,7 +131,7 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("test1\n2. test2", "<p>test1 2. test2</p>")]
+        [DataRow("test1\n2. test2", "<p>test1 2. test2</p>\n")]
         public void ShouldParseOrderedListLineAfterParagraphAsParagraphSuccess(
             string markdown,
             string targetHtml
@@ -152,11 +152,11 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "1. test1\n\n    test2\ntest3", 
-            "<ol><li><p>test1</p><p>test2 test3</p></li></ol>"
+            "<ol><li><p>test1</p>\n<p>test2 test3</p>\n</li>\n</ol>\n"
         )]
         [DataRow(
             "1. test1\n\n    test2\n    test3", 
-            "<ol><li><p>test1</p><p>test2 test3</p></li></ol>"
+            "<ol><li><p>test1</p>\n<p>test2 test3</p>\n</li>\n</ol>\n"
         )]
         public void IndentedFollowingParagraphParsedAsPartOfListItem(
             string markdown,
@@ -178,7 +178,7 @@ namespace MarkdownToHtml
         [Timeout(500)]
         [DataRow(
             "1. test1\n\n    > test2", 
-            "<ol><li><p>test1</p><blockquote><p>test2</p></blockquote></li></ol>"
+            "<ol><li><p>test1</p>\n<blockquote><p>test2</p>\n</blockquote>\n</li>\n</ol>\n"
         )]
         public void IndentedQuoteBlockParsedAsPartOfListItem(
             string markdown,
@@ -194,6 +194,24 @@ namespace MarkdownToHtml
                 targetHtml,
                 parser.ToHtml()
             );
-        }        
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void DoubleIndentedBlockParsedAsCodeBlockInsideListItem()
+        {
+            string markdown = "1. Test 1\n\n        i = i + 1\n\n2. Test 2";
+            string html = "<ol><li><p>Test 1</p>\n<pre><code>i = i + 1\n</code></pre>\n</li>\n<li><p>Test 2</p>\n</li>\n</ol>\n";
+            MarkdownParser parser = new MarkdownParser(
+                markdown
+            );
+            Assert.IsTrue(
+                parser.Success
+            );
+            Assert.AreEqual(
+                html,
+                parser.ToHtml()
+            );
+        }
     }
 }

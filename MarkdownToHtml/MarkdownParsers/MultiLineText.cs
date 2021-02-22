@@ -72,7 +72,9 @@ namespace MarkdownToHtml
                         )
                     ) {
                         result.AddContent(
-                            new MarkdownText(" ")
+                            MarkdownText.NotEscapingReplacedHtml(
+                                " "
+                            )
                         );
                     }
                 }
