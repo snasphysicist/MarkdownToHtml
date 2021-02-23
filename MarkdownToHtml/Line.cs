@@ -7,6 +7,9 @@ namespace MarkdownToHtml
 
         private bool hasBeenParsed;
 
+        public string Original
+        { get; private set; }
+
         public string Text
         { get; set; }
 
@@ -14,6 +17,7 @@ namespace MarkdownToHtml
             string text
         ) {
             Text = text;
+            Original = text;
             if (text == "")
             {
                 hasBeenParsed = true;
@@ -30,10 +34,7 @@ namespace MarkdownToHtml
 
         public bool ContainsOnlyWhitespace()
         {
-            return Text.Replace(
-                " ",
-                ""
-            ).Length == 0;
+            return Text.ContainsOnlyWhitespace();
         }
 
         public bool HasBeenParsed(){

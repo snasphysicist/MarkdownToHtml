@@ -58,7 +58,7 @@ namespace MarkdownToHtml
                 ) {
                     input.NextLine();
                 }
-                whitespaceLineAfter = input[-1].ContainsOnlyWhitespace() 
+                whitespaceLineAfter = input[-1].Original.ContainsOnlyWhitespace() 
                     && listItemParser.CanParseFrom(
                         input
                     );

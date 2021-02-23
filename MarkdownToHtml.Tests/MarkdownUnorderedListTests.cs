@@ -196,5 +196,22 @@ namespace MarkdownToHtml
                 parser.ToHtml()
             );
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void ListItemEndingInInlineCodeElementIsNotWrappedInAParagraphIfItIsNotAdjacentToAWhitespaceLine()
+        {
+            string markdown = "- UART0\n    - Configuration 1, byte value `0x01`\n    - Configuration 2, byte value `0x02`";
+            string html = 
+                "<ul><li>UART0<ul><li>Configuration 1, byte value <code>0x01</code></li>\n" + 
+                "<li>Configuration 2, byte value <code>0x02</code></li>\n</ul>\n</li>\n</ul>\n";
+            MarkdownParser parser = new MarkdownParser(
+                markdown
+            );
+            Assertions.AssertStringsEqualShowingDifference(
+                html,
+                parser.ToHtml()
+            );
+        }
     }
 }
