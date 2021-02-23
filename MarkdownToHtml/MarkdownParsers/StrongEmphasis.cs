@@ -3,17 +3,17 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownToHtml
 {
-    public class Strong : IMarkdownParser
+    public class StrongEmphasis : IMarkdownParser
     {
-        private static Regex regexStrongText = new Regex(
-            @"^\*{2}(.+?)\*{2}"
-            + @"|^_{2}(.+?)_{2}"
+        private static Regex regexStrongEmphasisText = new Regex(
+            @"^\*{3}(.*?[^\\])\*{3}"
+            + @"|^_{3}(.*?[^\\])_{3}"
         );
 
         public bool CanParseFrom(
             ParseInput input
         ) {
-            return regexStrongText.Match(input[0].Text).Success;
+            return regexStrongEmphasisText.Match(input[0].Text).Success;
         }
 
         public ParseResult ParseFrom(
@@ -26,23 +26,26 @@ namespace MarkdownToHtml
                 // Fail immediately if we cannot parse this text as strong
                 return result;
             }
-            Match contentMatch = regexStrongText.Match(
+            Match contentMatch = regexStrongEmphasisText.Match(
                 line
             );
             string innerText = contentMatch.Groups[1].Value + contentMatch.Groups[2].Value;
             Element strong = new ElementFactory().New(
                 ElementType.Strong,
-                MarkdownParser.ParseInnerText(
-                    new ParseInput(
-                        input,
-                        innerText
+                new ElementFactory().New(
+                    ElementType.Emphasis,
+                    MarkdownParser.ParseInnerText(
+                        new ParseInput(
+                            input,
+                            innerText
+                        )
                     )
                 )
             );
             result.AddContent(
                 strong
             );
-            input[0].Text = regexStrongText.Replace(
+            input[0].Text = regexStrongEmphasisText.Replace(
                 line,
                 ""
             );

@@ -164,5 +164,20 @@ namespace MarkdownToHtml
                 parser.ToHtml()
             );
         }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void ImmediateLinkInsideBracketsTerminatesHrefTextAtFirstBracketItEncounters()
+        {
+            string markdown = "(This might normally [be](www.bing.com) problematic.)";
+            string html = "<p>(This might normally <a href=\"www.bing.com\">be</a> problematic.)</p>\n";
+            MarkdownParser parser = new MarkdownParser(
+                markdown
+            );
+            Assert.AreEqual(
+                html,
+                parser.ToHtml()
+            );
+        }
     }
 }

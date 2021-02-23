@@ -9,8 +9,8 @@ namespace MarkdownToHtml
 
         [DataTestMethod]
         [Timeout(500)]
-        [DataRow("```\ntest1\n```", "<p><code>test1</code></p>\n")]
-        [DataRow("test1\n\n```\ntest2\n```", "<p>test1</p>\n<p><code>test2</code></p>\n")]
+        [DataRow("```\ntest1\n```", "<p><pre><code>test1\n</code></pre>\n</p>\n")]
+        [DataRow("test1\n\n```\ntest2\n```", "<p>test1</p>\n<p><pre><code>test2\n</code></pre>\n</p>\n")]
         public void ParseProperlyBacktickDelimitedCodeBlockAsCode(
             string markdown,
             string targetHtml
@@ -145,6 +145,39 @@ namespace MarkdownToHtml
             Assert.AreEqual(
                 targetHtml,
                 html
+            );
+        }
+
+        [TestMethod]
+        [Timeout(500)]
+        public void EachLineInANonPreformattedCodeBlockIsTerminatedByANewlineCharacter()
+        {
+            string markdown =
+                "```\n" +
+                "               /USART3\n" +
+                "               ||/USART2\n" +
+                "               ||||/USART1\n" +
+                "               ||||||/USART0\n" +
+                "               ||||||||\n" +
+                "             0b00000000\n" +
+                "Bit Number MSB 76543210 LSB\n" +
+                "```";
+            string html = 
+                "<p><pre><code>" + 
+                "               /USART3\n" +
+                "               ||/USART2\n" +
+                "               ||||/USART1\n" + 
+                "               ||||||/USART0\n" +
+                "               ||||||||\n" +
+                "             0b00000000\n" +
+                "Bit Number MSB 76543210 LSB\n" +
+                "</code></pre>\n</p>\n";
+            MarkdownParser parser = new MarkdownParser(
+                markdown
+            );
+            Assert.AreEqual(
+                html,
+                parser.ToHtml()
             );
         }
     }

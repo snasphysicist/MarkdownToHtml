@@ -8,42 +8,12 @@ namespace MarkdownToHtml
     [TestClass]
     public class EndToEndTests
     {
-        private static int showMisMatchCharacterSurroundings = 40;
 
         private static string Parse(
             string markdown
         ) {
             MarkdownParser parser = new MarkdownParser(markdown);
             return parser.ToHtml();
-        }
-
-        private static void AssertStringsEqualShowingDifference(
-            string expected,
-            string actual
-        ) {
-            if (expected == actual) {
-                return;
-            }
-            int differenceIndex = 0;
-            while (
-                differenceIndex < expected.Length 
-                    && differenceIndex < actual.Length
-                    && expected.Substring(differenceIndex, 1) == actual.Substring(differenceIndex, 1)
-             ) {
-                 differenceIndex++;
-             }
-             int expectedLowerBound = Math.Max(0, differenceIndex - (showMisMatchCharacterSurroundings / 2));
-             int actualLowerBound = Math.Max(0, differenceIndex - (showMisMatchCharacterSurroundings / 2));
-             int expectedUpperBound = Math.Min(expected.Length, differenceIndex + (showMisMatchCharacterSurroundings / 2));
-             int actualUpperBound = Math.Min(actual.Length, differenceIndex + (showMisMatchCharacterSurroundings / 2));
-             string differenceMessage = "\nAt index " + differenceIndex
-                 + "\nExpected <...>" + expected.Substring(expectedLowerBound, expectedUpperBound - expectedLowerBound) 
-                 + "<...>\nActual   <...>" + actual.Substring(actualLowerBound, actualUpperBound - actualLowerBound) + "</...>\n";
-            Assert.AreEqual(
-                expected,
-                actual,
-                differenceMessage
-            );
         }
 
         [TestMethod]
@@ -247,7 +217,7 @@ namespace MarkdownToHtml
                 "\"><img src=\"/assets/images/shiprock.jpg\" alt=\"An old rock in the desert\" " + 
                 "title=\"Shiprock, New Mexico by Beau Rogers\"></img></a></p>\n" +
                 "<p>\\* Without the backslash, this would be a bullet in an unordered list.</p>\n";
-            AssertStringsEqualShowingDifference(
+            Assertions.AssertStringsEqualShowingDifference(
                 expected,
                 html
             );
